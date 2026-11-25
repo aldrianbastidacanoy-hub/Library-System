@@ -185,7 +185,7 @@
                 <div class="flex flex-wrap gap-2 w-full md:w-auto">
                     <label id="csv-upload-label" class="staff-only hidden bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-lg cursor-pointer transition text-sm flex items-center">
                         <i class="fa-solid fa-file-csv mr-2"></i><span id="csv-btn-text">Upload CSV Database</span>
-                        <input type="file" id="csv-file-input" accept=".csv" onchange="handleCSVUpload(event)" class="hidden">
+                        <input type="file" id="csv-file-input" accept=".csv" onchange="prepareCSVMapping(event)" class="hidden">
                     </label>
                     <button onclick="exportBackup()" id="export-backup-btn" class="staff-only hidden bg-slate-700 hover:bg-slate-800 text-white font-medium px-4 py-2 rounded-lg transition text-sm flex items-center">
                         <i class="fa-solid fa-download mr-2"></i>Export Backup
@@ -501,6 +501,19 @@
 
     </div>
 
+    <!-- MODAL: CSV COLUMN MAPPING -->
+    <div id="csv-mapping-modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div class="bg-white text-slate-800 rounded-xl max-w-xl w-full p-6 shadow-xl my-8 space-y-4">
+            <h3 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-file-csv text-emerald-600 mr-2"></i>Map CSV Columns to Catalog Fields</h3>
+            <p class="text-xs text-slate-500">Select which column in your uploaded CSV file corresponds to each catalog property below.</p>
+            <div id="csv-mapping-container" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
+            <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200">
+                <button type="button" onclick="closeModal('csv-mapping-modal')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 text-sm">Cancel</button>
+                <button type="button" onclick="executeCSVImport()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium">Import Database</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL: ADD BOOK -->
     <div id="book-modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
         <div class="bg-white text-slate-800 rounded-xl max-w-xl w-full p-6 shadow-xl my-8">
@@ -659,11 +672,15 @@
         let state = { books: {}, members: {}, pendingMembers: {}, refusedMembers: {}, transactions: {} };
         let currentUser = null;
         let isAdmin = false;
-        let userRole = 'viewer'; // 'admin' | 'staff' | 'viewer'
+        let userRole = 'viewer';
         let activeTab = 'catalog';
         let activeUnsubscribers = [];
         let catalogRenderLimit = 100;
         let searchTimer = null;
+
+        // Temporary CSV staging variables
+        let csvRawLines = [];
+        let csvHeaders = [];
 
         function hasStaffAccess() {
             return isAdmin || userRole === 'staff';
@@ -911,7 +928,6 @@
             alert(`Borrower ${name} successfully added!`);
         };
 
-        // COPY INVITE MESSAGE TO CLIPBOARD
         window.copyInviteMessage = async function(email, name, sysRole) {
             const portalUrl = window.location.origin + window.location.pathname;
             const roleName = sysRole === 'staff' ? 'Library Staff' : 'Reader / Viewer';
@@ -924,7 +940,6 @@
             }
         };
 
-        // DELETE ALL BOOKS FUNCTION WITH PASSWORD CHECK
         window.deleteAllBooks = async function() {
             if (!hasStaffAccess()) return;
             const passwordInput = document.getElementById('delete-all-password');
@@ -968,131 +983,205 @@
             }
         };
 
-        // BATCHED CSV DATABASE UPLOADER
-        window.handleCSVUpload = async function(event) {
+        // STEP 1: PREPARE CSV MAPPING MODAL
+        window.prepareCSVMapping = function(event) {
             if (!hasStaffAccess()) return;
             const file = event.target.files[0];
             if (!file) return;
 
-            const btnText = document.getElementById('csv-btn-text');
-            btnText.innerText = "Processing CSV...";
-
             const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const text = e.target.result;
-                    const lines = text.split(/\r\n|\n/);
-                    if (lines.length < 2) {
-                        alert("CSV file is empty or invalid.");
-                        return;
-                    }
-
-                    const csvBookMap = new Map();
-
-                    for (let i = 1; i < lines.length; i++) {
-                        const row = lines[i].trim();
-                        if (!row) continue;
-                        
-                        const cols = [];
-                        let inQuote = false;
-                        let current = '';
-                        for (let char of row) {
-                            if (char === '"') inQuote = !inQuote;
-                            else if (char === ',' && !inQuote) {
-                                cols.push(current.trim().replace(/"/g, ''));
-                                current = '';
-                            } else current += char;
-                        }
-                        cols.push(current.trim().replace(/"/g, ''));
-
-                        const title = cols[1] || cols[0] || 'Untitled';
-                        const author = cols[2] || '-';
-                        const subjectNumber = cols[3] || '-';
-                        const year = cols[5] || '-';
-                        const category1 = cols[7] || 'General';
-                        const accessionNumber = cols[9] || '-';
-                        const volume = cols[10] || '-';
-                        const edition = cols[11] || '-';
-                        const location = cols[12] || 'Shelf 1';
-
-                        const key = `${title.toLowerCase()}|${author.toLowerCase()}|${subjectNumber.toLowerCase()}|${year.toLowerCase()}|${category1.toLowerCase()}|${volume.toLowerCase()}`;
-
-                        if (!csvBookMap.has(key)) {
-                            csvBookMap.set(key, {
-                                title, author, subjectNumber, year, category1,
-                                accessionNumber, volume, edition, location,
-                                count: 1
-                            });
-                        } else {
-                            const existing = csvBookMap.get(key);
-                            existing.count += 1;
-                        }
-                    }
-
-                    let addedCount = 0;
-                    let updatedCount = 0;
-                    let batch = writeBatch(db);
-                    let batchOps = 0;
-
-                    const existingFirestoreBooks = {};
-                    Object.values(state.books).forEach(b => {
-                        const key = `${(b.title||'').toLowerCase()}|${(b.author||'').toLowerCase()}|${(b.subjectNumber||'').toLowerCase()}|${(b.year||'').toLowerCase()}|${(b.category1||'').toLowerCase()}|${(b.volume||'').toLowerCase()}`;
-                        existingFirestoreBooks[key] = b;
-                    });
-
-                    for (let [key, bookInfo] of csvBookMap.entries()) {
-                        if (existingFirestoreBooks[key]) {
-                            const existingDoc = existingFirestoreBooks[key];
-                            const newTotal = (existingDoc.totalCopies || 1) + bookInfo.count;
-                            const newAvail = (existingDoc.availableCopies || 1) + bookInfo.count;
-
-                            batch.update(doc(db, "books", existingDoc.id), {
-                                totalCopies: newTotal,
-                                availableCopies: newAvail
-                            });
-                            updatedCount++;
-                            batchOps++;
-                        } else {
-                            const id = `b-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-                            const bookRef = doc(db, "books", id);
-                            batch.set(bookRef, {
-                                id,
-                                title: bookInfo.title,
-                                author: bookInfo.author,
-                                subjectNumber: bookInfo.subjectNumber,
-                                year: bookInfo.year,
-                                category1: bookInfo.category1,
-                                accessionNumber: bookInfo.accessionNumber,
-                                volume: bookInfo.volume,
-                                edition: bookInfo.edition,
-                                location: bookInfo.location,
-                                totalCopies: bookInfo.count,
-                                availableCopies: bookInfo.count
-                            });
-                            addedCount++;
-                            batchOps++;
-                        }
-
-                        if (batchOps >= 450) {
-                            await batch.commit();
-                            batch = writeBatch(db);
-                            batchOps = 0;
-                        }
-                    }
-
-                    if (batchOps > 0) {
-                        await batch.commit();
-                    }
-
-                    alert(`CSV Upload Complete!\nNew Unique Books Added: ${addedCount}\nExisting Books Updated (Copies Incremented): ${updatedCount}`);
-                } catch (err) {
-                    alert("Error uploading CSV: " + err.message);
-                } finally {
-                    btnText.innerText = "Upload CSV Database";
+            reader.onload = function(e) {
+                const text = e.target.result;
+                csvRawLines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
+                if (csvRawLines.length < 2) {
+                    alert("CSV file is empty or invalid.");
                     event.target.value = '';
+                    return;
                 }
+
+                // Parse header row safely
+                const headerRow = csvRawLines[0];
+                csvHeaders = [];
+                let inQuote = false;
+                let current = '';
+                for (let char of headerRow) {
+                    if (char === '"') inQuote = !inQuote;
+                    else if (char === ',' && !inQuote) {
+                        csvHeaders.push(current.trim().replace(/"/g, ''));
+                        current = '';
+                    } else current += char;
+                }
+                csvHeaders.push(current.trim().replace(/"/g, ''));
+
+                // Render Mapping Modal Dropdowns
+                const mappingContainer = document.getElementById('csv-mapping-container');
+                const fieldsToMap = [
+                    { key: 'title', label: 'Book Title' },
+                    { key: 'author', label: 'Author(s)' },
+                    { key: 'subjectNumber', label: 'Subject Number / DDC' },
+                    { key: 'year', label: 'Year of Publication' },
+                    { key: 'category1', label: 'Category 1' },
+                    { key: 'accessionNumber', label: 'Accession Number' },
+                    { key: 'volume', label: 'Volume (e.g. V1, V2)' },
+                    { key: 'edition', label: 'Edition' },
+                    { key: 'location', label: 'Shelf Location' }
+                ];
+
+                mappingContainer.innerHTML = fieldsToMap.map(field => {
+                    // Try to auto-guess matching header
+                    const guessedIndex = csvHeaders.findIndex(h => h.toLowerCase().includes(field.key.toLowerCase()) || h.toLowerCase().includes(field.label.toLowerCase().split(' ')[0]));
+                    
+                    const optionsHtml = csvHeaders.map((header, idx) => `
+                        <option value="${idx}" ${idx === (guessedIndex !== -1 ? guessedIndex : 0) ? 'selected' : ''}>[Col ${idx + 1}] ${header}</option>
+                    `).join('');
+
+                    return `
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 items-center bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                            <label class="text-xs font-semibold text-slate-700">${field.label}</label>
+                            <select id="map-col-${field.key}" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-white text-slate-800">
+                                <option value="-1">-- None / Skip --</option>
+                                ${optionsHtml}
+                            </select>
+                        </div>
+                    `;
+                }).join('');
+
+                openModal('csv-mapping-modal');
             };
             reader.readAsText(file);
+            event.target.value = ''; // reset file input so same file can be re-selected if needed
+        };
+
+        // STEP 2: EXECUTE CSV IMPORT BASED ON USER MAPPING
+        window.executeCSVImport = async function() {
+            closeModal('csv-mapping-modal');
+            const btnText = document.getElementById('csv-btn-text');
+            btnText.innerText = "Importing CSV...";
+
+            try {
+                const getMappingIndex = (key) => {
+                    const el = document.getElementById(`map-col-${key}`);
+                    return el ? parseInt(el.value, 10) : -1;
+                };
+
+                const mapping = {
+                    title: getMappingIndex('title'),
+                    author: getMappingIndex('author'),
+                    subjectNumber: getMappingIndex('subjectNumber'),
+                    year: getMappingIndex('year'),
+                    category1: getMappingIndex('category1'),
+                    accessionNumber: getMappingIndex('accessionNumber'),
+                    volume: getMappingIndex('volume'),
+                    edition: getMappingIndex('edition'),
+                    location: getMappingIndex('location')
+                };
+
+                const csvBookMap = new Map();
+
+                for (let i = 1; i < csvRawLines.length; i++) {
+                    const row = csvRawLines[i].trim();
+                    if (!row) continue;
+                    
+                    const cols = [];
+                    let inQuote = false;
+                    let current = '';
+                    for (let char of row) {
+                        if (char === '"') inQuote = !inQuote;
+                        else if (char === ',' && !inQuote) {
+                            cols.push(current.trim().replace(/"/g, ''));
+                            current = '';
+                        } else current += char;
+                    }
+                    cols.push(current.trim().replace(/"/g, ''));
+
+                    const getColVal = (idx, fallback) => (idx !== -1 && cols[idx] !== undefined && cols[idx] !== '') ? cols[idx] : fallback;
+
+                    const title = getColVal(mapping.title, 'Untitled');
+                    const author = getColVal(mapping.author, '-');
+                    const subjectNumber = getColVal(mapping.subjectNumber, '-');
+                    const year = getColVal(mapping.year, '-');
+                    const category1 = getColVal(mapping.category1, 'General');
+                    const accessionNumber = getColVal(mapping.accessionNumber, '-');
+                    const volume = getColVal(mapping.volume, '-');
+                    const edition = getColVal(mapping.edition, '-');
+                    const location = getColVal(mapping.location, 'Shelf 1');
+
+                    // Unique grouping key combining Author, Subject Number, Year, Category 1, Title, and Volume
+                    const key = `${title.toLowerCase()}|${author.toLowerCase()}|${subjectNumber.toLowerCase()}|${year.toLowerCase()}|${category1.toLowerCase()}|${volume.toLowerCase()}`;
+
+                    if (!csvBookMap.has(key)) {
+                        csvBookMap.set(key, {
+                            title, author, subjectNumber, year, category1,
+                            accessionNumber, volume, edition, location,
+                            count: 1
+                        });
+                    } else {
+                        const existing = csvBookMap.get(key);
+                        existing.count += 1;
+                    }
+                }
+
+                let addedCount = 0;
+                let updatedCount = 0;
+                let batch = writeBatch(db);
+                let batchOps = 0;
+
+                const existingFirestoreBooks = {};
+                Object.values(state.books).forEach(b => {
+                    const key = `${(b.title||'').toLowerCase()}|${(b.author||'').toLowerCase()}|${(b.subjectNumber||'').toLowerCase()}|${(b.year||'').toLowerCase()}|${(b.category1||'').toLowerCase()}|${(b.volume||'').toLowerCase()}`;
+                    existingFirestoreBooks[key] = b;
+                });
+
+                for (let [key, bookInfo] of csvBookMap.entries()) {
+                    if (existingFirestoreBooks[key]) {
+                        const existingDoc = existingFirestoreBooks[key];
+                        const newTotal = (existingDoc.totalCopies || 1) + bookInfo.count;
+                        const newAvail = (existingDoc.availableCopies || 1) + bookInfo.count;
+
+                        batch.update(doc(db, "books", existingDoc.id), {
+                            totalCopies: newTotal,
+                            availableCopies: newAvail
+                        });
+                        updatedCount++;
+                        batchOps++;
+                    } else {
+                        const id = `b-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+                        const bookRef = doc(db, "books", id);
+                        batch.set(bookRef, {
+                            id,
+                            title: bookInfo.title,
+                            author: bookInfo.author,
+                            subjectNumber: bookInfo.subjectNumber,
+                            year: bookInfo.year,
+                            category1: bookInfo.category1,
+                            accessionNumber: bookInfo.accessionNumber,
+                            volume: bookInfo.volume,
+                            edition: bookInfo.edition,
+                            location: bookInfo.location,
+                            totalCopies: bookInfo.count,
+                            availableCopies: bookInfo.count
+                        });
+                        addedCount++;
+                        batchOps++;
+                    }
+
+                    if (batchOps >= 450) {
+                        await batch.commit();
+                        batch = writeBatch(db);
+                        batchOps = 0;
+                    }
+                }
+
+                if (batchOps > 0) {
+                    await batch.commit();
+                }
+
+                alert(`CSV Import Complete!\nNew Unique Books Added: ${addedCount}\nExisting Books Updated (Copies Incremented): ${updatedCount}`);
+            } catch (err) {
+                alert("Error importing CSV: " + err.message);
+            } finally {
+                btnText.innerText = "Upload CSV Database";
+            }
         };
 
         window.exportBackup = function() {
@@ -1174,7 +1263,6 @@
             }).join('');
         };
 
-        // ACCESSION NUMBER INVENTORY DESK RENDERER
         window.renderAccessionInventory = function() {
             const tbody = document.getElementById('accession-table-body');
             const query = (document.getElementById('accession-search-input')?.value || '').toLowerCase();
@@ -1241,7 +1329,6 @@
             `).join('') : '<p class="text-slate-400">No DDC data.</p>';
         }
 
-        // RENDER BORROWERS DESK WITH DETAILED BOOK LOANS & DELETE CONDITIONAL BUTTON
         function renderBorrowers() {
             const borrowersTbody = document.getElementById('borrowers-table-body');
             if (!borrowersTbody) return;
@@ -1346,7 +1433,6 @@
             }).join('') : `<tr><td colspan="5" class="p-6 text-center text-slate-400">No pending authorizations.</td></tr>`;
         }
 
-        // RENDER CHECKOUT & TRANSACTIONS DESK
         function renderTransactions() {
             const borrowerDatalist = document.getElementById('borrower-options');
             const membersList = Object.values(state.members);
@@ -1409,7 +1495,6 @@
             }).join('') : `<tr><td colspan="5" class="p-6 text-center text-slate-400">You have not borrowed any books yet.</td></tr>`;
         }
 
-        // BOOK CRUD HANDLERS
         window.handleAddBook = async function (e) {
             e.preventDefault();
             if (!hasStaffAccess()) return;
@@ -1474,7 +1559,6 @@
             closeModal('edit-book-modal');
         };
 
-        // CHECKOUT HANDLER WITH AUTO-REGISTRATION FOR NEW BORROWERS
         window.handleBorrow = async function (e) {
             e.preventDefault();
             if (!hasStaffAccess()) return;
@@ -1485,13 +1569,11 @@
             let memberEmail = memberInput.toLowerCase();
             let memberObj = state.members[memberEmail];
 
-            // If not found in members list by email or exact name, check by name or auto-create
             if (!memberObj) {
                 const foundByName = Object.values(state.members).find(m => (m.name || '').toLowerCase() === memberInput.toLowerCase());
                 if (foundByName) {
                     memberEmail = foundByName.email || foundByName.id;
                 } else {
-                    // Automatically register new borrower on the fly!
                     const generatedEmail = memberInput.includes('@') ? memberInput.toLowerCase() : `${memberInput.toLowerCase().replace(/[^a-z0-9]/g, '')}@lwcs.local`;
                     const newMemberData = {
                         id: generatedEmail,
@@ -1567,7 +1649,6 @@
             await updateDoc(doc(db, "members", emailLower), { systemRole: nextRole });
         };
 
-        // MANUAL GMAIL AUTHORIZATION HANDLER
         window.handleManualAuthorize = async function (e) {
             e.preventDefault();
             if (!hasStaffAccess()) return;
