@@ -780,7 +780,7 @@
             }
         }
 
-        window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
+        window.openModal = (id) => document.getElementById(id).classList.add('hidden');
         window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
 
         // COPY INVITE MESSAGE TO CLIPBOARD
@@ -796,7 +796,7 @@
             }
         };
 
-        // BATCHED CSV DATABASE UPLOADER (AGGREGATES DUPLICATE TITLE/AUTHOR ROWS INTO TOTAL COPIES)
+        // BATCHED CSV DATABASE UPLOADER (GROUPS BY AUTHOR, SUBJECT NUMBER, YEAR, CATEGORY 1, & VOLUME)
         window.handleCSVUpload = async function(event) {
             if (!hasStaffAccess()) return;
             const file = event.target.files[0];
@@ -815,7 +815,6 @@
                         return;
                     }
 
-                    // Group identical book rows (same title, author, volume) and count copy occurrences
                     const csvBookMap = new Map();
 
                     for (let i = 1; i < lines.length; i++) {
@@ -844,7 +843,8 @@
                         const edition = cols[11] || '-';
                         const location = cols[12] || 'Shelf 1';
 
-                        const key = `${title.toLowerCase()}|${author.toLowerCase()}|${volume.toLowerCase()}`;
+                        // Strict unique key combining Author, Subject Number, Year, Category 1, Title, and Volume
+                        const key = `${title.toLowerCase()}|${author.toLowerCase()}|${subjectNumber.toLowerCase()}|${year.toLowerCase()}|${category1.toLowerCase()}|${volume.toLowerCase()}`;
 
                         if (!csvBookMap.has(key)) {
                             csvBookMap.set(key, {
@@ -863,10 +863,9 @@
                     let batch = writeBatch(db);
                     let batchOps = 0;
 
-                    // Map existing Firestore books for quick lookup
                     const existingFirestoreBooks = {};
                     Object.values(state.books).forEach(b => {
-                        const key = `${(b.title||'').toLowerCase()}|${(b.author||'').toLowerCase()}|${(b.volume||'').toLowerCase()}`;
+                        const key = `${(b.title||'').toLowerCase()}|${(b.author||'').toLowerCase()}|${(b.subjectNumber||'').toLowerCase()}|${(b.year||'').toLowerCase()}|${(b.category1||'').toLowerCase()}|${(b.volume||'').toLowerCase()}`;
                         existingFirestoreBooks[key] = b;
                     });
 
