@@ -342,7 +342,7 @@
                     <p class="text-xs text-slate-500 mt-1">Manually add a user's Google email address and assign their portal permissions immediately.</p>
                 </div>
                 <form onsubmit="handleManualAuthorize(event)" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-                    <div class="md:col-span-4">
+                    <div class="md:col-span-3">
                         <label class="block text-xs font-medium text-slate-700 mb-1">Google Email (Gmail)</label>
                         <input type="email" id="manual-auth-email" placeholder="user@gmail.com" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm" required>
                     </div>
@@ -350,11 +350,15 @@
                         <label class="block text-xs font-medium text-slate-700 mb-1">Full Name</label>
                         <input type="text" id="manual-auth-name" placeholder="Juan Dela Cruz" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm" required>
                     </div>
-                    <div class="md:col-span-3">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Formation / Info</label>
+                        <input type="text" id="manual-auth-formation" placeholder="e.g. Seminarian" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm">
+                    </div>
+                    <div class="md:col-span-2">
                         <label class="block text-xs font-medium text-slate-700 mb-1">Access Role</label>
                         <select id="manual-auth-role" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm bg-white" required>
-                            <option value="viewer">Reader / Viewer (Catalog & Shelf Only)</option>
-                            <option value="staff">Staff (Full Access & Book Management)</option>
+                            <option value="viewer">Reader / Viewer</option>
+                            <option value="staff">Staff (Full Access)</option>
                         </select>
                     </div>
                     <div class="md:col-span-2">
@@ -363,6 +367,32 @@
                         </button>
                     </div>
                 </form>
+            </div>
+
+            <!-- Authorized People & Granted Access Roster -->
+            <div class="bg-white text-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <h2 class="text-lg font-semibold text-slate-800"><i class="fa-solid fa-id-card-clip mr-2 text-emerald-600"></i>Authorized Accounts (Access Granted)</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Live list of all individuals granted access to the library portal.</p>
+                    </div>
+                    <span id="auth-granted-count" class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full text-xs font-semibold self-start sm:self-center">0 Authorized</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider font-semibold">
+                                <th class="p-3">Full Name</th>
+                                <th class="p-3">Gmail Address</th>
+                                <th class="p-3">Assigned Role</th>
+                                <th class="p-3">Member ID & Info</th>
+                                <th class="p-3">Granted / Date</th>
+                                <th class="p-3 text-right">Manage</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auth-granted-table-body" class="divide-y divide-slate-200 text-sm"></tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Pending Self-Registrations Table -->
@@ -678,7 +708,7 @@
                     state.members = {};
                     snapshot.forEach(docSnap => { state.members[docSnap.id.toLowerCase()] = { id: docSnap.id, ...docSnap.data() }; });
                     updateStats();
-                    if (['borrowers', 'borrow-return'].includes(activeTab)) renderCurrentView();
+                    if (['borrowers', 'borrow-return', 'auth'].includes(activeTab)) renderCurrentView();
                 }),
                 onSnapshot(collection(db, "pendingMembers"), (snapshot) => {
                     state.pendingMembers = {};
@@ -984,6 +1014,52 @@
         }
 
         function renderApprovals() {
+            // 1. Render Granted Access Directory in Account Authorization Desk
+            const grantedTbody = document.getElementById('auth-granted-table-body');
+            const grantedCountBadge = document.getElementById('auth-granted-count');
+            const membersList = Object.values(state.members);
+
+            if (grantedCountBadge) {
+                grantedCountBadge.innerText = `${membersList.length} Authorized`;
+            }
+
+            if (grantedTbody) {
+                grantedTbody.innerHTML = membersList.length ? membersList.map(m => {
+                    const sysRole = m.systemRole || 'viewer';
+                    const roleBadge = sysRole === 'staff'
+                        ? `<span class="bg-indigo-100 text-indigo-800 px-2.5 py-0.5 rounded-full text-xs font-semibold"><i class="fa-solid fa-user-tie mr-1"></i>Staff (Full Access)</span>`
+                        : `<span class="bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full text-xs font-semibold"><i class="fa-solid fa-book-open mr-1"></i>Reader / Viewer</span>`;
+                    
+                    const infoDetails = [
+                        m.memberNumber ? `ID: ${m.memberNumber}` : '',
+                        m.role ? `Formation: ${m.role}` : '',
+                        m.address ? `Address: ${m.address}` : ''
+                    ].filter(Boolean).join(' • ');
+
+                    const grantedMeta = m.authorizedDate 
+                        ? `${m.authorizedDate}${m.authorizedBy ? `<br><span class="text-[11px] text-slate-400">By: ${m.authorizedBy}</span>` : ''}`
+                        : '<span class="text-slate-400">Authorized</span>';
+
+                    return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-semibold text-slate-900">${m.name || 'Unnamed User'}</td>
+                        <td class="p-3 font-mono text-xs text-indigo-700">${m.email}</td>
+                        <td class="p-3">${roleBadge}</td>
+                        <td class="p-3 text-xs text-slate-600">${infoDetails || '—'}</td>
+                        <td class="p-3 text-xs text-slate-600">${grantedMeta}</td>
+                        <td class="p-3 text-right space-x-2 whitespace-nowrap">
+                            <button onclick="toggleMemberRole('${m.email}', '${sysRole}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded text-xs font-medium transition">
+                                Switch to ${sysRole === 'staff' ? 'Viewer' : 'Staff'}
+                            </button>
+                            <button onclick="deleteMember('${m.email}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-2.5 py-1 rounded text-xs font-medium transition">
+                                <i class="fa-solid fa-trash mr-1"></i>Revoke
+                            </button>
+                        </td>
+                    </tr>`;
+                }).join('') : `<tr><td colspan="6" class="p-6 text-center text-slate-400">No authorized users yet. Use the form above to grant access.</td></tr>`;
+            }
+
+            // 2. Render Pending Self-Registrations
             const approvalsTbody = document.getElementById('approvals-table-body');
             if (!approvalsTbody) return;
             const pendingList = Object.values(state.pendingMembers);
@@ -1200,6 +1276,7 @@
             if (!hasStaffAccess()) return;
             const emailLower = document.getElementById('manual-auth-email').value.trim().toLowerCase();
             const name = document.getElementById('manual-auth-name').value.trim();
+            const formationInput = document.getElementById('manual-auth-formation').value.trim();
             const systemRole = document.getElementById('manual-auth-role').value;
 
             const memberData = {
@@ -1207,9 +1284,11 @@
                 email: emailLower,
                 name: name,
                 systemRole: systemRole,
-                role: systemRole === 'staff' ? 'Library Staff' : 'Reader / Viewer',
+                role: formationInput || (systemRole === 'staff' ? 'Library Staff' : 'Reader / Viewer'),
                 memberNumber: "LWCS-2026-" + Math.floor(100 + Math.random() * 900),
-                address: 'Authorized Directly'
+                address: 'Authorized Directly',
+                authorizedDate: new Date().toLocaleDateString(),
+                authorizedBy: currentUser ? currentUser.email : 'Admin'
             };
 
             await Promise.all([
@@ -1218,7 +1297,6 @@
                 deleteDoc(doc(db, "refusedMembers", emailLower))
             ]);
 
-            alert(`Access granted to ${emailLower} as ${systemRole === 'staff' ? 'Staff' : 'Reader / Viewer'}.`);
             e.target.reset();
         };
 
@@ -1238,7 +1316,9 @@
                 systemRole: systemRole,
                 role: pending.formation || 'Seminarian',
                 memberNumber: "LWCS-2026-" + Math.floor(100 + Math.random() * 900),
-                address: pending.address || 'Kabankalan City'
+                address: pending.address || 'Kabankalan City',
+                authorizedDate: new Date().toLocaleDateString(),
+                authorizedBy: currentUser ? currentUser.email : 'Admin'
             };
             await Promise.all([
                 setDoc(doc(db, "members", emailLower), memberData),
