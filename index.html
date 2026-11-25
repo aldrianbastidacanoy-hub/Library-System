@@ -374,7 +374,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
                         <h2 class="text-lg font-semibold text-slate-800"><i class="fa-solid fa-id-card-clip mr-2 text-emerald-600"></i>Authorized Accounts (Access Granted)</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Live list of all individuals granted access to the library portal.</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Live list of all individuals granted access to the library portal. Click "Copy Invite" to send them their login message.</p>
                     </div>
                     <span id="auth-granted-count" class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full text-xs font-semibold self-start sm:self-center">0 Authorized</span>
                 </div>
@@ -782,6 +782,19 @@
         window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
         window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
 
+        // COPY INVITE MESSAGE TO CLIPBOARD
+        window.copyInviteMessage = async function(email, name, sysRole) {
+            const portalUrl = window.location.origin + window.location.pathname;
+            const roleName = sysRole === 'staff' ? 'Library Staff' : 'Reader / Viewer';
+            const message = `Hi ${name}! You have been granted access to the LWCS Library Portal as a ${roleName}.\n\nOpen the portal here: ${portalUrl}\nSign in using your Google account (${email}) to get started!`;
+            try {
+                await navigator.clipboard.writeText(message);
+                alert(`Invitation message copied to clipboard!\n\nYou can now paste and send it to ${name} (${email}).`);
+            } catch (err) {
+                prompt("Copy this invitation message to send to the user:", message);
+            }
+        };
+
         // BATCHED CSV DATABASE UPLOADER
         window.handleCSVUpload = async function(event) {
             if (!hasStaffAccess()) return;
@@ -1040,6 +1053,8 @@
                         ? `${m.authorizedDate}${m.authorizedBy ? `<br><span class="text-[11px] text-slate-400">By: ${m.authorizedBy}</span>` : ''}`
                         : '<span class="text-slate-400">Authorized</span>';
 
+                    const safeName = (m.name || 'User').replace(/'/g, "\\'");
+
                     return `
                     <tr class="hover:bg-slate-50">
                         <td class="p-3 font-semibold text-slate-900">${m.name || 'Unnamed User'}</td>
@@ -1047,7 +1062,10 @@
                         <td class="p-3">${roleBadge}</td>
                         <td class="p-3 text-xs text-slate-600">${infoDetails || '—'}</td>
                         <td class="p-3 text-xs text-slate-600">${grantedMeta}</td>
-                        <td class="p-3 text-right space-x-2 whitespace-nowrap">
+                        <td class="p-3 text-right space-x-1.5 whitespace-nowrap">
+                            <button onclick="copyInviteMessage('${m.email}', '${safeName}', '${sysRole}')" title="Copy login message to send to user" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded text-xs font-medium transition">
+                                <i class="fa-solid fa-copy mr-1"></i>Copy Invite
+                            </button>
                             <button onclick="toggleMemberRole('${m.email}', '${sysRole}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded text-xs font-medium transition">
                                 Switch to ${sysRole === 'staff' ? 'Viewer' : 'Staff'}
                             </button>
@@ -1298,6 +1316,7 @@
             ]);
 
             e.target.reset();
+            await copyInviteMessage(emailLower, name, systemRole);
         };
 
         window.approveMember = async function (email, safeId) {
@@ -1324,6 +1343,7 @@
                 setDoc(doc(db, "members", emailLower), memberData),
                 deleteDoc(doc(db, "pendingMembers", emailLower))
             ]);
+            await copyInviteMessage(emailLower, pending.name, systemRole);
         };
 
         window.refuseMember = async function (email) {
