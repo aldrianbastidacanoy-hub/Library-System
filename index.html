@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LWCS Library Portal</title>
+    
+    <!-- Preconnect to external CDNs & Firebase for faster DNS/TLS handshake -->
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Non-render-blocking FontAwesome Icons -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col justify-between">
+
+    <!-- INITIAL LOADING SPINNER (Prevents login flash while checking cached auth) -->
+    <div id="auth-loader" class="flex-grow flex items-center justify-center p-4">
+        <div class="text-center space-y-3">
+            <i class="fa-solid fa-circle-notch fa-spin text-4xl text-indigo-500"></i>
+            <p class="text-sm text-slate-400">Initializing Portal...</p>
+        </div>
+    </div>
+
+    <!-- LOGIN GATEWAY CONTAINER -->
+    <div id="login-gateway" class="hidden flex-grow flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl p-8 text-center space-y-6">
+            <div class="w-16 h-16 bg-indigo-600/20 text-indigo-400 rounded-2xl flex items-center justify-center text-3xl mx-auto border border-indigo-500/30">
+                <i class="fa-solid fa-book-open-reader"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight text-white">LWCS Library Portal</h1>
+                <p class="text-sm text-slate-400 mt-2">Sign in with your Google account to access your library dashboard or admin controls.</p>
+            </div>
+            <button onclick="loginWithGoogle()" class="w-full bg-white hover:bg-slate-100 text-slate-800 font-medium py-3 px-4 rounded-xl shadow-md flex items-center justify-center space-x-3 transition transform active:scale-[0.98]">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5">
+                <span>Sign in with Google</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MEMBERSHIP REGISTRATION GATEWAY -->
+    <div id="registration-gateway" class="hidden flex-grow flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl p-8 space-y-6">
+            <div class="text-center">
+                <div class="w-14 h-14 bg-emerald-600/20 text-emerald-400 rounded-xl flex items-center justify-center text-2xl mx-auto border border-emerald-500/30 mb-3">
+                    <i class="fa-solid fa-user-pen"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Complete Your Membership</h2>
+                <p class="text-xs text-slate-400 mt-1">Please provide your details to request library access.</p>
+            </div>
+            <form onsubmit="handleUserSelfRegister(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Full Name</label>
+                    <input type="text" id="self-reg-name" placeholder="John Doe" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white" required>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Age</label>
+                        <input type="number" id="self-reg-age" min="1" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Formation Level</label>
+                        <input type="text" id="self-reg-formation" placeholder="e.g. Seminarian" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Address</label>
+                    <input type="text" id="self-reg-address" placeholder="Kabankalan City" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white" required>
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg text-sm transition shadow-md mt-2">
+                    Submit Registration
+                </button>
+            </form>
+            <div class="text-center pt-2">
+                <button onclick="logoutUser()" class="text-xs text-slate-400 hover:text-white underline">Sign out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PENDING APPROVAL GATEWAY -->
+    <div id="pending-gateway" class="hidden flex-grow flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl p-8 text-center space-y-4">
+            <div class="w-14 h-14 bg-amber-600/20 text-amber-400 rounded-xl flex items-center justify-center text-2xl mx-auto border border-amber-500/30">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <h2 class="text-xl font-bold text-white">Registration Pending</h2>
+            <p class="text-sm text-slate-400">Your membership registration is awaiting admin confirmation.</p>
+            <button onclick="logoutUser()" class="mt-4 text-xs bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg transition">Sign Out</button>
+        </div>
+    </div>
+
+    <!-- REJECTED GATEWAY -->
+    <div id="rejected-gateway" class="hidden flex-grow flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl p-8 text-center space-y-4">
+            <div class="w-14 h-14 bg-rose-600/20 text-rose-400 rounded-xl flex items-center justify-center text-2xl mx-auto border border-rose-500/30">
+                <i class="fa-solid fa-ban"></i>
+            </div>
+            <h2 class="text-xl font-bold text-white">Membership Refused</h2>
+            <button onclick="logoutUser()" class="mt-4 text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg transition">Sign Out</button>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="app-container" class="hidden w-full max-w-7xl mx-auto p-4 md:p-6 space-y-6 flex-grow">
+        
+        <!-- Header Navigation -->
+        <header class="bg-indigo-600 text-white shadow-md rounded-2xl">
+            <div class="px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-book-open-reader text-3xl"></i>
+                    <div>
+                        <h1 class="text-2xl font-bold tracking-tight">LWCS Library Portal</h1>
+                        <p id="role-badge" class="text-xs text-indigo-200">Role: Loading...</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <button onclick="manualRefresh()" title="Refresh Data" class="bg-indigo-700 hover:bg-indigo-800 text-indigo-100 p-2.5 rounded-lg border border-indigo-500 transition">
+                        <i id="refresh-icon" class="fa-solid fa-rotate"></i>
+                    </button>
+                    <div id="live-datetime" class="bg-indigo-900/60 px-3 py-1.5 rounded-lg border border-indigo-400/30 font-mono text-xs text-center">Loading...</div>
+                    <div class="flex items-center space-x-3 bg-indigo-700 px-3 py-1.5 rounded-lg border border-indigo-500">
+                        <img id="user-avatar" src="" alt="User" class="w-7 h-7 rounded-full border border-white">
+                        <div class="text-left">
+                            <p id="user-name" class="text-xs font-semibold leading-tight">User</p>
+                            <p id="user-email" class="text-[10px] text-indigo-200 leading-tight"></p>
+                        </div>
+                        <button onclick="logoutUser()" class="ml-2 text-xs bg-rose-500 hover:bg-rose-600 px-2 py-1 rounded text-white font-medium">Logout</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation Desks -->
+            <nav class="px-6 pb-4 flex flex-wrap gap-2 border-t border-indigo-500/40 pt-3 text-sm">
+                <button onclick="switchTab('catalog')" id="nav-catalog" class="px-3 py-2 rounded-md font-medium bg-indigo-800 transition">Catalog</button>
+                <button onclick="switchTab('my-books')" id="nav-my-books" class="user-only px-3 py-2 rounded-md font-medium hover:bg-indigo-700 transition">My Borrowed Books</button>
+                <button onclick="switchTab('shelf')" id="nav-shelf" class="admin-only hidden px-3 py-2 rounded-md font-medium hover:bg-indigo-700 transition">Shelf Inventory</button>
+                <button onclick="switchTab('ddc')" id="nav-ddc" class="admin-only hidden px-3 py-2 rounded-md font-medium hover:bg-indigo-700 transition">DDC Inventory</button>
+                <button onclick="switchTab('borrowers')" id="nav-borrowers" class="admin-only hidden px-3 py-2 rounded-md font-medium hover:bg-indigo-700 transition">Borrowers</button>
+                <button onclick="switchTab('borrow-return')" id="nav-borrow-return" class="admin-only hidden px-3 py-2 rounded-md font-medium hover:bg-indigo-700 transition">Borrow and Return</button>
+                <button onclick="switchTab('settings')" id="nav-settings" class="admin-only hidden px-3 py-2 rounded-md font-medium hover:bg-indigo-700 transition">Settings</button>
+                <button onclick="switchTab('auth')" id="nav-auth" class="admin-only hidden px-3 py-2 rounded-md font-medium hover:bg-indigo-700 transition">Account Authorization</button>
+            </nav>
+        </header>
+
+        <!-- STATS CARDS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white text-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">Total Books in Catalog</p>
+                    <h3 id="stat-books" class="text-3xl font-bold text-slate-900 mt-1">0</h3>
+                </div>
+                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center text-xl"><i class="fa-solid fa-book"></i></div>
+            </div>
+            <div class="bg-white text-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-500" id="stat-card-2-label">Members</p>
+                    <h3 id="stat-members" class="text-3xl font-bold text-slate-900 mt-1">0</h3>
+                </div>
+                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
+            </div>
+            <div class="bg-white text-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-500" id="stat-card-3-label">Active Loans</p>
+                    <h3 id="stat-loans" class="text-3xl font-bold text-slate-900 mt-1">0</h3>
+                </div>
+                <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center text-xl"><i class="fa-solid fa-hand-holding-hand"></i></div>
+            </div>
+        </div>
+
+        <!-- TAB 1: CATALOG -->
+        <section id="tab-catalog" class="space-y-6">
+            <div class="flex flex-col md:flex-row justify-between gap-4 items-center bg-white text-slate-800 p-4 rounded-xl shadow-sm border border-slate-200">
+                <div class="relative w-full md:w-96">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"><i class="fa-solid fa-search"></i></span>
+                    <input type="text" id="search-input" oninput="debouncedSearch()" placeholder="Search title, author, accession, subject..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                </div>
+                <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                    <label id="csv-upload-label" class="admin-only hidden bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-lg cursor-pointer transition text-sm flex items-center">
+                        <i class="fa-solid fa-file-csv mr-2"></i><span id="csv-btn-text">Upload CSV Database</span>
+                        <input type="file" id="csv-file-input" accept=".csv" onchange="handleCSVUpload(event)" class="hidden">
+                    </label>
+                    <button onclick="exportBackup()" id="export-backup-btn" class="admin-only hidden bg-slate-700 hover:bg-slate-800 text-white font-medium px-4 py-2 rounded-lg transition text-sm flex items-center">
+                        <i class="fa-solid fa-download mr-2"></i>Export Backup
+                    </button>
+                    <button onclick="openModal('book-modal')" id="add-book-btn" class="admin-only hidden bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition text-sm flex items-center">
+                        <i class="fa-solid fa-plus mr-2"></i>Add Book
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white text-slate-800 rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider font-semibold">
+                                <th class="p-3">Accession # / Subject #</th>
+                                <th class="p-3">Title & Author(s)</th>
+                                <th class="p-3">Categories</th>
+                                <th class="p-3">Ed / Vol / Year</th>
+                                <th class="p-3">Shelf Location</th>
+                                <th class="p-3">Copies</th>
+                                <th class="admin-only hidden p-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="book-table-body" class="divide-y divide-slate-200 text-sm"></tbody>
+                    </table>
+                </div>
+                <div id="catalog-pagination" class="hidden p-3 bg-slate-50 border-t border-slate-200 text-center">
+                    <button onclick="loadMoreBooks()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium px-4 py-2 rounded-lg transition">
+                        Load More Books
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: MY BOOKS -->
+        <section id="tab-my-books" class="space-y-6 hidden">
+            <div class="bg-white text-slate-800 p-6 rounded-xl shadow-sm border border-slate-200">
+                <h2 class="text-lg font-semibold text-slate-800 mb-4"><i class="fa-solid fa-book-bookmark mr-2 text-indigo-600"></i>My Borrowed Books & History</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider font-semibold">
+                                <th class="p-3">Book Title</th>
+                                <th class="p-3">Borrowed At</th>
+                                <th class="p-3">Due Date</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3 text-right">Action / Returned At</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-history-table-body" class="divide-y divide-slate-200 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: SHELF INVENTORY -->
+        <section id="tab-shelf" class="space-y-6 hidden">
+            <div class="bg-white text-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                <h2 class="text-lg font-semibold text-slate-800"><i class="fa-solid fa-shelves mr-2 text-indigo-600"></i>Shelf Inventory Breakdown</h2>
+                <p class="text-xs text-slate-500">Overview of book distribution across physical library shelves.</p>
+                <div id="shelf-inventory-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+        </section>
+
+        <!-- TAB 4: DDC INVENTORY -->
+        <section id="tab-ddc" class="space-y-6 hidden">
+            <div class="bg-white text-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                <h2 class="text-lg font-semibold text-slate-800"><i class="fa-solid fa-sitemap mr-2 text-indigo-600"></i>Dewey Decimal Classification (DDC) Breakdown</h2>
+                <div id="ddc-inventory-content" class="space-y-3"></div>
+            </div>
+        </section>
+
+        <!-- TAB 5: BORROWERS -->
+        <section id="tab-borrowers" class="space-y-6 hidden">
+            <div class="bg-white text-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                <h2 class="text-lg font-semibold text-slate-800"><i class="fa-solid fa-users-line mr-2 text-indigo-600"></i>Approved Borrowers Directory</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider font-semibold">
+                                <th class="p-3">Member ID / Email</th>
+                                <th class="p-3">Name</th>
+                                <th class="p-3">Formation</th>
+                                <th class="p-3">Address</th>
+                                <th class="p-3 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="borrowers-table-body" class="divide-y divide-slate-200 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: BORROW AND RETURN -->
+        <section id="tab-borrow-return" class="space-y-6 hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-white text-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-1">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4"><i class="fa-solid fa-share mr-2 text-indigo-600"></i>Checkout Book</h3>
+                    <form onsubmit="handleBorrow(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Select Borrower</label>
+                            <select id="borrow-member" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm" required></select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Select Book</label>
+                            <select id="borrow-book" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm" required></select>
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg text-sm transition">Confirm Checkout</button>
+                    </form>
+                </div>
+                <div class="bg-white text-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-2">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4"><i class="fa-solid fa-clipboard-list mr-2 text-emerald-600"></i>Active Loans & History</h3>
+                    <div class="overflow-y-auto max-h-96">
+                        <table class="w-full text-left text-sm">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider font-semibold">
+                                    <th class="p-3">Borrower</th>
+                                    <th class="p-3">Book</th>
+                                    <th class="p-3">Dates</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="audit-table-body" class="divide-y divide-slate-200"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: SETTINGS -->
+        <section id="tab-settings" class="space-y-6 hidden">
+            <div class="bg-white text-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 space-y-4 max-w-xl">
+                <h2 class="text-lg font-semibold text-slate-800"><i class="fa-solid fa-gear mr-2 text-indigo-600"></i>Library System Settings</h2>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Library Portal Title</label>
+                    <input type="text" id="setting-title" value="LWCS Library Portal" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Default Loan Duration (Days)</label>
+                    <input type="number" id="setting-days" value="14" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm">
+                </div>
+                <button onclick="saveSettings()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium">Save Settings</button>
+            </div>
+        </section>
+
+        <!-- TAB 8: ACCOUNT AUTHORIZATION -->
+        <section id="tab-auth" class="space-y-6 hidden">
+            <div class="bg-white text-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                <h2 class="text-lg font-semibold text-slate-800"><i class="fa-solid fa-user-shield mr-2 text-indigo-600"></i>Pending Account Authorizations</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider font-semibold">
+                                <th class="p-4">Email</th>
+                                <th class="p-4">Name</th>
+                                <th class="p-4">Address</th>
+                                <th class="p-4">Formation</th>
+                                <th class="p-4 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approvals-table-body" class="divide-y divide-slate-200 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- MODAL: ADD BOOK -->
+    <div id="book-modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div class="bg-white text-slate-800 rounded-xl max-w-xl w-full p-6 shadow-xl my-8">
+            <h3 class="text-lg font-bold text-slate-800 mb-4"><i class="fa-solid fa-book-medical text-indigo-600 mr-2"></i>Add New Book</h3>
+            <form onsubmit="handleAddBook(event)" class="space-y-3">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Accession Number</label>
+                        <input type="text" id="new-book-accession" placeholder="ACC-2026-001" class="w-full p-2 border border-slate-300 rounded-lg text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Subject Number / DDC</label>
+                        <input type="text" id="new-book-subject" placeholder="230.2" class="w-full p-2 border border-slate-300 rounded-lg text-sm" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Book Title</label>
+                    <input type="text" id="new-book-title" placeholder="Title" class="w-full p-2 border border-slate-300 rounded-lg text-sm" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Author(s)</label>
+                    <input type="text" id="new-book-author" placeholder="Author" class="w-full p-2 border border-slate-300 rounded-lg text-sm" required>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Category 1</label>
+                        <input type="text" id="new-book-cat1" placeholder="Philosophy" class="w-full p-2 border border-slate-300 rounded-lg text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Shelf-Row Location</label>
+                        <input type="text" id="new-book-location" placeholder="Shelf 1, Row 1" class="w-full p-2 border border-slate-300 rounded-lg text-sm" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Year</label>
+                        <input type="text" id="new-book-year" placeholder="2024" class="w-full p-2 border border-slate-300 rounded-lg text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Edition</label>
+                        <input type="text" id="new-book-edition" placeholder="1st" class="w-full p-2 border border-slate-300 rounded-lg text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Volume</label>
+                        <input type="text" id="new-book-volume" placeholder="Vol. 1" class="w-full p-2 border border-slate-300 rounded-lg text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Copies</label>
+                        <input type="number" id="new-book-copies" value="1" min="1" class="w-full p-2 border border-slate-300 rounded-lg text-sm" required>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200">
+                    <button type="button" onclick="closeModal('book-modal')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 text-sm">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm">Save Book</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FIREBASE & APP SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { 
+            initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
+            collection, doc, setDoc, updateDoc, deleteDoc, getDoc, onSnapshot, query, where, writeBatch 
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCQy-Sl2T3Pzb7O4cdkN-p9q2qfvoqiTss",
+            authDomain: "lwcs-library-33c85.firebaseapp.com",
+            projectId: "lwcs-library-33c85",
+            storageBucket: "lwcs-library-33c85.firebasestorage.app",
+            messagingSenderId: "840484202934",
+            appId: "1:840484202934:web:e96fe865b93cb028567917",
+            measurementId: "G-JWSVYC90KL"
+        };
+
+        const ADMIN_EMAILS = new Set([
+            "cmanzalay1@gmail.com",
+            "aldrianbastidacanoy@gmail.com"
+        ]);
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        // Enable IndexedDB Local Persistence so cached data renders instantaneously on reload
+        const db = initializeFirestore(app, {
+            localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+        });
+        const googleProvider = new GoogleAuthProvider();
+
+        let state = { books: {}, members: {}, pendingMembers: {}, refusedMembers: {}, transactions: {} };
+        let currentUser = null;
+        let isAdmin = false;
+        let activeTab = 'catalog';
+        let activeUnsubscribers = [];
+        let catalogRenderLimit = 100;
+        let searchTimer = null;
+
+        // Live Clock
+        setInterval(() => {
+            const datetimeEl = document.getElementById('live-datetime');
+            if (datetimeEl && !document.getElementById('app-container').classList.contains('hidden')) {
+                const now = new Date();
+                datetimeEl.innerHTML = `${now.toLocaleDateString()} <span class="font-bold text-indigo-200">${now.toLocaleTimeString()}</span>`;
+            }
+        }, 1000);
+
+        function cleanupListeners() {
+            activeUnsubscribers.forEach(unsub => unsub());
+            activeUnsubscribers = [];
+        }
+
+        function hideAllViews() {
+            ['auth-loader', 'login-gateway', 'registration-gateway', 'pending-gateway', 'rejected-gateway', 'app-container']
+                .forEach(id => document.getElementById(id).classList.add('hidden'));
+        }
+
+        window.manualRefresh = function() {
+            const icon = document.getElementById('refresh-icon');
+            icon.classList.add('fa-spin');
+            renderCurrentView();
+            setTimeout(() => icon.classList.remove('fa-spin'), 400);
+        };
+
+        window.loginWithGoogle = async function () {
+            try { await signInWithPopup(auth, googleProvider); } catch (e) { alert("Sign-in failed: " + e.message); }
+        };
+
+        window.logoutUser = async function () {
+            try { 
+                cleanupListeners();
+                await signOut(auth); 
+            } catch (e) { console.error(e); }
+        };
+
+        onAuthStateChanged(auth, async (user) => {
+            cleanupListeners();
+            if (!user) {
+                currentUser = null;
+                isAdmin = false;
+                hideAllViews();
+                document.getElementById('login-gateway').classList.remove('hidden');
+                return;
+            }
+
+            currentUser = user;
+            const emailLower = user.email.toLowerCase();
+            isAdmin = ADMIN_EMAILS.has(emailLower);
+
+            if (isAdmin) {
+                // Admins immediately load the app and subscribe to full collections
+                showApp();
+                initAdminListeners();
+            } else {
+                // Non-admins ONLY check their own status documents first (3 tiny doc reads instead of downloading whole DB)
+                const [memberSnap, pendingSnap, refusedSnap] = await Promise.all([
+                    getDoc(doc(db, "members", emailLower)),
+                    getDoc(doc(db, "pendingMembers", emailLower)),
+                    getDoc(doc(db, "refusedMembers", emailLower))
+                ]);
+
+                if (memberSnap.exists()) {
+                    state.members[emailLower] = { id: memberSnap.id, ...memberSnap.data() };
+                    showApp();
+                    initMemberListeners(emailLower);
+                } else if (pendingSnap.exists()) {
+                    hideAllViews();
+                    document.getElementById('pending-gateway').classList.remove('hidden');
+                } else if (refusedSnap.exists()) {
+                    hideAllViews();
+                    document.getElementById('rejected-gateway').classList.remove('hidden');
+                } else {
+                    hideAllViews();
+                    document.getElementById('registration-gateway').classList.remove('hidden');
+                }
+            }
+        });
+
+        function showApp() {
+            hideAllViews();
+            document.getElementById('app-container').classList.remove('hidden');
+            document.getElementById('user-name').innerText = currentUser.displayName || 'User';
+            document.getElementById('user-email').innerText = currentUser.email;
+            document.getElementById('user-avatar').src = currentUser.photoURL || 'https://ui-avatars.com/api/?name=User&background=4f46e5&color=fff';
+            document.getElementById('role-badge').innerText = isAdmin ? 'Role: Administrator' : 'Role: Standard Member';
+            
+            document.querySelectorAll('.admin-only').forEach(el => el.classList.toggle('hidden', !isAdmin));
+            document.querySelectorAll('.user-only').forEach(el => el.classList.toggle('hidden', isAdmin));
+            
+            if (!isAdmin) {
+                document.getElementById('stat-card-2-label').innerText = 'Account Status';
+                document.getElementById('stat-members').innerText = 'Active';
+                document.getElementById('stat-card-3-label').innerText = 'My Active Loans';
+            }
+        }
+
+        function initAdminListeners() {
+            activeUnsubscribers.push(
+                onSnapshot(collection(db, "books"), (snapshot) => {
+                    state.books = {};
+                    snapshot.forEach(docSnap => { state.books[docSnap.id] = { id: docSnap.id, ...docSnap.data() }; });
+                    updateStats();
+                    if (['catalog', 'shelf', 'ddc', 'borrow-return'].includes(activeTab)) renderCurrentView();
+                }),
+                onSnapshot(collection(db, "members"), (snapshot) => {
+                    state.members = {};
+                    snapshot.forEach(docSnap => { state.members[docSnap.id.toLowerCase()] = { id: docSnap.id, ...docSnap.data() }; });
+                    updateStats();
+                    if (['borrowers', 'borrow-return'].includes(activeTab)) renderCurrentView();
+                }),
+                onSnapshot(collection(db, "pendingMembers"), (snapshot) => {
+                    state.pendingMembers = {};
+                    snapshot.forEach(docSnap => { state.pendingMembers[docSnap.id.toLowerCase()] = docSnap.data(); });
+                    if (activeTab === 'auth') renderCurrentView();
+                }),
+                onSnapshot(collection(db, "transactions"), (snapshot) => {
+                    state.transactions = {};
+                    snapshot.forEach(docSnap => { state.transactions[docSnap.id] = { id: docSnap.id, ...docSnap.data() }; });
+                    updateStats();
+                    if (activeTab === 'borrow-return') renderCurrentView();
+                })
+            );
+        }
+
+        function initMemberListeners(emailLower) {
+            // Members only listen to books and THEIR OWN transactions
+            const myTxQuery = query(collection(db, "transactions"), where("memberEmail", "==", emailLower));
+            activeUnsubscribers.push(
+                onSnapshot(collection(db, "books"), (snapshot) => {
+                    state.books = {};
+                    snapshot.forEach(docSnap => { state.books[docSnap.id] = { id: docSnap.id, ...docSnap.data() }; });
+                    updateStats();
+                    if (activeTab === 'catalog' || activeTab === 'my-books') renderCurrentView();
+                }),
+                onSnapshot(myTxQuery, (snapshot) => {
+                    state.transactions = {};
+                    snapshot.forEach(docSnap => { state.transactions[docSnap.id] = { id: docSnap.id, ...docSnap.data() }; });
+                    updateStats();
+                    if (activeTab === 'my-books') renderCurrentView();
+                })
+            );
+        }
+
+        function updateStats() {
+            document.getElementById('stat-books').innerText = Object.keys(state.books).length;
+            if (isAdmin) {
+                document.getElementById('stat-members').innerText = Object.keys(state.members).length;
+            }
+            document.getElementById('stat-loans').innerText = Object.values(state.transactions).filter(tx => !tx.returned).length;
+        }
+
+        window.switchTab = function (tabName) {
+            activeTab = tabName;
+            ['catalog', 'my-books', 'shelf', 'ddc', 'borrowers', 'borrow-return', 'settings', 'auth'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).classList.remove('bg-indigo-800');
+            });
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabName}`).classList.add('bg-indigo-800');
+            renderCurrentView();
+        };
+
+        // Only render the active tab to save CPU cycles
+        function renderCurrentView() {
+            switch (activeTab) {
+                case 'catalog': renderCatalog(); break;
+                case 'my-books': renderUserHistory(); break;
+                case 'shelf': renderShelfInventory(); break;
+                case 'ddc': renderDDCInventory(); break;
+                case 'borrowers': renderBorrowers(); break;
+                case 'borrow-return': renderTransactions(); break;
+                case 'auth': renderApprovals(); break;
+            }
+        }
+
+        window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
+        window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+
+        // BATCHED CSV DATABASE UPLOADER (Commits 450 writes at once instead of 1 by 1)
+        window.handleCSVUpload = async function(event) {
+            if (!isAdmin) return;
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const btnText = document.getElementById('csv-btn-text');
+            btnText.innerText = "Processing CSV...";
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const text = e.target.result;
+                    const lines = text.split(/\r\n|\n/);
+                    if (lines.length < 2) {
+                        alert("CSV file is empty or invalid.");
+                        return;
+                    }
+
+                    // Build a fast O(1) lookup Set of existing books
+                    const existingKeys = new Set(
+                        Object.values(state.books).map(b => 
+                            `${(b.title||'').toLowerCase()}|${(b.author||'').toLowerCase()}|${(b.volume||'').toLowerCase()}`
+                        )
+                    );
+
+                    let addedCount = 0;
+                    let duplicateCount = 0;
+                    let batch = writeBatch(db);
+                    let batchOps = 0;
+
+                    for (let i = 1; i < lines.length; i++) {
+                        const row = lines[i].trim();
+                        if (!row) continue;
+                        
+                        const cols = [];
+                        let inQuote = false;
+                        let current = '';
+                        for (let char of row) {
+                            if (char === '"') inQuote = !inQuote;
+                            else if (char === ',' && !inQuote) {
+                                cols.push(current.trim().replace(/"/g, ''));
+                                current = '';
+                            } else current += char;
+                        }
+                        cols.push(current.trim().replace(/"/g, ''));
+
+                        const title = cols[1] || cols[0] || 'Untitled';
+                        const author = cols[2] || '-';
+                        const subjectNumber = cols[3] || '-';
+                        const year = cols[5] || '-';
+                        const category1 = cols[7] || 'General';
+                        const accessionNumber = cols[9] || '-';
+                        const volume = cols[10] || '-';
+                        const edition = cols[11] || '-';
+                        const location = cols[12] || 'Shelf 1';
+
+                        const key = `${title.toLowerCase()}|${author.toLowerCase()}|${volume.toLowerCase()}`;
+
+                        if (existingKeys.has(key)) {
+                            duplicateCount++;
+                        } else {
+                            existingKeys.add(key);
+                            const id = `b-${Date.now()}-${i}`;
+                            const bookRef = doc(db, "books", id);
+                            batch.set(bookRef, {
+                                id, title, author, subjectNumber, year, category1,
+                                accessionNumber, volume, edition, location,
+                                totalCopies: 1, availableCopies: 1
+                            });
+                            addedCount++;
+                            batchOps++;
+
+                            // Firestore batch limit is 500 operations
+                            if (batchOps === 450) {
+                                await batch.commit();
+                                batch = writeBatch(db);
+                                batchOps = 0;
+                            }
+                        }
+                    }
+
+                    if (batchOps > 0) {
+                        await batch.commit();
+                    }
+
+                    alert(`CSV Upload Complete!\nAdded: ${addedCount} new books.\nSkipped duplicates: ${duplicateCount}.`);
+                } catch (err) {
+                    alert("Error uploading CSV: " + err.message);
+                } finally {
+                    btnText.innerText = "Upload CSV Database";
+                    event.target.value = '';
+                }
+            };
+            reader.readAsText(file);
+        };
+
+        window.exportBackup = function() {
+            if (!isAdmin) return;
+            const backupData = {
+                books: state.books,
+                members: state.members,
+                transactions: state.transactions,
+                exportedAt: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `lwcs-library-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        window.debouncedSearch = function() {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                catalogRenderLimit = 100;
+                renderCatalog();
+            }, 150);
+        };
+
+        window.loadMoreBooks = function() {
+            catalogRenderLimit += 100;
+            renderCatalog();
+        };
+
+        window.renderCatalog = function () {
+            const query = (document.getElementById('search-input')?.value || '').toLowerCase();
+            const tbody = document.getElementById('book-table-body');
+            const paginationDiv = document.getElementById('catalog-pagination');
+            if (!tbody) return;
+
+            const allBooks = Object.values(state.books);
+            const filtered = query ? allBooks.filter(b => 
+                (b.title && b.title.toLowerCase().includes(query)) ||
+                (b.author && b.author.toLowerCase().includes(query)) ||
+                (b.accessionNumber && b.accessionNumber.toLowerCase().includes(query)) ||
+                (b.category1 && b.category1.toLowerCase().includes(query))
+            ) : allBooks;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400">No books found. Use "Upload CSV Database" or "Add Book" to populate your library.</td></tr>`;
+                paginationDiv.classList.add('hidden');
+                return;
+            }
+
+            const visibleBooks = filtered.slice(0, catalogRenderLimit);
+            paginationDiv.classList.toggle('hidden', filtered.length <= catalogRenderLimit);
+
+            // Single DOM write using map().join('') instead of slow += concatenation
+            tbody.innerHTML = visibleBooks.map(b => {
+                const avail = b.availableCopies !== undefined ? b.availableCopies : 1;
+                const total = b.totalCopies !== undefined ? b.totalCopies : 1;
+                return `
+                    <tr class="hover:bg-slate-50 text-xs">
+                        <td class="p-3 font-mono">
+                            <span class="text-indigo-700 font-bold">Acc: ${b.accessionNumber || '—'}</span><br>
+                            <span class="text-slate-500">Sub: ${b.subjectNumber || '—'}</span>
+                        </td>
+                        <td class="p-3">
+                            <span class="font-medium text-slate-900 text-sm">${b.title}</span><br>
+                            <span class="text-slate-600">By ${b.author}</span>
+                        </td>
+                        <td class="p-3 text-slate-600"><span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-medium">${b.category1 || 'General'}</span></td>
+                        <td class="p-3 text-slate-600">Ed: ${b.edition || '—'} | Vol: ${b.volume || '—'}<br><span class="text-slate-400">Year: ${b.year || '—'}</span></td>
+                        <td class="p-3 font-medium text-slate-700"><i class="fa-solid fa-location-dot text-rose-500 mr-1"></i>${b.location || 'Shelf 1'}</td>
+                        <td class="p-3"><span class="px-2 py-1 rounded-full font-semibold ${avail > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}">${avail}/${total}</span></td>
+                        ${isAdmin ? `<td class="p-3 text-right"><button onclick="deleteBook('${b.id}')" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button></td>` : ''}
+                    </tr>`;
+            }).join('');
+        };
+
+        function renderShelfInventory() {
+            const shelfDiv = document.getElementById('shelf-inventory-content');
+            if (!shelfDiv) return;
+            const shelves = {};
+            Object.values(state.books).forEach(b => {
+                const loc = b.location || 'Unassigned Shelf';
+                shelves[loc] = (shelves[loc] || 0) + 1;
+            });
+            shelfDiv.innerHTML = Object.keys(shelves).length ? Object.entries(shelves).map(([loc, count]) => `
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex justify-between items-center">
+                    <div><h4 class="font-semibold text-slate-800">${loc}</h4><p class="text-xs text-slate-500">Total Books</p></div>
+                    <span class="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg text-sm">${count}</span>
+                </div>
+            `).join('') : '<p class="text-slate-400">No books recorded.</p>';
+        }
+
+        function renderDDCInventory() {
+            const ddcDiv = document.getElementById('ddc-inventory-content');
+            if (!ddcDiv) return;
+            const ddcMap = {};
+            Object.values(state.books).forEach(b => {
+                const sub = b.subjectNumber || 'Unclassified';
+                ddcMap[sub] = (ddcMap[sub] || 0) + 1;
+            });
+            ddcDiv.innerHTML = Object.keys(ddcMap).length ? Object.entries(ddcMap).map(([sub, count]) => `
+                <div class="bg-slate-50 border border-slate-200 p-3 rounded-lg flex justify-between items-center text-sm">
+                    <span class="font-mono font-semibold text-indigo-700">Subject / DDC: ${sub}</span>
+                    <span class="bg-slate-200 text-slate-800 font-bold px-2.5 py-0.5 rounded">${count} books</span>
+                </div>
+            `).join('') : '<p class="text-slate-400">No DDC data.</p>';
+        }
+
+        function renderBorrowers() {
+            const borrowersTbody = document.getElementById('borrowers-table-body');
+            if (!borrowersTbody) return;
+            const membersList = Object.values(state.members);
+            borrowersTbody.innerHTML = membersList.length ? membersList.map(m => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-mono text-xs text-slate-500">${m.email}</td>
+                    <td class="p-3 font-medium text-slate-900">${m.name}</td>
+                    <td class="p-3 text-slate-600">${m.role || 'Seminarian'}</td>
+                    <td class="p-3 text-slate-600">${m.address || 'Kabankalan City'}</td>
+                    <td class="p-3 text-right">
+                        <button onclick="deleteMember('${m.email}')" class="text-rose-500 hover:text-rose-700 text-xs"><i class="fa-solid fa-trash"></i> Revoke</button>
+                    </td>
+                </tr>
+            `).join('') : `<tr><td colspan="5" class="p-6 text-center text-slate-400">No approved borrowers.</td></tr>`;
+        }
+
+        function renderApprovals() {
+            const approvalsTbody = document.getElementById('approvals-table-body');
+            if (!approvalsTbody) return;
+            const pendingList = Object.values(state.pendingMembers);
+            approvalsTbody.innerHTML = pendingList.length ? pendingList.map(p => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-mono text-xs text-slate-500">${p.email}</td>
+                    <td class="p-4 font-medium text-slate-900">${p.name}</td>
+                    <td class="p-4 text-slate-600">${p.address}</td>
+                    <td class="p-4 text-slate-600">${p.formation || 'Seminarian'}</td>
+                    <td class="p-4 text-right space-x-2">
+                        <button onclick="approveMember('${p.email}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded text-xs font-semibold">Accept</button>
+                        <button onclick="refuseMember('${p.email}')" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1 rounded text-xs font-semibold">Refuse</button>
+                    </td>
+                </tr>
+            `).join('') : `<tr><td colspan="5" class="p-6 text-center text-slate-400">No pending authorizations.</td></tr>`;
+        }
+
+        function renderTransactions() {
+            const memberSelect = document.getElementById('borrow-member');
+            const membersList = Object.values(state.members);
+            if (memberSelect) {
+                memberSelect.innerHTML = membersList.length
+                    ? membersList.map(m => `<option value="${m.email || m.id}">${m.name} (${m.email || m.id})</option>`).join('')
+                    : '<option value="" disabled selected>No approved borrowers</option>';
+            }
+
+            const bookSelect = document.getElementById('borrow-book');
+            const availableBooks = Object.values(state.books).filter(b => (b.availableCopies !== undefined ? b.availableCopies : 1) > 0);
+            if (bookSelect) {
+                bookSelect.innerHTML = availableBooks.length
+                    ? availableBooks.map(b => `<option value="${b.id}">${b.title} (Acc #: ${b.accessionNumber || 'N/A'})</option>`).join('')
+                    : '<option value="" disabled selected>No books available</option>';
+            }
+
+            const auditTbody = document.getElementById('audit-table-body');
+            if (auditTbody) {
+                const txs = Object.values(state.transactions);
+                auditTbody.innerHTML = txs.length ? txs.map(tx => {
+                    const member = state.members[(tx.memberEmail || '').toLowerCase()] || { name: tx.memberEmail };
+                    const book = state.books[tx.bookId] || { title: tx.bookId };
+                    const isReturned = tx.returned || tx.returnDate;
+                    return `
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-medium">${member.name}<br><span class="text-xs text-slate-400 font-mono">${tx.memberEmail}</span></td>
+                            <td class="p-3 text-slate-700">${book.title}</td>
+                            <td class="p-3 text-xs font-mono text-slate-500">Out: ${tx.checkoutDate}<br>Due: ${tx.dueDate}</td>
+                            <td class="p-3"><span class="px-2 py-1 rounded-full text-xs font-semibold ${isReturned ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}">${isReturned ? 'Returned' : 'Active Loan'}</span></td>
+                            <td class="p-3 text-right">
+                                ${!isReturned ? `<button onclick="returnBook('${tx.id}', '${tx.bookId}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded text-xs">Return</button>` : `<span class="text-xs text-slate-400">${tx.returnDate}</span>`}
+                            </td>
+                        </tr>`;
+                }).join('') : `<tr><td colspan="5" class="p-4 text-center text-slate-400">No borrowing records.</td></tr>`;
+            }
+        }
+
+        function renderUserHistory() {
+            const userHistoryTbody = document.getElementById('user-history-table-body');
+            if (!userHistoryTbody || !currentUser) return;
+            const myTxs = Object.values(state.transactions);
+            userHistoryTbody.innerHTML = myTxs.length ? myTxs.map(tx => {
+                const book = state.books[tx.bookId] || { title: tx.bookId };
+                const isReturned = tx.returned || tx.returnDate;
+                return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-medium text-slate-900">${book.title}</td>
+                        <td class="p-3 text-xs font-mono text-slate-500">${tx.checkoutDate}</td>
+                        <td class="p-3 text-xs font-mono text-slate-500">${tx.dueDate}</td>
+                        <td class="p-3">
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold ${isReturned ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}">
+                                ${isReturned ? 'Returned' : 'Currently Borrowed'}
+                            </span>
+                        </td>
+                        <td class="p-3 text-right">
+                            ${!isReturned ? `<button onclick="returnBook('${tx.id}', '${tx.bookId}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow transition"><i class="fa-solid fa-arrow-rotate-left mr-1"></i>Return Book</button>` : `<span class="text-xs font-mono text-slate-500">${tx.returnDate}</span>`}
+                        </td>
+                    </tr>`;
+            }).join('') : `<tr><td colspan="5" class="p-6 text-center text-slate-400">You have not borrowed any books yet.</td></tr>`;
+        }
+
+        window.handleAddBook = async function (e) {
+            e.preventDefault();
+            if (!isAdmin) return;
+            const id = "b-" + Date.now();
+            const copies = parseInt(document.getElementById('new-book-copies').value, 10);
+            const bookData = {
+                id,
+                accessionNumber: document.getElementById('new-book-accession').value.trim(),
+                subjectNumber: document.getElementById('new-book-subject').value.trim(),
+                title: document.getElementById('new-book-title').value.trim(),
+                author: document.getElementById('new-book-author').value.trim(),
+                category1: document.getElementById('new-book-cat1').value.trim(),
+                location: document.getElementById('new-book-location').value.trim(),
+                year: document.getElementById('new-book-year').value.trim(),
+                edition: document.getElementById('new-book-edition').value.trim(),
+                volume: document.getElementById('new-book-volume').value.trim(),
+                totalCopies: copies,
+                availableCopies: copies
+            };
+            await setDoc(doc(db, "books", id), bookData);
+            closeModal('book-modal');
+            e.target.reset();
+        };
+
+        window.handleBorrow = async function (e) {
+            e.preventDefault();
+            if (!isAdmin) return;
+            const memberEmail = document.getElementById('borrow-member').value.toLowerCase();
+            const bookId = document.getElementById('borrow-book').value;
+            const txId = "l-" + Date.now();
+            const checkoutDate = new Date().toISOString().split('T')[0];
+            const dueDate = new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0];
+
+            const bookObj = state.books[bookId];
+            const currentAvail = bookObj.availableCopies !== undefined ? bookObj.availableCopies : 1;
+            if (currentAvail <= 0) {
+                alert("Book is out of stock!");
+                return;
+            }
+
+            await Promise.all([
+                updateDoc(doc(db, "books", bookId), { availableCopies: currentAvail - 1 }),
+                setDoc(doc(db, "transactions", txId), {
+                    id: txId, memberEmail, bookId, checkoutDate, dueDate, returned: false, returnDate: null
+                })
+            ]);
+            e.target.reset();
+        };
+
+        window.returnBook = async function (txId, bookId) {
+            const returnDate = new Date().toISOString().split('T')[0];
+            try {
+                const updates = [updateDoc(doc(db, "transactions", txId), { returned: true, returnDate })];
+                const bookObj = state.books[bookId];
+                if (bookObj) {
+                    const currentAvail = bookObj.availableCopies !== undefined ? bookObj.availableCopies : 0;
+                    const total = bookObj.totalCopies !== undefined ? bookObj.totalCopies : 1;
+                    if (currentAvail < total) {
+                        updates.push(updateDoc(doc(db, "books", bookId), { availableCopies: currentAvail + 1 }));
+                    }
+                }
+                await Promise.all(updates);
+            } catch (e) {
+                alert("Failed to return book: " + e.message);
+            }
+        };
+
+        window.deleteBook = async function (id) {
+            if (isAdmin) await deleteDoc(doc(db, "books", id));
+        };
+
+        window.deleteMember = async function (email) {
+            if (isAdmin) await deleteDoc(doc(db, "members", email.toLowerCase()));
+        };
+
+        window.approveMember = async function (email) {
+            if (!isAdmin) return;
+            const emailLower = email.toLowerCase();
+            const pending = state.pendingMembers[emailLower];
+            if (!pending) return;
+            const memberData = {
+                id: "m-" + Date.now(),
+                email: emailLower,
+                name: pending.name,
+                role: pending.formation || 'Seminarian',
+                memberNumber: "LWCS-2026-" + Math.floor(100 + Math.random() * 900),
+                address: pending.address || 'Kabankalan City'
+            };
+            await Promise.all([
+                setDoc(doc(db, "members", emailLower), memberData),
+                deleteDoc(doc(db, "pendingMembers", emailLower))
+            ]);
+        };
+
+        window.refuseMember = async function (email) {
+            if (!isAdmin) return;
+            const emailLower = email.toLowerCase();
+            await Promise.all([
+                setDoc(doc(db, "refusedMembers", emailLower), { email: emailLower }),
+                deleteDoc(doc(db, "pendingMembers", emailLower))
+            ]);
+        };
+
+        window.handleUserSelfRegister = async function (e) {
+            e.preventDefault();
+            if (!currentUser) return;
+            const name = document.getElementById('self-reg-name').value.trim();
+            const age = document.getElementById('self-reg-age').value.trim();
+            const formation = document.getElementById('self-reg-formation').value.trim();
+            const address = document.getElementById('self-reg-address').value.trim();
+            const emailLower = currentUser.email.toLowerCase();
+
+            const regData = { email: emailLower, name, age, formation, address, timestamp: new Date().toLocaleString() };
+            await setDoc(doc(db, "pendingMembers", emailLower), regData);
+            hideAllViews();
+            document.getElementById('pending-gateway').classList.remove('hidden');
+        };
+
+        window.saveSettings = function() {
+            alert("Settings saved successfully!");
+        };
+    </script>
+</body>
+</html>
