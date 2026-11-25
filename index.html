@@ -200,7 +200,8 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider font-semibold">
-                                <th class="p-3">Accession # / Subject #</th>
+                                <th class="p-3">Accession #</th>
+                                <th class="p-3">Subject #</th>
                                 <th class="p-3">Title & Author(s)</th>
                                 <th class="p-3">Categories</th>
                                 <th class="p-3">Ed / Vol / Year</th>
@@ -795,7 +796,7 @@
             }
         };
 
-        // BATCHED CSV DATABASE UPLOADER (AGREGGATES DUPLICATE TITLE/AUTHOR ROWS INTO TOTAL COPIES)
+        // BATCHED CSV DATABASE UPLOADER (AGGREGATES DUPLICATE TITLE/AUTHOR ROWS INTO TOTAL COPIES)
         window.handleCSVUpload = async function(event) {
             if (!hasStaffAccess()) return;
             const file = event.target.files[0];
@@ -966,11 +967,12 @@
                 (b.title && b.title.toLowerCase().includes(query)) ||
                 (b.author && b.author.toLowerCase().includes(query)) ||
                 (b.accessionNumber && b.accessionNumber.toLowerCase().includes(query)) ||
+                (b.subjectNumber && b.subjectNumber.toLowerCase().includes(query)) ||
                 (b.category1 && b.category1.toLowerCase().includes(query))
             ) : allBooks;
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400">No books found. Use "Upload CSV Database" or "Add Book" to populate your library.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400">No books found. Use "Upload CSV Database" or "Add Book" to populate your library.</td></tr>`;
                 paginationDiv.classList.add('hidden');
                 return;
             }
@@ -983,9 +985,11 @@
                 const total = b.totalCopies !== undefined ? b.totalCopies : 1;
                 return `
                     <tr class="hover:bg-slate-50 text-xs">
-                        <td class="p-3 font-mono">
-                            <span class="text-indigo-700 font-bold">Acc: ${b.accessionNumber || '—'}</span><br>
-                            <span class="text-slate-500">Sub: ${b.subjectNumber || '—'}</span>
+                        <td class="p-3 font-mono text-indigo-700 font-bold">
+                            ${b.accessionNumber || '—'}
+                        </td>
+                        <td class="p-3 font-mono text-slate-600">
+                            ${b.subjectNumber || '—'}
                         </td>
                         <td class="p-3">
                             <span class="font-medium text-slate-900 text-sm">${b.title}</span><br>
