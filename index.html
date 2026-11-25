@@ -332,6 +332,19 @@
                 </div>
                 <button onclick="saveSettings()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium">Save Settings</button>
             </div>
+
+            <!-- DANGER ZONE: DELETE ALL BOOKS -->
+            <div class="bg-white text-slate-800 p-6 rounded-xl shadow-sm border border-rose-200 space-y-4 max-w-xl">
+                <h3 class="text-lg font-semibold text-rose-600"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Danger Zone</h3>
+                <p class="text-xs text-slate-500">Permanently delete all book records from the database. This action cannot be undone unless you have exported a backup.</p>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Admin Password Required</label>
+                    <input type="password" id="delete-all-password" placeholder="Enter password" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm">
+                </div>
+                <button onclick="deleteAllBooks()" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center">
+                    <i class="fa-solid fa-trash-can mr-2"></i>Delete All Books
+                </button>
+            </div>
         </section>
 
         <!-- TAB 8: ACCOUNT AUTHORIZATION -->
@@ -796,6 +809,52 @@
             }
         };
 
+        // DELETE ALL BOOKS FUNCTION WITH PASSWORD CHECK
+        window.deleteAllBooks = async function() {
+            if (!hasStaffAccess()) return;
+            const passwordInput = document.getElementById('delete-all-password');
+            const enteredPassword = passwordInput ? passwordInput.value.trim() : '';
+            
+            // Set your required password here
+            const ADMIN_DELETE_PASSWORD = "lwcs2026";
+
+            if (enteredPassword !== ADMIN_DELETE_PASSWORD) {
+                alert("Incorrect password! Deletion aborted.");
+                return;
+            }
+
+            const bookIds = Object.keys(state.books);
+            if (bookIds.length === 0) {
+                alert("Catalog is already empty.");
+                return;
+            }
+
+            if (!confirm(`Are you absolutely sure you want to delete all ${bookIds.length} books? This cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                let batch = writeBatch(db);
+                let count = 0;
+                for (let id of bookIds) {
+                    batch.delete(doc(db, "books", id));
+                    count++;
+                    if (count === 450) {
+                        await batch.commit();
+                        batch = writeBatch(db);
+                        count = 0;
+                    }
+                }
+                if (count > 0) {
+                    await batch.commit();
+                }
+                passwordInput.value = '';
+                alert("All books have been successfully deleted from the database.");
+            } catch (err) {
+                alert("Failed to delete books: " + err.message);
+            }
+        };
+
         // BATCHED CSV DATABASE UPLOADER (GROUPS BY AUTHOR, SUBJECT NUMBER, YEAR, CATEGORY 1, & VOLUME)
         window.handleCSVUpload = async function(event) {
             if (!hasStaffAccess()) return;
@@ -843,7 +902,6 @@
                         const edition = cols[11] || '-';
                         const location = cols[12] || 'Shelf 1';
 
-                        // Strict unique key combining Author, Subject Number, Year, Category 1, Title, and Volume
                         const key = `${title.toLowerCase()}|${author.toLowerCase()}|${subjectNumber.toLowerCase()}|${year.toLowerCase()}|${category1.toLowerCase()}|${volume.toLowerCase()}`;
 
                         if (!csvBookMap.has(key)) {
