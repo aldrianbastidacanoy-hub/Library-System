@@ -795,7 +795,7 @@
             }
         };
 
-        // BATCHED CSV DATABASE UPLOADER
+        // BATCHED CSV DATABASE UPLOADER (AGREGGATES DUPLICATE TITLE/AUTHOR ROWS INTO TOTAL COPIES)
         window.handleCSVUpload = async function(event) {
             if (!hasStaffAccess()) return;
             const file = event.target.files[0];
@@ -814,16 +814,8 @@
                         return;
                     }
 
-                    const existingKeys = new Set(
-                        Object.values(state.books).map(b => 
-                            `${(b.title||'').toLowerCase()}|${(b.author||'').toLowerCase()}|${(b.volume||'').toLowerCase()}`
-                        )
-                    );
-
-                    let addedCount = 0;
-                    let duplicateCount = 0;
-                    let batch = writeBatch(db);
-                    let batchOps = 0;
+                    // Group identical book rows (same title, author, volume) and count copy occurrences
+                    const csvBookMap = new Map();
 
                     for (let i = 1; i < lines.length; i++) {
                         const row = lines[i].trim();
@@ -853,25 +845,67 @@
 
                         const key = `${title.toLowerCase()}|${author.toLowerCase()}|${volume.toLowerCase()}`;
 
-                        if (existingKeys.has(key)) {
-                            duplicateCount++;
+                        if (!csvBookMap.has(key)) {
+                            csvBookMap.set(key, {
+                                title, author, subjectNumber, year, category1,
+                                accessionNumber, volume, edition, location,
+                                count: 1
+                            });
                         } else {
-                            existingKeys.add(key);
-                            const id = `b-${Date.now()}-${i}`;
+                            const existing = csvBookMap.get(key);
+                            existing.count += 1;
+                        }
+                    }
+
+                    let addedCount = 0;
+                    let updatedCount = 0;
+                    let batch = writeBatch(db);
+                    let batchOps = 0;
+
+                    // Map existing Firestore books for quick lookup
+                    const existingFirestoreBooks = {};
+                    Object.values(state.books).forEach(b => {
+                        const key = `${(b.title||'').toLowerCase()}|${(b.author||'').toLowerCase()}|${(b.volume||'').toLowerCase()}`;
+                        existingFirestoreBooks[key] = b;
+                    });
+
+                    for (let [key, bookInfo] of csvBookMap.entries()) {
+                        if (existingFirestoreBooks[key]) {
+                            const existingDoc = existingFirestoreBooks[key];
+                            const newTotal = (existingDoc.totalCopies || 1) + bookInfo.count;
+                            const newAvail = (existingDoc.availableCopies || 1) + bookInfo.count;
+
+                            batch.update(doc(db, "books", existingDoc.id), {
+                                totalCopies: newTotal,
+                                availableCopies: newAvail
+                            });
+                            updatedCount++;
+                            batchOps++;
+                        } else {
+                            const id = `b-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
                             const bookRef = doc(db, "books", id);
                             batch.set(bookRef, {
-                                id, title, author, subjectNumber, year, category1,
-                                accessionNumber, volume, edition, location,
-                                totalCopies: 1, availableCopies: 1
+                                id,
+                                title: bookInfo.title,
+                                author: bookInfo.author,
+                                subjectNumber: bookInfo.subjectNumber,
+                                year: bookInfo.year,
+                                category1: bookInfo.category1,
+                                accessionNumber: bookInfo.accessionNumber,
+                                volume: bookInfo.volume,
+                                edition: bookInfo.edition,
+                                location: bookInfo.location,
+                                totalCopies: bookInfo.count,
+                                availableCopies: bookInfo.count
                             });
                             addedCount++;
                             batchOps++;
+                        }
 
-                            if (batchOps === 450) {
-                                await batch.commit();
-                                batch = writeBatch(db);
-                                batchOps = 0;
-                            }
+                        if (batchOps >= 450) {
+                            await batch.commit();
+                            batch = writeBatch(db);
+                            batchOps = 0;
                         }
                     }
 
@@ -879,7 +913,7 @@
                         await batch.commit();
                     }
 
-                    alert(`CSV Upload Complete!\nAdded: ${addedCount} new books.\nSkipped duplicates: ${duplicateCount}.`);
+                    alert(`CSV Upload Complete!\nNew Unique Books Added: ${addedCount}\nExisting Books Updated (Copies Incremented): ${updatedCount}`);
                 } catch (err) {
                     alert("Error uploading CSV: " + err.message);
                 } finally {
