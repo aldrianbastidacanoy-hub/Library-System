@@ -1,164 +1,159 @@
 <!-- PENDING APPROVAL GATEWAY -->
-<div id="pending-gateway" class="hidden fixed inset-0 flex items-center justify-center p-4 bg-slate-900 z-50">
-    <div class="max-w-md w-full bg-white border border-slate-200 rounded-3xl shadow-2xl p-8 text-center space-y-4">
-        <div class="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-2xl mx-auto border border-amber-100">
+<div id="pending-gateway" class="hidden flex-grow flex items-center justify-center p-4 bg-slate-950">
+    <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-8 text-center space-y-4">
+        <div class="w-14 h-14 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-2xl flex items-center justify-center text-2xl mx-auto">
             <i class="fa-solid fa-clock-rotate-left"></i>
         </div>
-        <h2 class="text-xl font-bold text-slate-900">Registration Pending</h2>
-        <p class="text-xs text-slate-500">Your membership registration is awaiting admin confirmation.</p>
-        <button onclick="logoutUser()" class="mt-4 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-semibold transition">Sign Out</button>
+        <h2 class="text-xl font-bold text-white">Registration Pending</h2>
+        <p class="text-xs text-slate-400 leading-relaxed">Your membership application is currently awaiting administrator review.</p>
+        <button onclick="logoutUser()" class="mt-4 text-xs bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl font-semibold transition">Sign Out</button>
     </div>
 </div>
 
 <!-- REJECTED GATEWAY -->
-<div id="rejected-gateway" class="hidden fixed inset-0 flex items-center justify-center p-4 bg-slate-900 z-50">
-    <div class="max-w-md w-full bg-white border border-slate-200 rounded-3xl shadow-2xl p-8 text-center space-y-4">
-        <div class="w-14 h-14 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center text-2xl mx-auto border border-rose-100">
+<div id="rejected-gateway" class="hidden flex-grow flex items-center justify-center p-4 bg-slate-950">
+    <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-8 text-center space-y-4">
+        <div class="w-14 h-14 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-2xl flex items-center justify-center text-2xl mx-auto">
             <i class="fa-solid fa-ban"></i>
         </div>
-        <h2 class="text-xl font-bold text-slate-900">Membership Refused</h2>
-        <button onclick="logoutUser()" class="mt-4 text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold transition">Sign Out</button>
+        <h2 class="text-xl font-bold text-white">Membership Refused</h2>
+        <button onclick="logoutUser()" class="mt-4 text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl font-semibold transition">Sign Out</button>
     </div>
 </div>
 
 <!-- MAIN APP CONTAINER -->
-<div id="app-container" class="hidden flex flex-col flex-grow">
+<div id="app-container" class="hidden min-h-screen flex flex-col bg-slate-950">
     
-    <!-- MODERN WEBSITE HEADER & NAV -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Brand -->
-                <div class="flex items-center space-x-3">
-                    <div class="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-md shadow-indigo-600/20">
-                        <i class="fa-solid fa-book-open-reader"></i>
-                    </div>
-                    <div>
-                        <h1 id="portal-header-title" class="text-xl font-bold tracking-tight text-slate-900">LWCS Library</h1>
-                        <p id="role-badge" class="text-[11px] font-semibold text-indigo-600 uppercase tracking-wider">Role: Loading...</p>
-                    </div>
+    <!-- TOP NAVIGATION BAR -->
+    <header class="bg-slate-900/80 backdrop-blur-xl border-b border-slate-800 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center gap-4">
+            
+            <!-- Brand Title -->
+            <div class="flex items-center space-x-3.5">
+                <div class="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl shadow-lg shadow-indigo-600/30">
+                    <i class="fa-solid fa-book-open-reader"></i>
                 </div>
-
-                <!-- Right Controls -->
-                <div class="flex items-center space-x-4">
-                    <button onclick="manualRefresh()" title="Refresh Data" class="bg-slate-100 hover:bg-slate-200 text-slate-600 p-2.5 rounded-xl transition">
-                        <i id="refresh-icon" class="fa-solid fa-rotate text-xs"></i>
-                    </button>
-                    <div id="live-datetime" class="hidden md:block bg-slate-50 border border-slate-200 px-3.5 py-1.5 rounded-xl font-mono text-xs text-slate-600">Loading...</div>
-                    <div class="flex items-center space-x-3 bg-slate-50 border border-slate-200 p-1.5 pr-4 rounded-full">
-                        <img id="user-avatar" src="" alt="User" class="w-8 h-8 rounded-full border border-slate-300">
-                        <div class="hidden sm:block text-left">
-                            <p id="user-name" class="text-xs font-bold text-slate-900 leading-none">User</p>
-                            <p id="user-email" class="text-[10px] text-slate-500 leading-tight mt-0.5"></p>
-                        </div>
-                        <button onclick="logoutUser()" class="ml-2 text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 px-2.5 py-1 rounded-lg font-semibold transition">Logout</button>
-                    </div>
+                <div>
+                    <h1 id="portal-header-title" class="text-lg font-extrabold tracking-tight text-white leading-none">LWCS Library Portal</h1>
+                    <p id="role-badge" class="text-[10px] font-mono font-bold text-indigo-400 uppercase tracking-widest mt-1">Role: Loading...</p>
                 </div>
             </div>
 
-            <!-- Navigation Tabs -->
-            <nav class="flex space-x-1 overflow-x-auto pb-3 pt-1 text-xs font-semibold border-t border-slate-100">
-                <button onclick="switchTab('catalog')" id="nav-catalog" class="px-4 py-2 rounded-xl bg-indigo-600 text-white shadow-sm transition whitespace-nowrap flex items-center space-x-2">
-                    <i class="fa-solid fa-book"></i><span>Storefront Catalog</span>
+            <!-- Right Utility & Profile -->
+            <div class="flex items-center space-x-3">
+                <button onclick="manualRefresh()" title="Refresh" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition border border-slate-700/60">
+                    <i id="refresh-icon" class="fa-solid fa-rotate text-xs"></i>
                 </button>
-                <button onclick="switchTab('accession')" id="nav-accession" class="staff-only hidden px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition whitespace-nowrap flex items-center space-x-2">
-                    <i class="fa-solid fa-barcode"></i><span>Accession Inventory</span>
-                </button>
-                <button onclick="switchTab('shelf')" id="nav-shelf" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition whitespace-nowrap flex items-center space-x-2">
-                    <i class="fa-solid fa-layer-group"></i><span>Shelf Inventory</span>
-                </button>
-                <button onclick="switchTab('my-books')" id="nav-my-books" class="viewer-only hidden px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition whitespace-nowrap flex items-center space-x-2">
-                    <i class="fa-solid fa-book-bookmark"></i><span>My Borrowed Books</span>
-                </button>
-                <button onclick="switchTab('ddc')" id="nav-ddc" class="staff-only hidden px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition whitespace-nowrap flex items-center space-x-2">
-                    <i class="fa-solid fa-sitemap"></i><span>DDC Classification</span>
-                </button>
-                <button onclick="switchTab('borrowers')" id="nav-borrowers" class="staff-only hidden px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition whitespace-nowrap flex items-center space-x-2">
-                    <i class="fa-solid fa-users"></i><span>Borrowers Directory</span>
-                </button>
-                <button onclick="switchTab('borrow-return')" id="nav-borrow-return" class="staff-only hidden px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition whitespace-nowrap flex items-center space-x-2">
-                    <i class="fa-solid fa-right-left"></i><span>Borrow &amp; Return Desk</span>
-                </button>
-                <button onclick="switchTab('settings')" id="nav-settings" class="staff-only hidden px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition whitespace-nowrap flex items-center space-x-2">
-                    <i class="fa-solid fa-gear"></i><span>Settings</span>
-                </button>
-                <button onclick="switchTab('auth')" id="nav-auth" class="staff-only hidden px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition whitespace-nowrap flex items-center space-x-2">
-                    <i class="fa-solid fa-shield-halved"></i><span>Account Authorization</span>
-                </button>
-            </nav>
+                <div id="live-datetime" class="hidden lg:flex items-center bg-slate-800/60 border border-slate-700/60 px-3.5 py-1.5 rounded-xl font-mono text-xs text-slate-300">Loading...</div>
+                
+                <div class="flex items-center space-x-3 bg-slate-800/80 border border-slate-700/80 p-1.5 pr-4 rounded-2xl">
+                    <img id="user-avatar" src="" alt="User" class="w-8 h-8 rounded-xl border border-indigo-500/40">
+                    <div class="hidden sm:block text-left">
+                        <p id="user-name" class="text-xs font-bold text-white leading-tight">User</p>
+                        <p id="user-email" class="text-[10px] text-slate-400 font-mono leading-tight mt-0.5"></p>
+                    </div>
+                    <button onclick="logoutUser()" class="ml-1 text-[11px] bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white border border-rose-500/30 px-2.5 py-1 rounded-xl font-semibold transition">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DESK TAB BAR -->
+        <div class="border-t border-slate-800/80 bg-slate-900/40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <nav class="flex space-x-1 overflow-x-auto py-2.5 text-xs font-semibold">
+                    <button onclick="switchTab('catalog')" id="nav-catalog" class="px-3.5 py-2 rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-600/20 transition whitespace-nowrap flex items-center space-x-2">
+                        <i class="fa-solid fa-book"></i><span>Catalog</span>
+                    </button>
+                    <button onclick="switchTab('accession')" id="nav-accession" class="staff-only hidden px-3.5 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition whitespace-nowrap flex items-center space-x-2">
+                        <i class="fa-solid fa-barcode"></i><span>Accession Inventory</span>
+                    </button>
+                    <button onclick="switchTab('shelf')" id="nav-shelf" class="px-3.5 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition whitespace-nowrap flex items-center space-x-2">
+                        <i class="fa-solid fa-layer-group"></i><span>Shelf Inventory</span>
+                    </button>
+                    <button onclick="switchTab('my-books')" id="nav-my-books" class="viewer-only hidden px-3.5 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition whitespace-nowrap flex items-center space-x-2">
+                        <i class="fa-solid fa-book-bookmark"></i><span>My Borrowed Books</span>
+                    </button>
+                    <button onclick="switchTab('ddc')" id="nav-ddc" class="staff-only hidden px-3.5 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition whitespace-nowrap flex items-center space-x-2">
+                        <i class="fa-solid fa-sitemap"></i><span>DDC Classification</span>
+                    </button>
+                    <button onclick="switchTab('borrowers')" id="nav-borrowers" class="staff-only hidden px-3.5 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition whitespace-nowrap flex items-center space-x-2">
+                        <i class="fa-solid fa-users"></i><span>Borrowers</span>
+                    </button>
+                    <button onclick="switchTab('borrow-return')" id="nav-borrow-return" class="staff-only hidden px-3.5 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition whitespace-nowrap flex items-center space-x-2">
+                        <i class="fa-solid fa-right-left"></i><span>Borrow &amp; Return</span>
+                    </button>
+                    <button onclick="switchTab('settings')" id="nav-settings" class="staff-only hidden px-3.5 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition whitespace-nowrap flex items-center space-x-2">
+                        <i class="fa-solid fa-gear"></i><span>Settings</span>
+                    </button>
+                    <button onclick="switchTab('auth')" id="nav-auth" class="staff-only hidden px-3.5 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition whitespace-nowrap flex items-center space-x-2">
+                        <i class="fa-solid fa-shield-halved"></i><span>Account Authorization</span>
+                    </button>
+                </nav>
+            </div>
         </div>
     </header>
 
-    <!-- MAIN CONTENT AREA -->
-    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-grow">
+    <!-- MAIN WORKSPACE -->
+    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-grow">
 
-        <!-- TAB 1: CATALOG STOREFRONT -->
-        <section id="tab-catalog" class="space-y-6">
-            
-            <!-- Hero Editorial Banner -->
-            <div class="relative bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-8 md:p-12 text-white shadow-xl overflow-hidden">
-                <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl pointer-events-none">
-                    <i class="fa-solid fa-book-bookmark"></i>
+        <!-- STATS CARDS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl flex items-center justify-between">
+                <div>
+                    <p class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400">Total Books in Catalog</p>
+                    <h3 id="stat-books" class="text-3xl font-extrabold text-white mt-1">0</h3>
                 </div>
-                <div class="relative z-10 max-w-2xl space-y-4">
-                    <span class="bg-indigo-500/30 border border-indigo-400/40 text-indigo-300 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">Digital Library Collection</span>
-                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Explore Theology, Philosophy &amp; Reference Works</h2>
-                    <p class="text-slate-300 text-sm leading-relaxed">Search through the institution's comprehensive academic holdings, check real-time shelf availability, and manage active loans.</p>
-                    
-                    <!-- Quick Stats Row inside Banner -->
-                    <div class="grid grid-cols-3 gap-4 pt-4 border-t border-indigo-900/60">
-                        <div>
-                            <p class="text-[11px] uppercase tracking-wider text-indigo-300 font-semibold">Total Books</p>
-                            <h4 id="stat-books" class="text-2xl font-extrabold text-white mt-0.5">0</h4>
-                        </div>
-                        <div>
-                            <p class="text-[11px] uppercase tracking-wider text-indigo-300 font-semibold" id="stat-card-2-label">Members</p>
-                            <h4 id="stat-members" class="text-2xl font-extrabold text-white mt-0.5">0</h4>
-                        </div>
-                        <div>
-                            <p class="text-[11px] uppercase tracking-wider text-indigo-300 font-semibold" id="stat-card-3-label">Active Loans</p>
-                            <h4 id="stat-loans" class="text-2xl font-extrabold text-white mt-0.5">0</h4>
-                        </div>
-                    </div>
+                <div class="w-12 h-12 bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 rounded-2xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-book"></i>
                 </div>
             </div>
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl flex items-center justify-between">
+                <div>
+                    <p class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400" id="stat-card-2-label">Members</p>
+                    <h3 id="stat-members" class="text-3xl font-extrabold text-white mt-1">0</h3>
+                </div>
+                <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-2xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl flex items-center justify-between">
+                <div>
+                    <p class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400" id="stat-card-3-label">Active Loans</p>
+                    <h3 id="stat-loans" class="text-3xl font-extrabold text-white mt-1">0</h3>
+                </div>
+                <div class="w-12 h-12 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-2xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-hand-holding-hand"></i>
+                </div>
+            </div>
+        </div>
 
-            <!-- Search & Controls Toolbar -->
-            <div class="flex flex-col md:flex-row justify-between gap-4 items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+        <!-- TAB 1: CATALOG -->
+        <section id="tab-catalog" class="space-y-6">
+            <div class="flex flex-col md:flex-row justify-between gap-4 items-center bg-slate-900 border border-slate-800 p-4 rounded-3xl shadow-xl">
                 <div class="relative w-full md:w-96">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-search"></i></span>
-                    <input type="text" id="search-input" oninput="debouncedSearch()" placeholder="Search title, author, accession, subject..." class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-sm">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500"><i class="fa-solid fa-search"></i></span>
+                    <input type="text" id="search-input" oninput="debouncedSearch()" placeholder="Search title, author, accession, subject..." class="w-full pl-11 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-white placeholder-slate-500">
                 </div>
                 
-                <div class="flex flex-wrap gap-2.5 w-full md:w-auto justify-end items-center">
-                    <!-- View Toggle -->
-                    <div class="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200">
-                        <button onclick="setCatalogView('grid')" id="view-grid-btn" class="px-3 py-1.5 rounded-lg bg-white text-indigo-600 shadow-sm text-xs font-semibold transition"><i class="fa-solid fa-grid-2 mr-1"></i> Grid</button>
-                        <button onclick="setCatalogView('table')" id="view-table-btn" class="px-3 py-1.5 rounded-lg text-slate-600 text-xs font-semibold transition"><i class="fa-solid fa-table mr-1"></i> Table</button>
-                    </div>
-
-                    <label id="csv-upload-label" class="staff-only hidden bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2.5 rounded-xl cursor-pointer transition text-xs flex items-center shadow-sm">
+                <div class="flex flex-wrap gap-2.5 w-full md:w-auto justify-end">
+                    <label id="csv-upload-label" class="staff-only hidden bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-3 rounded-2xl cursor-pointer transition text-xs flex items-center shadow-lg shadow-emerald-600/20">
                         <i class="fa-solid fa-file-csv mr-2"></i><span id="csv-btn-text">Upload CSV Database</span>
                         <input type="file" id="csv-file-input" accept=".csv" onchange="prepareCSVMapping(event)" class="hidden">
                     </label>
-                    <button onclick="exportBackup()" id="export-backup-btn" class="staff-only hidden bg-slate-800 hover:bg-slate-900 text-white font-semibold px-4 py-2.5 rounded-xl transition text-xs flex items-center shadow-sm">
+                    <button onclick="exportBackup()" id="export-backup-btn" class="staff-only hidden bg-slate-800 hover:bg-slate-700 text-white font-semibold px-4 py-3 rounded-2xl transition text-xs flex items-center border border-slate-700 shadow-lg">
                         <i class="fa-solid fa-download mr-2"></i>Export Backup
                     </button>
-                    <button onclick="openModal('book-modal')" id="add-book-btn" class="staff-only hidden bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2.5 rounded-xl transition text-xs flex items-center shadow-sm">
+                    <button onclick="openModal('book-modal')" id="add-book-btn" class="staff-only hidden bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-3 rounded-2xl transition text-xs flex items-center shadow-lg shadow-indigo-600/20">
                         <i class="fa-solid fa-plus mr-2"></i>Add Book
                     </button>
                 </div>
             </div>
 
-            <!-- Catalog Grid View Container -->
-            <div id="catalog-grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-
-            <!-- Catalog Table View Container (Hidden by default) -->
-            <div id="catalog-table-container" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl shadow-xl overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider font-bold border-b border-slate-200">
+                            <tr class="bg-slate-950/60 border-b border-slate-800 text-slate-400 text-[11px] font-mono uppercase tracking-wider font-bold">
                                 <th class="p-4">Accession #</th>
                                 <th class="p-4">Subject #</th>
                                 <th class="p-4">Title &amp; Author(s)</th>
@@ -169,36 +164,34 @@
                                 <th class="staff-only hidden p-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="book-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+                        <tbody id="book-table-body" class="divide-y divide-slate-800 text-sm"></tbody>
                     </table>
                 </div>
-            </div>
-
-            <!-- Pagination -->
-            <div id="catalog-pagination" class="hidden p-4 bg-white rounded-2xl border border-slate-200 text-center shadow-sm">
-                <button onclick="loadMoreBooks()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-6 py-2.5 rounded-xl transition shadow-sm">
-                    Load More Books
-                </button>
+                <div id="catalog-pagination" class="hidden p-4 bg-slate-950/40 border-t border-slate-800 text-center">
+                    <button onclick="loadMoreBooks()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-6 py-2.5 rounded-xl transition shadow-lg shadow-indigo-600/20">
+                        Load More Books
+                    </button>
+                </div>
             </div>
         </section>
 
         <!-- TAB 1.5: ACCESSION NUMBER INVENTORY -->
         <section id="tab-accession" class="space-y-6 hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div>
-                        <h2 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-barcode mr-2 text-indigo-600"></i>Accession Number Inventory Desk</h2>
-                        <p class="text-xs text-slate-500 mt-1">Direct itemized list of library books sorted and tracked by Accession Number.</p>
+                        <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-barcode mr-2 text-indigo-400"></i>Accession Number Inventory Desk</h2>
+                        <p class="text-xs text-slate-400 mt-1">Direct itemized list of library books sorted and tracked by Accession Number.</p>
                     </div>
                     <div class="relative w-full sm:w-72">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400"><i class="fa-solid fa-search"></i></span>
-                        <input type="text" id="accession-search-input" oninput="renderAccessionInventory()" placeholder="Filter accession numbers..." class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500"><i class="fa-solid fa-search"></i></span>
+                        <input type="text" id="accession-search-input" oninput="renderAccessionInventory()" placeholder="Filter accession numbers..." class="w-full pl-11 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-2xl text-sm text-white focus:outline-none focus:border-indigo-500">
                     </div>
                 </div>
-                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider font-bold border-b border-slate-200">
+                            <tr class="bg-slate-950/60 border-b border-slate-800 text-slate-400 text-[11px] font-mono uppercase tracking-wider font-bold">
                                 <th class="p-4">Accession Number</th>
                                 <th class="p-4">Book Title</th>
                                 <th class="p-4">Author</th>
@@ -207,7 +200,7 @@
                                 <th class="p-4">Availability</th>
                             </tr>
                         </thead>
-                        <tbody id="accession-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+                        <tbody id="accession-table-body" class="divide-y divide-slate-800 text-sm"></tbody>
                     </table>
                 </div>
             </div>
@@ -215,12 +208,12 @@
 
         <!-- TAB 2: MY BOOKS -->
         <section id="tab-my-books" class="space-y-6 hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <h2 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-book-bookmark mr-2 text-indigo-600"></i>My Borrowed Books &amp; History</h2>
-                <div class="overflow-x-auto rounded-xl border border-slate-200">
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
+                <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-book-bookmark mr-2 text-indigo-400"></i>My Borrowed Books &amp; History</h2>
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider font-bold border-b border-slate-200">
+                            <tr class="bg-slate-950/60 border-b border-slate-800 text-slate-400 text-[11px] font-mono uppercase tracking-wider font-bold">
                                 <th class="p-4">Book Title</th>
                                 <th class="p-4">Borrowed At</th>
                                 <th class="p-4">Due Date</th>
@@ -228,7 +221,7 @@
                                 <th class="p-4 text-right">Action / Returned At</th>
                             </tr>
                         </thead>
-                        <tbody id="user-history-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+                        <tbody id="user-history-table-body" class="divide-y divide-slate-800 text-sm"></tbody>
                     </table>
                 </div>
             </div>
@@ -236,17 +229,17 @@
 
         <!-- TAB 3: SHELF INVENTORY -->
         <section id="tab-shelf" class="space-y-6 hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <h2 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-shelves mr-2 text-indigo-600"></i>Shelf Inventory Breakdown</h2>
-                <p class="text-xs text-slate-500">Overview of book distribution across physical library shelves.</p>
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
+                <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-shelves mr-2 text-indigo-400"></i>Shelf Inventory Breakdown</h2>
+                <p class="text-xs text-slate-400">Overview of book distribution across physical library shelves.</p>
                 <div id="shelf-inventory-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
         </section>
 
         <!-- TAB 4: DDC INVENTORY -->
         <section id="tab-ddc" class="space-y-6 hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <h2 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-sitemap mr-2 text-indigo-600"></i>Dewey Decimal Classification (DDC) Breakdown</h2>
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
+                <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-sitemap mr-2 text-indigo-400"></i>Dewey Decimal Classification (DDC) Breakdown</h2>
                 <div id="ddc-inventory-content" class="space-y-3"></div>
             </div>
         </section>
@@ -254,20 +247,20 @@
         <!-- TAB 5: BORROWERS -->
         <section id="tab-borrowers" class="space-y-6 hidden">
             <div class="space-y-6">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                    <h3 class="text-lg font-bold text-slate-900"><i class="fa-solid fa-user-plus mr-2 text-indigo-600"></i>Add New Borrower</h3>
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
+                    <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-user-plus mr-2 text-indigo-400"></i>Add New Borrower</h3>
                     <form onsubmit="handleDirectAddBorrower(event)" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
-                            <input type="text" id="dir-borrower-name" placeholder="Juan Dela Cruz" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Full Name</label>
+                            <input type="text" id="dir-borrower-name" placeholder="Juan Dela Cruz" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Email (ID)</label>
-                            <input type="email" id="dir-borrower-email" placeholder="user@gmail.com" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Email (ID)</label>
+                            <input type="email" id="dir-borrower-email" placeholder="user@gmail.com" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Borrower Type</label>
-                            <select id="dir-borrower-type" onchange="toggleCustomBorrowerType()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Borrower Type</label>
+                            <select id="dir-borrower-type" onchange="toggleCustomBorrowerType()" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                                 <option value="Seminarian">Seminarian</option>
                                 <option value="Faculty">Faculty</option>
                                 <option value="Staff">Staff</option>
@@ -276,23 +269,23 @@
                             </select>
                         </div>
                         <div id="dir-borrower-custom-container" class="hidden">
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Custom Type</label>
-                            <input type="text" id="dir-borrower-custom-type" placeholder="e.g. Guest Researcher" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Custom Type</label>
+                            <input type="text" id="dir-borrower-custom-type" placeholder="e.g. Guest Researcher" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white">
                         </div>
                         <div>
-                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl text-sm transition shadow-sm">
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-xl text-sm transition shadow-lg shadow-indigo-600/20">
                                 <i class="fa-solid fa-check mr-1"></i>Add Borrower
                             </button>
                         </div>
                     </form>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                    <h2 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-users-line mr-2 text-indigo-600"></i>Authorized Borrowers Directory &amp; Active Books</h2>
-                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
+                    <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-users-line mr-2 text-indigo-400"></i>Authorized Borrowers Directory &amp; Active Books</h2>
+                    <div class="overflow-x-auto rounded-2xl border border-slate-800">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider font-bold border-b border-slate-200">
+                                <tr class="bg-slate-950/60 border-b border-slate-800 text-slate-400 text-[11px] font-mono uppercase tracking-wider font-bold">
                                     <th class="p-4">Member ID / Email</th>
                                     <th class="p-4">Name</th>
                                     <th class="p-4">Borrower Type</th>
@@ -300,7 +293,7 @@
                                     <th class="p-4 text-right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="borrowers-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+                            <tbody id="borrowers-table-body" class="divide-y divide-slate-800 text-sm"></tbody>
                         </table>
                     </div>
                 </div>
@@ -310,28 +303,28 @@
         <!-- TAB 6: BORROW AND RETURN -->
         <section id="tab-borrow-return" class="space-y-6 hidden">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-1 space-y-4">
-                    <h3 class="text-lg font-bold text-slate-900"><i class="fa-solid fa-share mr-2 text-indigo-600"></i>Checkout Book</h3>
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl lg:col-span-1 space-y-4">
+                    <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-share mr-2 text-indigo-400"></i>Checkout Book</h3>
                     <form onsubmit="handleBorrow(event)" class="space-y-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Borrower (Search or Type New Name)</label>
-                            <input type="text" id="borrow-member-input" list="borrower-options" placeholder="Type name or email..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Borrower (Search or Type New Name)</label>
+                            <input type="text" id="borrow-member-input" list="borrower-options" placeholder="Type name or email..." class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                             <datalist id="borrower-options"></datalist>
-                            <p class="text-[11px] text-slate-400 mt-1">If borrower is not listed, simply type their name/email and they will be automatically registered upon checkout.</p>
+                            <p class="text-[11px] text-slate-500 mt-1">If borrower is not listed, simply type their name/email and they will be automatically registered upon checkout.</p>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Select Book</label>
-                            <select id="borrow-book" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required></select>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Select Book</label>
+                            <select id="borrow-book" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required></select>
                         </div>
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl text-sm transition shadow-sm">Confirm Checkout</button>
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-xl text-sm transition shadow-lg shadow-indigo-600/20">Confirm Checkout</button>
                     </form>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2 space-y-4">
-                    <h3 class="text-lg font-bold text-slate-900"><i class="fa-solid fa-clipboard-list mr-2 text-emerald-600"></i>Active Loans &amp; History</h3>
-                    <div class="overflow-y-auto max-h-96 rounded-xl border border-slate-200">
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl lg:col-span-2 space-y-4">
+                    <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-clipboard-list mr-2 text-emerald-400"></i>Active Loans &amp; History</h3>
+                    <div class="overflow-y-auto max-h-96 rounded-2xl border border-slate-800">
                         <table class="w-full text-left text-sm">
                             <thead>
-                                <tr class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider font-bold border-b border-slate-200">
+                                <tr class="bg-slate-950/60 border-b border-slate-800 text-slate-400 text-[11px] font-mono uppercase tracking-wider font-bold">
                                     <th class="p-4">Borrower</th>
                                     <th class="p-4">Book</th>
                                     <th class="p-4">Dates</th>
@@ -339,7 +332,7 @@
                                     <th class="p-4 text-right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="audit-table-body" class="divide-y divide-slate-100"></tbody>
+                            <tbody id="audit-table-body" class="divide-y divide-slate-800"></tbody>
                         </table>
                     </div>
                 </div>
@@ -348,28 +341,28 @@
 
         <!-- TAB 7: SETTINGS -->
         <section id="tab-settings" class="space-y-6 hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 max-w-xl">
-                <h2 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-gear mr-2 text-indigo-600"></i>Library System Settings</h2>
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4 max-w-xl">
+                <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-gear mr-2 text-indigo-400"></i>Library System Settings</h2>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Library Portal Title</label>
-                    <input type="text" id="setting-title" value="LWCS Library Portal" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Library Portal Title</label>
+                    <input type="text" id="setting-title" value="LWCS Library Portal" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Default Loan Duration (Days)</label>
-                    <input type="number" id="setting-days" value="14" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Default Loan Duration (Days)</label>
+                    <input type="number" id="setting-days" value="14" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white">
                 </div>
-                <button onclick="saveSettings()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-xl text-sm font-semibold transition shadow-sm">Save Settings</button>
+                <button onclick="saveSettings()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-3 rounded-xl text-sm font-semibold transition shadow-lg shadow-indigo-600/20">Save Settings</button>
             </div>
 
             <!-- DANGER ZONE -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-rose-200 space-y-4 max-w-xl">
-                <h3 class="text-lg font-bold text-rose-600"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Danger Zone</h3>
-                <p class="text-xs text-slate-500">Permanently delete all book records from the database. This action cannot be undone unless you have exported a backup.</p>
+            <div class="bg-slate-900 border border-rose-900/50 p-6 rounded-3xl shadow-xl space-y-4 max-w-xl">
+                <h3 class="text-lg font-bold text-rose-400"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Danger Zone</h3>
+                <p class="text-xs text-slate-400">Permanently delete all book records from the database. This action cannot be undone unless you have exported a backup.</p>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Admin Password Required</label>
-                    <input type="password" id="delete-all-password" placeholder="Enter password" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Password Required</label>
+                    <input type="password" id="delete-all-password" placeholder="Enter password" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white">
                 </div>
-                <button onclick="deleteAllBooks()" class="bg-rose-600 hover:bg-rose-700 text-white px-5 py-3 rounded-xl text-sm font-semibold transition flex items-center shadow-sm">
+                <button onclick="deleteAllBooks()" class="bg-rose-600 hover:bg-rose-500 text-white px-5 py-3 rounded-xl text-sm font-semibold transition flex items-center shadow-lg shadow-rose-600/20">
                     <i class="fa-solid fa-trash-can mr-2"></i>Delete All Books
                 </button>
             </div>
@@ -377,51 +370,51 @@
 
         <!-- TAB 8: ACCOUNT AUTHORIZATION -->
         <section id="tab-auth" class="space-y-6 hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
                 <div>
-                    <h2 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-user-plus mr-2 text-indigo-600"></i>Grant Direct Access by Gmail</h2>
-                    <p class="text-xs text-slate-500 mt-1">Manually add a user's Google email address and assign their portal permissions immediately.</p>
+                    <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-user-plus mr-2 text-indigo-400"></i>Grant Direct Access by Gmail</h2>
+                    <p class="text-xs text-slate-400 mt-1">Manually add a user's Google email address and assign their portal permissions immediately.</p>
                 </div>
                 <form onsubmit="handleManualAuthorize(event)" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
                     <div class="md:col-span-3">
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Google Email (Gmail)</label>
-                        <input type="email" id="manual-auth-email" placeholder="user@gmail.com" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Google Email (Gmail)</label>
+                        <input type="email" id="manual-auth-email" placeholder="user@gmail.com" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                     </div>
                     <div class="md:col-span-3">
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
-                        <input type="text" id="manual-auth-name" placeholder="Juan Dela Cruz" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Full Name</label>
+                        <input type="text" id="manual-auth-name" placeholder="Juan Dela Cruz" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Formation / Info</label>
-                        <input type="text" id="manual-auth-formation" placeholder="e.g. Seminarian" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Formation / Info</label>
+                        <input type="text" id="manual-auth-formation" placeholder="e.g. Seminarian" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Access Role</label>
-                        <select id="manual-auth-role" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Access Role</label>
+                        <select id="manual-auth-role" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                             <option value="viewer">Reader / Viewer</option>
                             <option value="staff">Staff (Full Access)</option>
                         </select>
                     </div>
                     <div class="md:col-span-2">
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl text-sm transition shadow-sm">
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-xl text-sm transition shadow-lg shadow-indigo-600/20">
                             <i class="fa-solid fa-check mr-1"></i>Grant Access
                         </button>
                     </div>
                 </form>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
-                        <h2 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-id-card-clip mr-2 text-emerald-600"></i>Authorized Accounts (Access Granted)</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Live list of all individuals granted access to the library portal.</p>
+                        <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-id-card-clip mr-2 text-emerald-400"></i>Authorized Accounts (Access Granted)</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Live list of all individuals granted access to the library portal.</p>
                     </div>
-                    <span id="auth-granted-count" class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full text-xs font-bold self-start sm:self-center">0 Authorized</span>
+                    <span id="auth-granted-count" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full text-xs font-mono font-bold self-start sm:self-center">0 Authorized</span>
                 </div>
-                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider font-bold border-b border-slate-200">
+                            <tr class="bg-slate-950/60 border-b border-slate-800 text-slate-400 text-[11px] font-mono uppercase tracking-wider font-bold">
                                 <th class="p-4">Full Name</th>
                                 <th class="p-4">Gmail Address</th>
                                 <th class="p-4">Assigned Role</th>
@@ -430,17 +423,17 @@
                                 <th class="p-4 text-right">Manage</th>
                             </tr>
                         </thead>
-                        <tbody id="auth-granted-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+                        <tbody id="auth-granted-table-body" class="divide-y divide-slate-800 text-sm"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <h2 class="text-xl font-bold text-slate-900"><i class="fa-solid fa-user-shield mr-2 text-indigo-600"></i>Pending Self-Registration Requests</h2>
-                <div class="overflow-x-auto rounded-xl border border-slate-200">
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
+                <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-user-shield mr-2 text-indigo-400"></i>Pending Self-Registration Requests</h2>
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider font-bold border-b border-slate-200">
+                            <tr class="bg-slate-950/60 border-b border-slate-800 text-slate-400 text-[11px] font-mono uppercase tracking-wider font-bold">
                                 <th class="p-4">Email</th>
                                 <th class="p-4">Name</th>
                                 <th class="p-4">Address</th>
@@ -448,7 +441,7 @@
                                 <th class="p-4 text-right">Assign Role &amp; Action</th>
                             </tr>
                         </thead>
-                        <tbody id="approvals-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+                        <tbody id="approvals-table-body" class="divide-y divide-slate-800 text-sm"></tbody>
                     </table>
                 </div>
             </div>
@@ -457,154 +450,154 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400 space-y-1">
-            <p class="font-semibold text-slate-600">LWCS Library Portal</p>
-            <p>Designed for Academic &amp; Seminary Collections</p>
+    <footer class="bg-slate-900/40 border-t border-slate-800/80 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-1 font-mono">
+            <p class="font-bold text-slate-400">LWCS LIBRARY PORTAL</p>
+            <p>SECURE CLOUD-CONNECTED ACADEMIC SYSTEM</p>
         </div>
     </footer>
 </div>
 
 <!-- MODAL: CSV COLUMN MAPPING -->
-<div id="csv-mapping-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
-    <div class="bg-white text-slate-800 rounded-3xl max-w-xl w-full p-8 shadow-2xl my-8 space-y-4">
-        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-            <h3 class="text-lg font-bold text-slate-900"><i class="fa-solid fa-file-csv text-emerald-600 mr-2"></i>Map CSV Columns to Catalog Fields</h3>
-            <button type="button" onclick="closeModal('csv-mapping-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+<div id="csv-mapping-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-800 text-slate-100 rounded-3xl max-w-xl w-full p-8 shadow-2xl my-8 space-y-4">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-file-csv text-emerald-400 mr-2"></i>Map CSV Columns to Catalog Fields</h3>
+            <button type="button" onclick="closeModal('csv-mapping-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
-        <p class="text-xs text-slate-500">Select which column in your uploaded CSV file corresponds to each catalog property below.</p>
+        <p class="text-xs text-slate-400">Select which column in your uploaded CSV file corresponds to each catalog property below.</p>
         <div id="csv-mapping-container" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
-        <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
-            <button type="button" onclick="closeModal('csv-mapping-modal')" class="px-5 py-2.5 border border-slate-200 rounded-xl text-slate-600 text-xs font-semibold">Cancel</button>
-            <button type="button" onclick="executeCSVImport()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-sm">Import Database</button>
+        <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
+            <button type="button" onclick="closeModal('csv-mapping-modal')" class="px-5 py-2.5 border border-slate-700 rounded-xl text-slate-300 text-xs font-semibold">Cancel</button>
+            <button type="button" onclick="executeCSVImport()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-emerald-600/20">Import Database</button>
         </div>
     </div>
 </div>
 
 <!-- MODAL: ADD BOOK -->
-<div id="book-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
-    <div class="bg-white text-slate-800 rounded-3xl max-w-xl w-full p-8 shadow-2xl my-8">
-        <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
-            <h3 class="text-lg font-bold text-slate-900"><i class="fa-solid fa-book-medical text-indigo-600 mr-2"></i>Add New Book</h3>
-            <button type="button" onclick="closeModal('book-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+<div id="book-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-800 text-slate-100 rounded-3xl max-w-xl w-full p-8 shadow-2xl my-8">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+            <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-book-medical text-indigo-400 mr-2"></i>Add New Book</h3>
+            <button type="button" onclick="closeModal('book-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
         <form onsubmit="handleAddBook(event)" class="space-y-3">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Accession Number</label>
-                    <input type="text" id="new-book-accession" placeholder="ACC-2026-001" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Accession Number</label>
+                    <input type="text" id="new-book-accession" placeholder="ACC-2026-001" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Subject Number / DDC</label>
-                    <input type="text" id="new-book-subject" placeholder="230.2" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Subject Number / DDC</label>
+                    <input type="text" id="new-book-subject" placeholder="230.2" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Book Title</label>
-                <input type="text" id="new-book-title" placeholder="Title" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Book Title</label>
+                <input type="text" id="new-book-title" placeholder="Title" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Author(s)</label>
-                <input type="text" id="new-book-author" placeholder="Author" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Author(s)</label>
+                <input type="text" id="new-book-author" placeholder="Author" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Category 1</label>
-                    <input type="text" id="new-book-cat1" placeholder="Philosophy" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Category 1</label>
+                    <input type="text" id="new-book-cat1" placeholder="Philosophy" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Shelf-Row Location</label>
-                    <input type="text" id="new-book-location" placeholder="Shelf 1, Row 1" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Shelf-Row Location</label>
+                    <input type="text" id="new-book-location" placeholder="Shelf 1, Row 1" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Year</label>
-                    <input type="text" id="new-book-year" placeholder="2024" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Year</label>
+                    <input type="text" id="new-book-year" placeholder="2024" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Edition</label>
-                    <input type="text" id="new-book-edition" placeholder="1st" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Edition</label>
+                    <input type="text" id="new-book-edition" placeholder="1st" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Volume</label>
-                    <input type="text" id="new-book-volume" placeholder="Vol. 1" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Volume</label>
+                    <input type="text" id="new-book-volume" placeholder="Vol. 1" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Copies</label>
-                    <input type="number" id="new-book-copies" value="1" min="1" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Copies</label>
+                    <input type="number" id="new-book-copies" value="1" min="1" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
             </div>
-            <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
-                <button type="button" onclick="closeModal('book-modal')" class="px-5 py-2.5 border border-slate-200 rounded-xl text-slate-600 text-xs font-semibold">Cancel</button>
-                <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold shadow-sm">Save Book</button>
+            <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
+                <button type="button" onclick="closeModal('book-modal')" class="px-5 py-2.5 border border-slate-700 rounded-xl text-slate-300 text-xs font-semibold">Cancel</button>
+                <button type="submit" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/20">Save Book</button>
             </div>
         </form>
     </div>
 </div>
 
 <!-- MODAL: EDIT BOOK -->
-<div id="edit-book-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
-    <div class="bg-white text-slate-800 rounded-3xl max-w-xl w-full p-8 shadow-2xl my-8">
-        <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
-            <h3 class="text-lg font-bold text-slate-900"><i class="fa-solid fa-pen-to-square text-indigo-600 mr-2"></i>Edit Book Information</h3>
-            <button type="button" onclick="closeModal('edit-book-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+<div id="edit-book-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-800 text-slate-100 rounded-3xl max-w-xl w-full p-8 shadow-2xl my-8">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+            <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-pen-to-square text-indigo-400 mr-2"></i>Edit Book Information</h3>
+            <button type="button" onclick="closeModal('edit-book-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
         <form onsubmit="handleEditBook(event)" class="space-y-3">
             <input type="hidden" id="edit-book-id">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Accession Number</label>
-                    <input type="text" id="edit-book-accession" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Accession Number</label>
+                    <input type="text" id="edit-book-accession" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Subject Number / DDC</label>
-                    <input type="text" id="edit-book-subject" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Subject Number / DDC</label>
+                    <input type="text" id="edit-book-subject" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Book Title</label>
-                <input type="text" id="edit-book-title" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Book Title</label>
+                <input type="text" id="edit-book-title" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Author(s)</label>
-                <input type="text" id="edit-book-author" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Author(s)</label>
+                <input type="text" id="edit-book-author" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Category 1</label>
-                    <input type="text" id="edit-book-cat1" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Category 1</label>
+                    <input type="text" id="edit-book-cat1" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Shelf-Row Location</label>
-                    <input type="text" id="edit-book-location" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Shelf-Row Location</label>
+                    <input type="text" id="edit-book-location" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Year</label>
-                    <input type="text" id="edit-book-year" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Year</label>
+                    <input type="text" id="edit-book-year" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Edition</label>
-                    <input type="text" id="edit-book-edition" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Edition</label>
+                    <input type="text" id="edit-book-edition" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Volume</label>
-                    <input type="text" id="edit-book-volume" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Volume</label>
+                    <input type="text" id="edit-book-volume" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Total Copies</label>
-                    <input type="number" id="edit-book-total" min="1" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Total Copies</label>
+                    <input type="number" id="edit-book-total" min="1" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Available</label>
-                    <input type="number" id="edit-book-avail" min="0" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Available</label>
+                    <input type="number" id="edit-book-avail" min="0" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white" required>
                 </div>
             </div>
-            <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
-                <button type="button" onclick="closeModal('edit-book-modal')" class="px-5 py-2.5 border border-slate-200 rounded-xl text-slate-600 text-xs font-semibold">Cancel</button>
-                <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold shadow-sm">Update Book</button>
+            <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
+                <button type="button" onclick="closeModal('edit-book-modal')" class="px-5 py-2.5 border border-slate-700 rounded-xl text-slate-300 text-xs font-semibold">Cancel</button>
+                <button type="submit" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/20">Update Book</button>
             </div>
         </form>
     </div>
@@ -647,9 +640,8 @@
     let isAdmin = false;
     let userRole = 'viewer';
     let activeTab = 'catalog';
-    let activeViewMode = 'grid'; // 'grid' or 'table'
     let activeUnsubscribers = [];
-    let catalogRenderLimit = 50;
+    let catalogRenderLimit = 100;
     let searchTimer = null;
 
     let csvRawLines = [];
@@ -663,7 +655,7 @@
         const datetimeEl = document.getElementById('live-datetime');
         if (datetimeEl && !document.getElementById('app-container').classList.contains('hidden')) {
             const now = new Date();
-            datetimeEl.innerHTML = `<i class="fa-regular fa-clock text-indigo-500 mr-1.5"></i>${now.toLocaleDateString()} • <span class="font-bold text-slate-900">${now.toLocaleTimeString()}</span>`;
+            datetimeEl.innerHTML = `<i class="fa-regular fa-clock text-indigo-400 mr-1.5"></i>${now.toLocaleDateString()} • <span class="font-bold text-white">${now.toLocaleTimeString()}</span>`;
         }
     }, 1000);
 
@@ -835,38 +827,17 @@
             document.getElementById(`tab-${t}`).classList.add('hidden');
             const navEl = document.getElementById(`nav-${t}`);
             if (navEl) {
-                navEl.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm');
-                navEl.classList.add('text-slate-600', 'hover:bg-slate-100');
+                navEl.classList.remove('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/20');
+                navEl.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
             }
         });
         document.getElementById(`tab-${tabName}`).classList.remove('hidden');
         const activeNavEl = document.getElementById(`nav-${tabName}`);
         if (activeNavEl) {
-            activeNavEl.classList.remove('text-slate-600', 'hover:bg-slate-100');
-            activeNavEl.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
+            activeNavEl.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
+            activeNavEl.classList.add('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/20');
         }
         renderCurrentView();
-    };
-
-    window.setCatalogView = function(mode) {
-        activeViewMode = mode;
-        const gridBtn = document.getElementById('view-grid-btn');
-        const tableBtn = document.getElementById('view-table-btn');
-        const gridContainer = document.getElementById('catalog-grid-container');
-        const tableContainer = document.getElementById('catalog-table-container');
-
-        if (mode === 'grid') {
-            gridBtn.className = "px-3 py-1.5 rounded-lg bg-white text-indigo-600 shadow-sm text-xs font-semibold transition";
-            tableBtn.className = "px-3 py-1.5 rounded-lg text-slate-600 text-xs font-semibold transition";
-            gridContainer.classList.remove('hidden');
-            tableContainer.classList.add('hidden');
-        } else {
-            tableBtn.className = "px-3 py-1.5 rounded-lg bg-white text-indigo-600 shadow-sm text-xs font-semibold transition";
-            gridBtn.className = "px-3 py-1.5 rounded-lg text-slate-600 text-xs font-semibold transition";
-            tableContainer.classList.remove('hidden');
-            gridContainer.classList.add('hidden');
-        }
-        renderCatalog();
     };
 
     function renderCurrentView() {
@@ -1029,9 +1000,9 @@
                 `).join('');
 
                 return `
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="text-xs font-bold text-slate-700">${field.label}</label>
-                        <select id="map-col-${field.key}" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-white text-slate-800">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 items-center bg-slate-950 p-3 rounded-xl border border-slate-800">
+                        <label class="text-xs font-bold text-slate-300">${field.label}</label>
+                        <select id="map-col-${field.key}" class="w-full p-2 border border-slate-700 rounded-lg text-xs bg-slate-900 text-white">
                             <option value="-1">-- None / Skip --</option>
                             ${optionsHtml}
                         </select>
@@ -1195,18 +1166,23 @@
     window.debouncedSearch = function() {
         clearTimeout(searchTimer);
         searchTimer = setTimeout(() => {
-            catalogRenderLimit = 50;
+            catalogRenderLimit = 100;
             renderCatalog();
         }, 150);
     };
 
     window.loadMoreBooks = function() {
-        catalogRenderLimit += 50;
+        catalogRenderLimit += 100;
         renderCatalog();
     };
 
     window.renderCatalog = function () {
         const query = (document.getElementById('search-input')?.value || '').toLowerCase();
+        const tbody = document.getElementById('book-table-body');
+        const paginationDiv = document.getElementById('catalog-pagination');
+        if (!tbody) return;
+
+        const isStaff = hasStaffAccess();
         const allBooks = Object.values(state.books);
         const filtered = query ? allBooks.filter(b => 
             (b.title && b.title.toLowerCase().includes(query)) ||
@@ -1216,86 +1192,37 @@
             (b.category1 && b.category1.toLowerCase().includes(query))
         ) : allBooks;
 
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-500 font-mono">No books found in catalog.</td></tr>`;
+            paginationDiv.classList.add('hidden');
+            return;
+        }
+
         const visibleBooks = filtered.slice(0, catalogRenderLimit);
-        const paginationDiv = document.getElementById('catalog-pagination');
         paginationDiv.classList.toggle('hidden', filtered.length <= catalogRenderLimit);
 
-        const isStaff = hasStaffAccess();
-
-        if (activeViewMode === 'grid') {
-            const gridContainer = document.getElementById('catalog-grid-container');
-            if (!gridContainer) return;
-
-            if (filtered.length === 0) {
-                gridContainer.innerHTML = `<div class="col-span-full bg-white p-12 text-center rounded-3xl border border-slate-200 text-slate-400">No books found in catalog.</div>`;
-                return;
-            }
-
-            gridContainer.innerHTML = visibleBooks.map(b => {
-                const avail = b.availableCopies !== undefined ? b.availableCopies : 1;
-                const total = b.totalCopies !== undefined ? b.totalCopies : 1;
-                return `
-                    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4">
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-start gap-2">
-                                <span class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold">${b.category1 || 'General'}</span>
-                                <span class="font-mono text-xs font-bold text-slate-400">${b.accessionNumber || '—'}</span>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-slate-900 text-base leading-snug">${b.title}</h3>
-                                <p class="text-xs text-slate-500 mt-1">By ${b.author}</p>
-                            </div>
-                            <div class="flex flex-wrap gap-2 pt-1 text-[11px] text-slate-600">
-                                <span class="bg-slate-100 px-2.5 py-1 rounded-lg"><i class="fa-solid fa-sitemap mr-1 text-indigo-500"></i>DDC: ${b.subjectNumber || '—'}</span>
-                                <span class="bg-slate-100 px-2.5 py-1 rounded-lg"><i class="fa-solid fa-location-dot mr-1 text-rose-500"></i>${b.location || 'Shelf 1'}</span>
-                            </div>
-                        </div>
-                        
-                        <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
-                            <span class="px-3 py-1 rounded-full text-xs font-bold border ${avail > 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'}">
-                                ${avail}/${total} Available
-                            </span>
-                            ${isStaff ? `
-                                <div class="space-x-1">
-                                    <button onclick="openEditBookModal('${b.id}')" title="Edit Book" class="p-2 text-slate-400 hover:text-indigo-600 transition"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button onclick="deleteBook('${b.id}')" title="Delete Book" class="p-2 text-slate-400 hover:text-rose-600 transition"><i class="fa-solid fa-trash"></i></button>
-                                </div>` : ''}
-                        </div>
-                    </div>`;
-            }).join('');
-
-        } else {
-            const tbody = document.getElementById('book-table-body');
-            if (!tbody) return;
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400">No books found.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = visibleBooks.map(b => {
-                const avail = b.availableCopies !== undefined ? b.availableCopies : 1;
-                const total = b.totalCopies !== undefined ? b.totalCopies : 1;
-                return `
-                    <tr class="hover:bg-slate-50 transition text-xs">
-                        <td class="p-4 font-mono text-indigo-600 font-bold">${b.accessionNumber || '—'}</td>
-                        <td class="p-4 font-mono text-slate-600">${b.subjectNumber || '—'}</td>
-                        <td class="p-4">
-                            <span class="font-bold text-slate-900 text-sm">${b.title}</span><br>
-                            <span class="text-slate-500">By ${b.author}</span>
-                        </td>
-                        <td class="p-4"><span class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-md font-semibold">${b.category1 || 'General'}</span></td>
-                        <td class="p-4 text-slate-600">Ed: ${b.edition || '—'} • Vol: ${b.volume || '—'}<br><span class="text-slate-400">Year: ${b.year || '—'}</span></td>
-                        <td class="p-4 font-medium text-slate-700"><i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>${b.location || 'Shelf 1'}</td>
-                        <td class="p-4"><span class="px-2.5 py-1 rounded-full font-bold border ${avail > 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'}">${avail}/${total}</span></td>
-                        ${isStaff ? `
-                            <td class="p-4 text-right space-x-2">
-                                <button onclick="openEditBookModal('${b.id}')" title="Edit Book" class="p-1.5 text-slate-400 hover:text-indigo-600 transition"><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button onclick="deleteBook('${b.id}')" title="Delete Book" class="p-1.5 text-slate-400 hover:text-rose-600 transition"><i class="fa-solid fa-trash"></i></button>
-                            </td>` : ''}
-                    </tr>`;
-            }).join('');
-        }
+        tbody.innerHTML = visibleBooks.map(b => {
+            const avail = b.availableCopies !== undefined ? b.availableCopies : 1;
+            const total = b.totalCopies !== undefined ? b.totalCopies : 1;
+            return `
+                <tr class="hover:bg-slate-800/50 transition text-xs">
+                    <td class="p-4 font-mono text-indigo-400 font-bold">${b.accessionNumber || '—'}</td>
+                    <td class="p-4 font-mono text-slate-400">${b.subjectNumber || '—'}</td>
+                    <td class="p-4">
+                        <span class="font-bold text-white text-sm">${b.title}</span><br>
+                        <span class="text-slate-400">By ${b.author}</span>
+                    </td>
+                    <td class="p-4"><span class="bg-indigo-950 text-indigo-300 border border-indigo-800/60 px-2.5 py-1 rounded-lg font-semibold">${b.category1 || 'General'}</span></td>
+                    <td class="p-4 text-slate-400">Ed: ${b.edition || '—'} • Vol: ${b.volume || '—'}<br><span class="text-slate-500">Year: ${b.year || '—'}</span></td>
+                    <td class="p-4 font-medium text-slate-300"><i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>${b.location || 'Shelf 1'}</td>
+                    <td class="p-4"><span class="px-2.5 py-1 rounded-full font-bold border ${avail > 0 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'}">${avail}/${total}</span></td>
+                    ${isStaff ? `
+                        <td class="p-4 text-right space-x-2">
+                            <button onclick="openEditBookModal('${b.id}')" title="Edit Book" class="p-1.5 text-slate-400 hover:text-indigo-400 transition"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteBook('${b.id}')" title="Delete Book" class="p-1.5 text-slate-400 hover:text-rose-400 transition"><i class="fa-solid fa-trash"></i></button>
+                        </td>` : ''}
+                </tr>`;
+        }).join('');
     };
 
     window.renderAccessionInventory = function() {
@@ -1313,7 +1240,7 @@
         filtered.sort((a, b) => (a.accessionNumber || '').localeCompare(b.accessionNumber || ''));
 
         if (filtered.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">No accession records found.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500 font-mono">No accession records found.</td></tr>`;
             return;
         }
 
@@ -1321,13 +1248,13 @@
             const avail = b.availableCopies !== undefined ? b.availableCopies : 1;
             const total = b.totalCopies !== undefined ? b.totalCopies : 1;
             return `
-                <tr class="hover:bg-slate-50 transition text-xs">
-                    <td class="p-4 font-mono font-bold text-indigo-600">${b.accessionNumber || '—'}</td>
-                    <td class="p-4 font-bold text-slate-900">${b.title}</td>
-                    <td class="p-4 text-slate-600">${b.author}</td>
-                    <td class="p-4 font-mono text-slate-600">${b.subjectNumber || '—'}</td>
-                    <td class="p-4 font-medium text-slate-700"><i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>${b.location || 'Shelf 1'}</td>
-                    <td class="p-4"><span class="px-2.5 py-0.5 rounded-full font-bold border ${avail > 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'}">${avail}/${total} Available</span></td>
+                <tr class="hover:bg-slate-800/50 transition text-xs">
+                    <td class="p-4 font-mono font-bold text-indigo-400">${b.accessionNumber || '—'}</td>
+                    <td class="p-4 font-bold text-white">${b.title}</td>
+                    <td class="p-4 text-slate-400">${b.author}</td>
+                    <td class="p-4 font-mono text-slate-400">${b.subjectNumber || '—'}</td>
+                    <td class="p-4 font-medium text-slate-300"><i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>${b.location || 'Shelf 1'}</td>
+                    <td class="p-4"><span class="px-2.5 py-0.5 rounded-full font-bold border ${avail > 0 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'}">${avail}/${total} Available</span></td>
                 </tr>`;
         }).join('');
     };
@@ -1341,11 +1268,11 @@
             shelves[loc] = (shelves[loc] || 0) + 1;
         });
         shelfDiv.innerHTML = Object.keys(shelves).length ? Object.entries(shelves).map(([loc, count]) => `
-            <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl flex justify-between items-center">
-                <div><h4 class="font-bold text-slate-800">${loc}</h4><p class="text-xs text-slate-500 mt-0.5">Total Books</p></div>
-                <span class="bg-indigo-600 text-white font-bold px-3.5 py-1.5 rounded-xl text-sm shadow-sm">${count}</span>
+            <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl flex justify-between items-center">
+                <div><h4 class="font-bold text-white">${loc}</h4><p class="text-xs text-slate-500 mt-0.5">Total Books</p></div>
+                <span class="bg-indigo-600 text-white font-bold px-3.5 py-1.5 rounded-xl text-sm shadow-md">${count}</span>
             </div>
-        `).join('') : '<p class="text-slate-400">No books recorded.</p>';
+        `).join('') : '<p class="text-slate-500 font-mono">No books recorded.</p>';
     }
 
     function renderDDCInventory() {
@@ -1357,11 +1284,11 @@
             ddcMap[sub] = (ddcMap[sub] || 0) + 1;
         });
         ddcDiv.innerHTML = Object.keys(ddcMap).length ? Object.entries(ddcMap).map(([sub, count]) => `
-            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex justify-between items-center text-sm">
-                <span class="font-mono font-semibold text-indigo-700">Subject / DDC: ${sub}</span>
-                <span class="bg-slate-200 text-slate-800 font-bold px-3 py-1 rounded-xl text-xs">${count} books</span>
+            <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex justify-between items-center text-sm">
+                <span class="font-mono font-semibold text-indigo-400">Subject / DDC: ${sub}</span>
+                <span class="bg-slate-800 text-slate-300 font-bold px-3 py-1 rounded-xl text-xs">${count} books</span>
             </div>
-        `).join('') : '<p class="text-slate-400">No DDC data.</p>';
+        `).join('') : '<p class="text-slate-500 font-mono">No DDC data.</p>';
     }
 
     function renderBorrowers() {
@@ -1378,31 +1305,31 @@
             const borrowedBooksList = activeLoans.length > 0
                 ? activeLoans.map(tx => {
                     const book = state.books[tx.bookId] || { title: tx.bookId, accessionNumber: '' };
-                    return `<span class="inline-block bg-indigo-50 text-indigo-800 border border-indigo-100 px-2.5 py-1 rounded-lg text-xs mr-1 mb-1 font-semibold"><i class="fa-solid fa-book mr-1"></i>${book.title} (${book.accessionNumber || 'N/A'})</span>`;
+                    return `<span class="inline-block bg-indigo-950 text-indigo-300 border border-indigo-800/60 px-2.5 py-1 rounded-lg text-xs mr-1 mb-1 font-semibold"><i class="fa-solid fa-book mr-1"></i>${book.title} (${book.accessionNumber || 'N/A'})</span>`;
                 }).join('')
-                : `<span class="text-xs text-slate-400 italic">No active borrowed books</span>`;
+                : `<span class="text-xs text-slate-500 italic">No active borrowed books</span>`;
 
             const hasZeroActiveLoans = activeLoans.length === 0;
 
             return `
-            <tr class="hover:bg-slate-50 transition">
-                <td class="p-4 font-mono text-xs text-slate-500">${m.email || m.id}</td>
-                <td class="p-4 font-bold text-slate-900">${m.name}</td>
-                <td class="p-4 text-slate-600"><span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full text-xs font-semibold">${m.role || 'Seminarian'}</span></td>
+            <tr class="hover:bg-slate-800/50 transition">
+                <td class="p-4 font-mono text-xs text-slate-400">${m.email || m.id}</td>
+                <td class="p-4 font-bold text-white">${m.name}</td>
+                <td class="p-4 text-slate-400"><span class="bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full text-xs font-semibold">${m.role || 'Seminarian'}</span></td>
                 <td class="p-4">${borrowedBooksList}</td>
                 <td class="p-4 text-right">
                     ${hasZeroActiveLoans ? `
-                        <button onclick="deleteMember('${emailLower}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-xl text-xs font-semibold transition">
+                        <button onclick="deleteMember('${emailLower}')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 px-3 py-1.5 rounded-xl text-xs font-semibold transition border border-rose-500/20">
                             <i class="fa-solid fa-trash mr-1"></i>Delete
                         </button>
                     ` : `
-                        <button disabled title="Cannot delete: Borrower has active loans" class="bg-slate-100 text-slate-400 px-3 py-1.5 rounded-xl text-xs font-semibold cursor-not-allowed">
+                        <button disabled title="Cannot delete: Borrower has active loans" class="bg-slate-800 text-slate-500 px-3 py-1.5 rounded-xl text-xs font-semibold cursor-not-allowed">
                             Has Active Loans
                         </button>
                     `}
                 </td>
             </tr>`;
-        }).join('') : `<tr><td colspan="5" class="p-6 text-center text-slate-400">No authorized members.</td></tr>`;
+        }).join('') : `<tr><td colspan="5" class="p-6 text-center text-slate-500 font-mono">No authorized members.</td></tr>`;
     }
 
     function renderApprovals() {
@@ -1416,31 +1343,31 @@
             grantedTbody.innerHTML = membersList.length ? membersList.map(m => {
                 const sysRole = m.systemRole || 'viewer';
                 const roleBadge = sysRole === 'staff'
-                    ? `<span class="bg-indigo-100 text-indigo-800 px-2.5 py-0.5 rounded-full text-xs font-bold"><i class="fa-solid fa-user-tie mr-1"></i>Staff</span>`
-                    : `<span class="bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full text-xs font-bold"><i class="fa-solid fa-book-open mr-1"></i>Reader</span>`;
+                    ? `<span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 px-2.5 py-0.5 rounded-full text-xs font-bold"><i class="fa-solid fa-user-tie mr-1"></i>Staff</span>`
+                    : `<span class="bg-slate-800 text-slate-300 px-2.5 py-0.5 rounded-full text-xs font-bold"><i class="fa-solid fa-book-open mr-1"></i>Reader</span>`;
                 
                 const safeName = (m.name || 'User').replace(/'/g, "\\'");
 
                 return `
-                <tr class="hover:bg-slate-50 transition">
-                    <td class="p-4 font-bold text-slate-900">${m.name || 'Unnamed User'}</td>
-                    <td class="p-4 font-mono text-xs text-indigo-600">${m.email}</td>
+                <tr class="hover:bg-slate-800/50 transition">
+                    <td class="p-4 font-bold text-white">${m.name || 'Unnamed User'}</td>
+                    <td class="p-4 font-mono text-xs text-indigo-400">${m.email}</td>
                     <td class="p-4">${roleBadge}</td>
-                    <td class="p-4 text-xs text-slate-600">${m.role || 'Seminarian'}</td>
-                    <td class="p-4 text-xs text-slate-600">${m.authorizedDate || '—'}</td>
+                    <td class="p-4 text-xs text-slate-400">${m.role || 'Seminarian'}</td>
+                    <td class="p-4 text-xs text-slate-400 font-mono">${m.authorizedDate || '—'}</td>
                     <td class="p-4 text-right space-x-1.5 whitespace-nowrap">
-                        <button onclick="copyInviteMessage('${m.email}', '${safeName}', '${sysRole}')" title="Copy login message" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition">
+                        <button onclick="copyInviteMessage('${m.email}', '${safeName}', '${sysRole}')" title="Copy login message" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition">
                             <i class="fa-solid fa-copy mr-1"></i>Copy Invite
                         </button>
-                        <button onclick="toggleMemberRole('${m.email}', '${sysRole}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition">
+                        <button onclick="toggleMemberRole('${m.email}', '${sysRole}')" class="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition">
                             Switch Role
                         </button>
-                        <button onclick="deleteMember('${m.email}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition">
+                        <button onclick="deleteMember('${m.email}')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition">
                             Revoke
                         </button>
                     </td>
                 </tr>`;
-            }).join('') : `<tr><td colspan="6" class="p-6 text-center text-slate-400">No authorized users yet.</td></tr>`;
+            }).join('') : `<tr><td colspan="6" class="p-6 text-center text-slate-500 font-mono">No authorized users yet.</td></tr>`;
         }
 
         const approvalsTbody = document.getElementById('approvals-table-body');
@@ -1449,23 +1376,23 @@
         approvalsTbody.innerHTML = pendingList.length ? pendingList.map(p => {
             const safeId = p.email.replace(/[^a-zA-Z0-9]/g, '_');
             return `
-            <tr class="hover:bg-slate-50 transition">
-                <td class="p-4 font-mono text-xs text-slate-500">${p.email}</td>
-                <td class="p-4 font-bold text-slate-900">${p.name}</td>
-                <td class="p-4 text-slate-600">${p.address}</td>
-                <td class="p-4 text-slate-600">${p.formation || 'Seminarian'}</td>
+            <tr class="hover:bg-slate-800/50 transition">
+                <td class="p-4 font-mono text-xs text-slate-400">${p.email}</td>
+                <td class="p-4 font-bold text-white">${p.name}</td>
+                <td class="p-4 text-slate-400">${p.address}</td>
+                <td class="p-4 text-slate-400">${p.formation || 'Seminarian'}</td>
                 <td class="p-4 text-right">
                     <div class="inline-flex items-center space-x-2">
-                        <select id="role-select-${safeId}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs bg-white text-slate-700">
+                        <select id="role-select-${safeId}" class="border border-slate-700 rounded-xl px-3 py-1.5 text-xs bg-slate-950 text-slate-300">
                             <option value="viewer">Reader / Viewer</option>
                             <option value="staff">Staff</option>
                         </select>
-                        <button onclick="approveMember('${p.email}', '${safeId}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm">Accept</button>
-                        <button onclick="refuseMember('${p.email}')" class="bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm">Refuse</button>
+                        <button onclick="approveMember('${p.email}', '${safeId}')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-md">Accept</button>
+                        <button onclick="refuseMember('${p.email}')" class="bg-rose-600 hover:bg-rose-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-md">Refuse</button>
                     </div>
                 </td>
             </tr>`;
-        }).join('') : `<tr><td colspan="5" class="p-6 text-center text-slate-400">No pending authorizations.</td></tr>`;
+        }).join('') : `<tr><td colspan="5" class="p-6 text-center text-slate-500 font-mono">No pending authorizations.</td></tr>`;
     }
 
     function renderTransactions() {
@@ -1493,16 +1420,16 @@
                 const book = state.books[tx.bookId] || { title: tx.bookId };
                 const isReturned = tx.returned || tx.returnDate;
                 return `
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="p-4 font-bold text-slate-900">${member.name || tx.memberEmail}<br><span class="text-xs text-slate-400 font-mono font-normal">${tx.memberEmail}</span></td>
-                        <td class="p-4 text-slate-700 font-medium">${book.title}</td>
-                        <td class="p-4 text-xs font-mono text-slate-500">Out: ${tx.checkoutDate}<br>Due: ${tx.dueDate}</td>
-                        <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold border ${isReturned ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}">${isReturned ? 'Returned' : 'Active Loan'}</span></td>
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="p-4 font-bold text-white">${member.name || tx.memberEmail}<br><span class="text-xs text-slate-500 font-mono font-normal">${tx.memberEmail}</span></td>
+                        <td class="p-4 text-slate-300 font-medium">${book.title}</td>
+                        <td class="p-4 text-xs font-mono text-slate-400">Out: ${tx.checkoutDate}<br>Due: ${tx.dueDate}</td>
+                        <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold border ${isReturned ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-amber-500/10 text-amber-400 border-amber-500/30'}">${isReturned ? 'Returned' : 'Active Loan'}</span></td>
                         <td class="p-4 text-right">
-                            ${!isReturned ? `<button onclick="returnBook('${tx.id}', '${tx.bookId}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition">Return</button>` : `<span class="text-xs font-mono text-slate-400">${tx.returnDate}</span>`}
+                            ${!isReturned ? `<button onclick="returnBook('${tx.id}', '${tx.bookId}')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-md transition">Return</button>` : `<span class="text-xs font-mono text-slate-500">${tx.returnDate}</span>`}
                         </td>
                     </tr>`;
-            }).join('') : `<tr><td colspan="5" class="p-6 text-center text-slate-400">No borrowing records.</td></tr>`;
+            }).join('') : `<tr><td colspan="5" class="p-6 text-center text-slate-500 font-mono">No borrowing records.</td></tr>`;
         }
     }
 
@@ -1514,20 +1441,20 @@
             const book = state.books[tx.bookId] || { title: tx.bookId };
             const isReturned = tx.returned || tx.returnDate;
             return `
-                <tr class="hover:bg-slate-50 transition">
-                    <td class="p-4 font-bold text-slate-900">${book.title}</td>
-                    <td class="p-4 text-xs font-mono text-slate-500">${tx.checkoutDate}</td>
-                    <td class="p-4 text-xs font-mono text-slate-500">${tx.dueDate}</td>
+                <tr class="hover:bg-slate-800/50 transition">
+                    <td class="p-4 font-bold text-white">${book.title}</td>
+                    <td class="p-4 text-xs font-mono text-slate-400">${tx.checkoutDate}</td>
+                    <td class="p-4 text-xs font-mono text-slate-400">${tx.dueDate}</td>
                     <td class="p-4">
-                        <span class="px-2.5 py-1 rounded-full text-xs font-bold border ${isReturned ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}">
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold border ${isReturned ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-amber-500/10 text-amber-400 border-amber-500/30'}">
                             ${isReturned ? 'Returned' : 'Currently Borrowed'}
                         </span>
                     </td>
                     <td class="p-4 text-right">
-                        ${!isReturned ? `<button onclick="returnBook('${tx.id}', '${tx.bookId}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition"><i class="fa-solid fa-arrow-rotate-left mr-1"></i>Return Book</button>` : `<span class="text-xs font-mono text-slate-500">${tx.returnDate}</span>`}
+                        ${!isReturned ? `<button onclick="returnBook('${tx.id}', '${tx.bookId}')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-md transition"><i class="fa-solid fa-arrow-rotate-left mr-1"></i>Return Book</button>` : `<span class="text-xs font-mono text-slate-500">${tx.returnDate}</span>`}
                     </td>
                 </tr>`;
-        }).join('') : `<tr><td colspan="5" class="p-6 text-center text-slate-400">You have not borrowed any books yet.</td></tr>`;
+        }).join('') : `<tr><td colspan="5" class="p-6 text-center text-slate-500 font-mono">You have not borrowed any books yet.</td></tr>`;
     }
 
     window.handleAddBook = async function (e) {
