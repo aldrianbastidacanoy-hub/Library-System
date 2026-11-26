@@ -1,827 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LWCS Library Portal — UI Design</title>
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f8fafc;
-        }
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-        /* Custom subtle scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        /* Settings Desk themes */
-        body.theme-dark { background-color: #0f172a !important; color: #e2e8f0 !important; }
-        body.theme-dark .bg-white { background-color: #1e293b !important; border-color: #334155 !important; }
-        body.theme-dark .bg-slate-50, body.theme-dark .bg-slate-50\/60 { background-color: #273449 !important; }
-        body.theme-dark .text-slate-900, body.theme-dark .text-slate-800, body.theme-dark .text-slate-700 { color: #f1f5f9 !important; }
-        body.theme-dark .text-slate-600, body.theme-dark .text-slate-500, body.theme-dark .text-slate-400 { color: #cbd5e1 !important; }
-        body.theme-dark input, body.theme-dark select { background-color: #0f172a !important; color: #f8fafc !important; border-color: #475569 !important; }
-        body.theme-dark table thead tr { background-color: #273449 !important; }
-        body.theme-dark table tbody tr { border-color: #334155 !important; }
-        body.theme-dark .border-slate-100, body.theme-dark .border-slate-200, body.theme-dark .border-slate-200\/80 { border-color: #334155 !important; }
-        body.theme-blue { background-color: #eff6ff !important; }
-        body.theme-green { background-color: #f0fdf4 !important; }
-        body.theme-blue main > section > .bg-white, body.theme-green main > section > .bg-white { border-color: #cbd5e1 !important; }
-    </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LWCS Library Portal</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc} .font-mono{font-family:'JetBrains Mono',monospace}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:#f1f5f9}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+body.theme-dark{background:#0f172a!important;color:#e2e8f0!important}body.theme-dark .bg-white{background:#1e293b!important;border-color:#334155!important}body.theme-dark .bg-slate-50,body.theme-dark .bg-slate-50\/60{background:#273449!important}body.theme-dark .text-slate-900,body.theme-dark .text-slate-800,body.theme-dark .text-slate-700{color:#f1f5f9!important}body.theme-dark .text-slate-600,body.theme-dark .text-slate-500,body.theme-dark .text-slate-400{color:#cbd5e1!important}body.theme-dark input,body.theme-dark select{background:#0f172a!important;color:#f8fafc!important;border-color:#475569!important}body.theme-dark table thead tr{background:#273449!important}body.theme-dark table tbody tr{border-color:#334155!important}body.theme-dark .border-slate-100,body.theme-dark .border-slate-200,body.theme-dark .border-slate-200\/80{border-color:#334155!important}body.theme-blue{background:#eff6ff!important}body.theme-green{background:#f0fdf4!important}
+</style>
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col">
-
-    <!-- TOP NAVIGATION BAR -->
-    <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-
-                <!-- Brand Logo & Title -->
-                <div class="flex items-center space-x-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md shadow-indigo-500/20">
-                        <i class="fa-solid fa-book-open-reader text-lg text-white"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold tracking-tight text-white leading-none">LWCS Library</h1>
-                        <p class="text-[11px] text-indigo-300 font-medium mt-1">Management &amp; Catalog System</p>
-                    </div>
-                </div>
-
-                <!-- Right Controls: Clock & User Profile -->
-                <div class="flex items-center space-x-4">
-                    <div class="hidden md:flex items-center space-x-2 bg-slate-800/80 border border-slate-700/80 px-3.5 py-1.5 rounded-lg text-xs text-slate-300">
-                        <i class="fa-regular fa-clock text-indigo-400"></i>
-                        <span id="live-clock" class="font-mono">Nov 26, 2026 • 07:36 AM</span>
-                    </div>
-
-                    <div class="flex items-center space-x-3 bg-slate-800/90 border border-slate-700 pl-2 pr-3 py-1 rounded-full">
-                        <img src="https://ui-avatars.com/api/?name=Aldrian+Canoy&background=4f46e5&color=fff" alt="Avatar" class="w-7 h-7 rounded-full border border-indigo-400">
-                        <div class="hidden sm:block text-left">
-                            <p class="text-xs font-semibold text-white leading-none">Librarian Admin</p>
-                            <p class="text-[10px] text-emerald-400 font-medium mt-0.5">● Online</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- DESK TABS NAVIGATION -->
-            <nav class="flex space-x-1 overflow-x-auto pb-2 pt-1 text-xs font-semibold">
-                <button onclick="switchDesk('catalog')" id="tab-btn-catalog" class="desk-btn px-3.5 py-2 rounded-lg bg-indigo-600 text-white shadow-sm flex items-center space-x-2 transition whitespace-nowrap">
-                    <i class="fa-solid fa-book"></i><span>Catalog</span>
-                </button>
-                <button onclick="switchDesk('accession')" id="tab-btn-accession" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition whitespace-nowrap">
-                    <i class="fa-solid fa-barcode"></i><span>Accession Inventory</span>
-                </button>
-                <button onclick="switchDesk('shelf')" id="tab-btn-shelf" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition whitespace-nowrap">
-                    <i class="fa-solid fa-layer-group"></i><span>Shelf Inventory</span>
-                </button>
-                <button onclick="switchDesk('ddc')" id="tab-btn-ddc" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition whitespace-nowrap">
-                    <i class="fa-solid fa-sitemap"></i><span>DDC Inventory</span>
-                </button>
-                <button onclick="switchDesk('borrowers')" id="tab-btn-borrowers" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition whitespace-nowrap">
-                    <i class="fa-solid fa-users"></i><span>Borrowers</span>
-                </button>
-                <button onclick="switchDesk('circulation')" id="tab-btn-circulation" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition whitespace-nowrap">
-                    <i class="fa-solid fa-right-left"></i><span>Borrow &amp; Return</span>
-                </button>
-                <button onclick="switchDesk('auth')" id="tab-btn-auth" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition whitespace-nowrap">
-                    <i class="fa-solid fa-shield-halved"></i><span>Account Authorization</span>
-                </button>
-
-                <button onclick="switchDesk('settings')" id="tab-btn-settings" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition whitespace-nowrap">
-                    <i class="fa-solid fa-gear"></i><span>Settings Desk</span>
-                </button>
-            </nav>
-        </div>
-    </header>
-
-    <!-- MAIN WORKSPACE -->
-    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 flex-grow">
-
-        <!-- KPI SUMMARY CARDS -->
-        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Books</p>
-                    <h2 class="text-2xl font-extrabold text-slate-900 mt-1">1,428</h2>
-                    <p class="text-[11px] text-emerald-600 font-medium mt-1"><i class="fa-solid fa-arrow-trend-up mr-1"></i>+24 this month</p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-books"></i><i class="fa-solid fa-book"></i>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Registered Borrowers</p>
-                    <h2 class="text-2xl font-extrabold text-slate-900 mt-1">86</h2>
-                    <p class="text-[11px] text-slate-500 font-medium mt-1">Seminarians &amp; Faculty</p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-user-graduate"></i>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Active Loans</p>
-                    <h2 class="text-2xl font-extrabold text-slate-900 mt-1">19</h2>
-                    <p class="text-[11px] text-amber-600 font-medium mt-1">3 due within 48 hrs</p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-hand-holding-hand"></i>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Shelf Locations</p>
-                    <h2 class="text-2xl font-extrabold text-slate-900 mt-1">14</h2>
-                    <p class="text-[11px] text-indigo-600 font-medium mt-1">Philosophy &amp; Theology</p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-table-columns"></i>
-                </div>
-            </div>
-        </section>
-
-        <!-- DESK 1: CATALOG -->
-        <section id="desk-catalog" class="desk-view space-y-5">
-            <!-- Toolbar -->
-            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="relative w-full md:w-96">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-                    <input id="catalog-search" type="search" oninput="renderCatalog()" placeholder="Search by title, author, accession #, or DDC..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition">
-                </div>
-                <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-end">
-                    <button onclick="openModal('csv-modal')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-2">
-                        <i class="fa-solid fa-file-csv"></i><span>Import CSV</span>
-                    </button>
-                    <button onclick="openAddBookModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-2">
-                        <i class="fa-solid fa-plus"></i><span>Add New Book</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Catalog Table -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                                <th class="py-3.5 px-4">Accession #</th>
-                                <th class="py-3.5 px-4">DDC / Subject</th>
-                                <th class="py-3.5 px-4">Book Details</th>
-                                <th class="py-3.5 px-4">Category</th>
-                                <th class="py-3.5 px-4">Shelf Location</th>
-                                <th class="py-3.5 px-4">Availability</th>
-                                <th class="py-3.5 px-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="catalog-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
-                    </table>
-                </div>
-            </div>
-            <p class="px-1 text-xs text-slate-500"><i class="fa-solid fa-circle-info mr-1"></i>Use the Edit and Delete buttons in each row to manage individual books. Catalog changes are saved in this browser.</p>
-        </section>
-
-        <!-- DESK 2: ACCESSION INVENTORY -->
-        <section id="desk-accession" class="desk-view hidden space-y-5">
-            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                        <h2 class="text-lg font-bold text-slate-900">Accession Number Inventory Desk</h2>
-                        <p class="text-xs text-slate-500">Sequential tracking of physical library holdings by accession barcode.</p>
-                    </div>
-                    <input type="text" placeholder="Filter accession #..." class="px-3.5 py-2 border border-slate-200 rounded-xl text-sm w-full sm:w-64">
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm">
-                        <thead>
-                            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase text-slate-500">
-                                <th class="py-3 px-4">Accession #</th>
-                                <th class="py-3 px-4">Title</th>
-                                <th class="py-3 px-4">Author</th>
-                                <th class="py-3 px-4">Shelf</th>
-                                <th class="py-3 px-4">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            <tr>
-                                <td class="py-3 px-4 font-mono font-bold text-indigo-600">ACC-2026-001</td>
-                                <td class="py-3 px-4 font-semibold">Summa Theologiae</td>
-                                <td class="py-3 px-4 text-slate-600">St. Thomas Aquinas</td>
-                                <td class="py-3 px-4 text-slate-600">Shelf A, Row 2</td>
-                                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">On Shelf</span></td>
-                            </tr>
-                            <tr>
-                                <td class="py-3 px-4 font-mono font-bold text-indigo-600">ACC-2026-042</td>
-                                <td class="py-3 px-4 font-semibold">Introduction to Christianity</td>
-                                <td class="py-3 px-4 text-slate-600">Joseph Ratzinger</td>
-                                <td class="py-3 px-4 text-slate-600">Shelf C, Row 4</td>
-                                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700">Checked Out</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- DESK 3: SHELF INVENTORY -->
-        <section id="desk-shelf" class="desk-view hidden">
-            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-                <h2 class="text-lg font-bold text-slate-900">Physical Shelf Breakdown</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 flex justify-between items-center">
-                        <div>
-                            <h3 class="font-bold text-slate-800">Shelf A — Ancient &amp; Medieval</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Rows 1 to 5</p>
-                        </div>
-                        <span class="px-3 py-1 bg-indigo-600 text-white font-bold rounded-lg text-sm">340</span>
-                    </div>
-                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 flex justify-between items-center">
-                        <div>
-                            <h3 class="font-bold text-slate-800">Shelf B — Modern Philosophy</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Rows 1 to 4</p>
-                        </div>
-                        <span class="px-3 py-1 bg-indigo-600 text-white font-bold rounded-lg text-sm">285</span>
-                    </div>
-                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 flex justify-between items-center">
-                        <div>
-                            <h3 class="font-bold text-slate-800">Shelf C — Dogmatic Theology</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Rows 1 to 6</p>
-                        </div>
-                        <span class="px-3 py-1 bg-indigo-600 text-white font-bold rounded-lg text-sm">512</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- DESK 4: DDC INVENTORY -->
-        <section id="desk-ddc" class="desk-view hidden">
-            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
-                <h2 class="text-lg font-bold text-slate-900">Dewey Decimal Classification (DDC)</h2>
-                <div class="p-3.5 rounded-xl border border-slate-200 flex justify-between items-center">
-                    <span class="font-mono text-sm font-semibold text-indigo-700">100 — Philosophy &amp; Psychology</span>
-                    <span class="px-3 py-1 bg-slate-100 rounded-lg text-xs font-bold text-slate-700">625 Volumes</span>
-                </div>
-                <div class="p-3.5 rounded-xl border border-slate-200 flex justify-between items-center">
-                    <span class="font-mono text-sm font-semibold text-indigo-700">200 — Religion &amp; Theology</span>
-                    <span class="px-3 py-1 bg-slate-100 rounded-lg text-xs font-bold text-slate-700">803 Volumes</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- DESK 5: BORROWERS -->
-        <section id="desk-borrowers" class="desk-view hidden space-y-5">
-            <!-- Add Borrower Form -->
-            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-                <h3 class="text-base font-bold text-slate-900">Register New Borrower</h3>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Full Name</label>
-                        <input type="text" placeholder="Juan Dela Cruz" class="w-full p-2.5 border border-slate-200 rounded-xl text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Email / ID</label>
-                        <input type="email" placeholder="juan@gmail.com" class="w-full p-2.5 border border-slate-200 rounded-xl text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Borrower Type</label>
-                        <select onchange="toggleCustomType(this)" class="w-full p-2.5 border border-slate-200 rounded-xl text-sm bg-white">
-                            <option>Seminarian</option>
-                            <option>Faculty</option>
-                            <option>Staff</option>
-                            <option value="Other">Other (Custom)</option>
-                        </select>
-                    </div>
-                    <div id="custom-type-box" class="hidden">
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Specify Type</label>
-                        <input type="text" placeholder="e.g. Visiting Scholar" class="w-full p-2.5 border border-slate-200 rounded-xl text-sm">
-                    </div>
-                    <div>
-                        <button class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm transition">Add Borrower</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Borrowers List -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase text-slate-500">
-                            <th class="py-3.5 px-4">Borrower Name</th>
-                            <th class="py-3.5 px-4">Type</th>
-                            <th class="py-3.5 px-4">Currently Borrowed Books</th>
-                            <th class="py-3.5 px-4 text-right">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        <tr>
-                            <td class="py-3.5 px-4 font-bold text-slate-900">Fr. Miguel Santos<br><span class="text-xs font-mono font-normal text-slate-400">msantos@lwcs.edu.ph</span></td>
-                            <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">Faculty</span></td>
-                            <td class="py-3.5 px-4">
-                                <span class="inline-block bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg text-xs font-semibold">Introduction to Christianity (ACC-2026-042)</span>
-                            </td>
-                            <td class="py-3.5 px-4 text-right">
-                                <button disabled class="px-3 py-1 bg-slate-100 text-slate-400 rounded-lg text-xs font-semibold cursor-not-allowed">Active Loan</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="py-3.5 px-4 font-bold text-slate-900">Carlos Mendoza<br><span class="text-xs font-mono font-normal text-slate-400">cmendoza@gmail.com</span></td>
-                            <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">Seminarian</span></td>
-                            <td class="py-3.5 px-4 text-xs text-slate-400 italic">0 Active Loans</td>
-                            <td class="py-3.5 px-4 text-right">
-                                <button class="px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-semibold transition"><i class="fa-solid fa-trash mr-1"></i>Delete</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- DESK 6: BORROW & RETURN -->
-        <section id="desk-circulation" class="desk-view hidden">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-                    <h3 class="text-base font-bold text-slate-900">Quick Book Checkout</h3>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Borrower Name or Email</label>
-                            <input type="text" placeholder="Type existing or new name..." class="w-full p-2.5 border border-slate-200 rounded-xl text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Select Book</label>
-                            <select class="w-full p-2.5 border border-slate-200 rounded-xl text-sm bg-white">
-                                <option>Summa Theologiae (ACC-2026-001)</option>
-                                <option>Critique of Pure Reason (ACC-2026-014)</option>
-                            </select>
-                        </div>
-                        <button class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm shadow-sm transition">Confirm Checkout</button>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-                    <h3 class="text-base font-bold text-slate-900">Active Circulation Log</h3>
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase text-slate-500">
-                                <th class="py-3 px-4">Borrower</th>
-                                <th class="py-3 px-4">Book</th>
-                                <th class="py-3 px-4">Due Date</th>
-                                <th class="py-3 px-4 text-right">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            <tr>
-                                <td class="py-3 px-4 font-semibold">Fr. Miguel Santos</td>
-                                <td class="py-3 px-4 text-slate-600">Introduction to Christianity</td>
-                                <td class="py-3 px-4 font-mono text-xs text-amber-600 font-semibold">Dec 10, 2026</td>
-                                <td class="py-3 px-4 text-right">
-                                    <button class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition">Return</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- DESK 7: ACCOUNT AUTHORIZATION -->
-        <section id="desk-auth" class="desk-view hidden">
-            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-                <h2 class="text-lg font-bold text-slate-900">Portal Access Control</h2>
-                <p class="text-xs text-slate-500">Pre-authorize Google accounts to access the library system.</p>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                    <input type="email" placeholder="user@gmail.com" class="p-2.5 border border-slate-200 rounded-xl text-sm">
-                    <input type="text" placeholder="Full Name" class="p-2.5 border border-slate-200 rounded-xl text-sm">
-                    <select class="p-2.5 border border-slate-200 rounded-xl text-sm bg-white">
-                        <option>Reader / Viewer</option>
-                        <option>Library Staff</option>
-                    </select>
-                    <button class="py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm transition">Grant Access</button>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- DESK 8: SETTINGS -->
-        <section id="desk-settings" class="desk-view hidden space-y-5">
-            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-900">Library Appearance</h2>
-                    <p class="text-xs text-slate-500 mt-1">Customize the look and readability of your library portal. Your preferences are saved in this browser.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div class="space-y-2">
-                        <label for="theme-choice" class="block text-sm font-semibold text-slate-700">Color Theme</label>
-                        <select id="theme-choice" onchange="applyLibrarySettings()" class="w-full p-3 border border-slate-200 rounded-xl text-sm bg-white">
-                            <option value="light">Light (Default)</option>
-                            <option value="dark">Dark</option>
-                            <option value="blue">Soft Blue</option>
-                            <option value="green">Soft Green</option>
-                        </select>
-                        <p class="text-xs text-slate-400">Choose the overall appearance of the portal.</p>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label for="font-choice" class="block text-sm font-semibold text-slate-700">Font Family</label>
-                        <select id="font-choice" onchange="applyLibrarySettings()" class="w-full p-3 border border-slate-200 rounded-xl text-sm bg-white">
-                            <option value="jakarta">Plus Jakarta Sans</option>
-                            <option value="arial">Arial</option>
-                            <option value="times">Times New Roman</option>
-                            <option value="georgia">Georgia</option>
-                            <option value="mono">JetBrains Mono</option>
-                        </select>
-                        <p class="text-xs text-slate-400">Select the font used throughout the library.</p>
-                    </div>
-
-                    <div class="space-y-2 md:col-span-2">
-                        <label for="font-size-choice" class="block text-sm font-semibold text-slate-700">Font Size</label>
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-                            <select id="font-size-choice" onchange="applyLibrarySettings()" class="w-full sm:w-64 p-3 border border-slate-200 rounded-xl text-sm bg-white">
-                                <option value="14">Small</option>
-                                <option value="16" selected>Medium (Default)</option>
-                                <option value="18">Large</option>
-                                <option value="20">Extra Large</option>
-                            </select>
-                            <span class="text-xs text-slate-500">Preview: <span id="font-preview" class="font-semibold">The quick brown fox jumps over the lazy dog.</span></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex flex-wrap gap-2 pt-3 border-t border-slate-100">
-                    <button onclick="resetLibrarySettings()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50">Reset Appearance</button>
-                    <span id="settings-saved-message" class="text-xs text-emerald-600 self-center" role="status"></span>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- MODAL: ADD / EDIT BOOK -->
-    <div id="add-book-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 id="book-modal-title" class="text-lg font-bold text-slate-900">Add Book to Catalog</h3>
-                <button onclick="closeModal('add-book-modal')" type="button" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form id="book-form" onsubmit="saveBook(event)" class="space-y-3 text-sm">
-                <input type="hidden" id="book-edit-id">
-                <div class="grid grid-cols-2 gap-3">
-                    <input id="book-accession" type="text" required placeholder="Accession Number" class="p-2.5 border border-slate-200 rounded-xl w-full">
-                    <input id="book-ddc" type="text" placeholder="Subject / DDC #" class="p-2.5 border border-slate-200 rounded-xl w-full">
-                </div>
-                <input id="book-title" type="text" required placeholder="Book Title" class="w-full p-2.5 border border-slate-200 rounded-xl">
-                <input id="book-author" type="text" placeholder="Author(s)" class="w-full p-2.5 border border-slate-200 rounded-xl">
-                <div class="grid grid-cols-2 gap-3">
-                    <input id="book-category" type="text" placeholder="Category (e.g. Philosophy)" class="p-2.5 border border-slate-200 rounded-xl w-full">
-                    <input id="book-shelf" type="text" placeholder="Shelf Location" class="p-2.5 border border-slate-200 rounded-xl w-full">
-                </div>
-                <input id="book-edition" type="text" placeholder="Edition / Volume / Year (optional)" class="w-full p-2.5 border border-slate-200 rounded-xl">
-                <div class="grid grid-cols-2 gap-3">
-                    <input id="book-available" type="number" min="0" value="1" required placeholder="Available copies" class="p-2.5 border border-slate-200 rounded-xl w-full">
-                    <input id="book-total" type="number" min="0" value="1" required placeholder="Total copies" class="p-2.5 border border-slate-200 rounded-xl w-full">
-                </div>
-                <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
-                    <button onclick="closeModal('add-book-modal')" type="button" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600">Cancel</button>
-                    <button id="book-save-button" type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold">Save Book</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: CSV COLUMN MAPPER PREVIEW -->
-    <div id="csv-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="text-lg font-bold text-slate-900">CSV Column Mapping</h3>
-                <button onclick="closeModal('csv-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <p class="text-xs text-slate-500">Match your CSV headers to the library catalog fields:</p>
-            <div class="space-y-2.5 text-xs">
-                <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                    <span class="font-bold text-slate-700">Book Title</span>
-                    <select class="p-1.5 border border-slate-300 rounded-lg bg-white"><option>[Col 1] Title</option></select>
-                </div>
-                <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                    <span class="font-bold text-slate-700">Author(s)</span>
-                    <select class="p-1.5 border border-slate-300 rounded-lg bg-white"><option>[Col 2] Author</option></select>
-                </div>
-                <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                    <span class="font-bold text-slate-700">Accession Number</span>
-                    <select class="p-1.5 border border-slate-300 rounded-lg bg-white"><option>[Col 3] Acc_No</option></select>
-                </div>
-            </div>
-            <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
-                <button onclick="closeModal('csv-modal')" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600">Cancel</button>
-                <button onclick="closeModal('csv-modal')" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold">Import CSV</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- FOOTER -->
-    <footer class="bg-white border-t border-slate-200 py-4 mt-10">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
-            LWCS Library Portal • Designed for Academic &amp; Seminary Collections
-        </div>
-    </footer>
-
-    <!-- UI INTERACTION SCRIPT -->
-    <script>
-        function switchDesk(deskName) {
-            // Hide all desk sections
-            document.querySelectorAll('.desk-view').forEach(el => el.classList.add('hidden'));
-            // Reset all nav buttons
-            document.querySelectorAll('.desk-btn').forEach(btn => {
-                btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm');
-                btn.classList.add('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
-            });
-
-            // Show selected desk
-            document.getElementById(`desk-${deskName}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`tab-btn-${deskName}`);
-            activeBtn.classList.remove('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
-            activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
-        }
-
-        function toggleCustomType(selectEl) {
-            const box = document.getElementById('custom-type-box');
-            if (selectEl.value === 'Other') {
-                box.classList.remove('hidden');
-            } else {
-                box.classList.add('hidden');
-            }
-        }
-
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-
-        // Library appearance preferences
-        const LIBRARY_SETTINGS_KEY = 'lwcs-library-settings-v1';
-
-
-        // Catalog data is stored in this browser so edits and deletions remain after refresh.
-        const LIBRARY_BOOKS_KEY = 'lwcs-library-books-v2';
-        const LEGACY_LIBRARY_BOOKS_KEY = 'lwcs-library-books-v1';
-        let libraryBooks = [];
-
-        const starterBooks = [
-            { id: 'sample-001', accession: 'ACC-2026-001', ddc: '189.4', title: 'Summa Theologiae (Prima Pars)', author: 'St. Thomas Aquinas', edition: 'Vol. 1 • 2022', category: 'Philosophy', shelf: 'Shelf A, Row 2', available: 3, total: 3 },
-            { id: 'sample-014', accession: 'ACC-2026-014', ddc: '193', title: 'Critique of Pure Reason', author: 'Immanuel Kant', edition: '2nd Ed. • 2019', category: 'Metaphysics', shelf: 'Shelf B, Row 1', available: 1, total: 2 },
-            { id: 'sample-042', accession: 'ACC-2026-042', ddc: '230.2', title: 'Introduction to Christianity', author: 'Joseph Ratzinger', edition: '2004', category: 'Theology', shelf: 'Shelf C, Row 4', available: 0, total: 1 }
-        ];
-
-        function escapeHTML(value) {
-            return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
-        }
-
-        function loadCatalog() {
-            try {
-                // Load the newest catalog first. If this is the first visit after
-                // this update, migrate the earlier v1 catalog without losing books.
-                let saved = localStorage.getItem(LIBRARY_BOOKS_KEY);
-                if (saved === null) {
-                    saved = localStorage.getItem(LEGACY_LIBRARY_BOOKS_KEY);
-                    if (saved !== null) localStorage.setItem(LIBRARY_BOOKS_KEY, saved);
-                }
-                const parsed = saved === null ? null : JSON.parse(saved);
-                libraryBooks = Array.isArray(parsed)
-                    ? parsed.map((book, index) => ({
-                        id: String(book.id || `book-${Date.now()}-${index}`),
-                        accession: String(book.accession || ''),
-                        ddc: String(book.ddc || ''),
-                        title: String(book.title || ''),
-                        author: String(book.author || ''),
-                        edition: String(book.edition || ''),
-                        category: String(book.category || ''),
-                        shelf: String(book.shelf || ''),
-                        available: Math.max(0, Number(book.available) || 0),
-                        total: Math.max(0, Number(book.total) || 0)
-                    }))
-                    : starterBooks.map(book => ({ ...book }));
-            } catch (error) {
-                console.error('Could not load the saved library catalog:', error);
-                libraryBooks = starterBooks.map(book => ({ ...book }));
-                alert('The saved catalog could not be read. Your sample books have been loaded.');
-            }
-            renderCatalog();
-        }
-
-        function saveCatalog() {
-            try {
-                const catalogJSON = JSON.stringify(libraryBooks);
-                localStorage.setItem(LIBRARY_BOOKS_KEY, catalogJSON);
-                // Keep the previous key in sync for compatibility with an older copy.
-                localStorage.setItem(LEGACY_LIBRARY_BOOKS_KEY, catalogJSON);
-                return true;
-            } catch (error) {
-                console.error('Could not save the library catalog:', error);
-                alert('The browser could not save your changes. Make sure this page is opened in a normal browser window and that site storage is allowed.');
-                return false;
-            }
-        }
-
-        function renderCatalog() {
-            const tbody = document.getElementById('catalog-table-body');
-            if (!tbody) return;
-            const search = (document.getElementById('catalog-search')?.value || '').trim().toLowerCase();
-            const filtered = libraryBooks.filter(book => [book.accession, book.ddc, book.title, book.author, book.edition, book.category, book.shelf].join(' ').toLowerCase().includes(search));
-            if (!filtered.length) {
-                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-10 text-center text-sm text-slate-500">No books found. Add a new book or change your search.</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = filtered.map(book => {
-                const available = Math.max(0, Number(book.available) || 0);
-                const total = Math.max(0, Number(book.total) || 0);
-                const statusClass = available === 0 ? 'bg-rose-50 text-rose-700 border-rose-200' : available < total ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200';
-                return `<tr class="hover:bg-slate-50/80 transition">
-                    <td class="py-3.5 px-4 font-mono text-xs font-semibold text-indigo-600">${escapeHTML(book.accession)}</td>
-                    <td class="py-3.5 px-4 font-mono text-xs text-slate-600">${escapeHTML(book.ddc)}</td>
-                    <td class="py-3.5 px-4"><p class="font-bold text-slate-900">${escapeHTML(book.title)}</p><p class="text-xs text-slate-500">${escapeHTML(book.author)}${book.edition ? ' • ' + escapeHTML(book.edition) : ''}</p></td>
-                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700">${escapeHTML(book.category)}</span></td>
-                    <td class="py-3.5 px-4 text-xs font-medium text-slate-700"><i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>${escapeHTML(book.shelf)}</td>
-                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${statusClass} border">${available} / ${total} Available</span></td>
-                    <td class="py-3.5 px-4 text-right whitespace-nowrap"><div class="inline-flex items-center gap-2"><button type="button" data-book-action="edit" data-book-id="${escapeHTML(book.id)}" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold transition" title="Edit this book"><i class="fa-solid fa-pen-to-square"></i><span>Edit</span></button><button type="button" data-book-action="delete" data-book-id="${escapeHTML(book.id)}" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold transition" title="Delete this book"><i class="fa-solid fa-trash"></i><span>Delete</span></button></div></td>
-                </tr>`;
-            }).join('');
-        }
-
-        function openAddBookModal() {
-            document.getElementById('book-form').reset();
-            document.getElementById('book-edit-id').value = '';
-            document.getElementById('book-available').value = 1;
-            document.getElementById('book-total').value = 1;
-            document.getElementById('book-modal-title').textContent = 'Add Book to Catalog';
-            document.getElementById('book-save-button').textContent = 'Save Book';
-            openModal('add-book-modal');
-        }
-
-        function editBook(encodedId) {
-            editBookById(decodeURIComponent(encodedId));
-        }
-
-        function editBookById(id) {
-            const book = libraryBooks.find(item => item.id === id);
-            if (!book) return alert('This book could not be found. Refresh the catalog and try again.');
-            document.getElementById('book-edit-id').value = book.id;
-            document.getElementById('book-accession').value = book.accession || '';
-            document.getElementById('book-ddc').value = book.ddc || '';
-            document.getElementById('book-title').value = book.title || '';
-            document.getElementById('book-author').value = book.author || '';
-            document.getElementById('book-category').value = book.category || '';
-            document.getElementById('book-shelf').value = book.shelf || '';
-            document.getElementById('book-edition').value = book.edition || '';
-            document.getElementById('book-available').value = Number(book.available) || 0;
-            document.getElementById('book-total').value = Number(book.total) || 0;
-            document.getElementById('book-modal-title').textContent = 'Edit Book Details';
-            document.getElementById('book-save-button').textContent = 'Save Changes';
-            openModal('add-book-modal');
-        }
-
-        function saveBook(event) {
-            event.preventDefault();
-            const id = document.getElementById('book-edit-id').value;
-            const available = Number(document.getElementById('book-available').value);
-            const total = Number(document.getElementById('book-total').value);
-            if (available > total) return alert('Available copies cannot be greater than total copies.');
-            const book = {
-                id: id || (window.crypto?.randomUUID ? crypto.randomUUID() : 'book-' + Date.now()),
-                accession: document.getElementById('book-accession').value.trim(),
-                ddc: document.getElementById('book-ddc').value.trim(),
-                title: document.getElementById('book-title').value.trim(),
-                author: document.getElementById('book-author').value.trim(),
-                category: document.getElementById('book-category').value.trim(),
-                shelf: document.getElementById('book-shelf').value.trim(),
-                edition: document.getElementById('book-edition').value.trim(),
-                available, total
-            };
-            if (!book.accession || !book.title) return alert('Please enter at least the accession number and book title.');
-            const duplicate = libraryBooks.some(item => item.accession.toLowerCase() === book.accession.toLowerCase() && item.id !== id);
-            if (duplicate) return alert('That accession number is already used by another book.');
-            if (id) {
-                const index = libraryBooks.findIndex(item => item.id === id);
-                if (index === -1) return alert('This book no longer exists in the catalog.');
-                libraryBooks[index] = book;
-            } else {
-                libraryBooks.push(book);
-            }
-            if (!saveCatalog()) return;
-            renderCatalog();
-            closeModal('add-book-modal');
-            document.getElementById('book-form').reset();
-        }
-
-        function deleteBook(encodedId) {
-            deleteBookById(decodeURIComponent(encodedId));
-        }
-
-        function deleteBookById(id) {
-            const book = libraryBooks.find(item => item.id === id);
-            if (!book) return;
-            if (!confirm(`Delete “${book.title}” (${book.accession}) from the catalog? This cannot be undone.`)) return;
-            libraryBooks = libraryBooks.filter(item => item.id !== id);
-            if (saveCatalog()) renderCatalog();
-        }
-
-        function applyLibrarySettings() {
-            const theme = document.getElementById('theme-choice').value;
-            const font = document.getElementById('font-choice').value;
-            const size = document.getElementById('font-size-choice').value;
-
-            document.body.classList.remove('theme-dark', 'theme-blue', 'theme-green');
-            if (theme !== 'light') document.body.classList.add('theme-' + theme);
-
-            const fontFamilies = {
-                jakarta: "'Plus Jakarta Sans', sans-serif",
-                arial: "Arial, Helvetica, sans-serif",
-                times: "'Times New Roman', Times, serif",
-                georgia: "Georgia, serif",
-                mono: "'JetBrains Mono', monospace"
-            };
-            document.body.style.fontFamily = fontFamilies[font] || fontFamilies.jakarta;
-            document.documentElement.style.fontSize = size + 'px';
-            document.getElementById('font-preview').style.fontFamily = fontFamilies[font] || fontFamilies.jakarta;
-            document.getElementById('font-preview').style.fontSize = size + 'px';
-
-            const settings = { theme, font, size };
-            try {
-                localStorage.setItem(LIBRARY_SETTINGS_KEY, JSON.stringify(settings));
-                document.getElementById('settings-saved-message').textContent = 'Settings saved.';
-            } catch (error) {
-                document.getElementById('settings-saved-message').textContent = 'Settings applied, but could not be saved in this browser.';
-            }
-        }
-
-        function loadLibrarySettings() {
-            let settings = { theme: 'light', font: 'jakarta', size: '16' };
-            try {
-                const saved = JSON.parse(localStorage.getItem(LIBRARY_SETTINGS_KEY) || 'null');
-                if (saved) settings = { ...settings, ...saved };
-            } catch (error) {
-                // Use default settings if saved preferences are unavailable.
-            }
-            document.getElementById('theme-choice').value = settings.theme;
-            document.getElementById('font-choice').value = settings.font;
-            document.getElementById('font-size-choice').value = settings.size;
-            applyLibrarySettings();
-            document.getElementById('settings-saved-message').textContent = '';
-        }
-
-        function resetLibrarySettings() {
-            document.getElementById('theme-choice').value = 'light';
-            document.getElementById('font-choice').value = 'jakarta';
-            document.getElementById('font-size-choice').value = '16';
-            applyLibrarySettings();
-        }
-
-        // Restore preferences whenever the page is opened.
-        document.addEventListener('DOMContentLoaded', () => {
-            loadLibrarySettings();
-            loadCatalog();
-
-            // One delegated listener handles Edit and Delete for every catalog row,
-            // including rows recreated after searching or saving an edit.
-            document.getElementById('catalog-table-body').addEventListener('click', event => {
-                const button = event.target.closest('button[data-book-action]');
-                if (!button) return;
-                const bookId = button.getAttribute('data-book-id');
-                if (button.getAttribute('data-book-action') === 'edit') editBookById(bookId);
-                if (button.getAttribute('data-book-action') === 'delete') deleteBookById(bookId);
-            });
-        });
-
-    </script>
+<header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg border-b border-slate-800">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="flex justify-between items-center h-16">
+   <div class="flex items-center space-x-3.5"><div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center"><i class="fa-solid fa-book-open-reader text-lg"></i></div><div><h1 class="text-lg font-bold tracking-tight leading-none">LWCS Library</h1><p class="text-[11px] text-indigo-300 font-medium mt-1">Management &amp; Catalog System</p></div></div>
+   <div class="flex items-center space-x-3"><div class="hidden md:flex items-center space-x-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs text-slate-300"><i class="fa-regular fa-clock text-indigo-400"></i><span id="live-clock" class="font-mono"></span></div><div class="flex items-center space-x-2 bg-slate-800 border border-slate-700 pl-2 pr-3 py-1 rounded-full"><img src="https://ui-avatars.com/api/?name=LWCS+Library&background=4f46e5&color=fff" alt="Library avatar" class="w-7 h-7 rounded-full"><div class="hidden sm:block"><p class="text-xs font-semibold text-white">Librarian Admin</p><p class="text-[10px] text-emerald-400">● Online</p></div></div></div>
+  </div>
+  <nav class="flex gap-1 overflow-x-auto pb-2 pt-1 text-xs font-semibold" aria-label="Library desks">
+   <button onclick="switchDesk('catalog')" id="tab-btn-catalog" class="desk-btn px-3.5 py-2 rounded-lg bg-indigo-600 text-white flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-book"></i>Catalog</button>
+   <button onclick="switchDesk('accession')" id="tab-btn-accession" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-barcode"></i>Accession Inventory</button>
+   <button onclick="switchDesk('shelf')" id="tab-btn-shelf" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-layer-group"></i>Shelf Inventory</button>
+   <button onclick="switchDesk('ddc')" id="tab-btn-ddc" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-sitemap"></i>DDC Inventory</button>
+   <button onclick="switchDesk('borrowers')" id="tab-btn-borrowers" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-users"></i>Borrowers</button>
+   <button onclick="switchDesk('circulation')" id="tab-btn-circulation" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-right-left"></i>Borrow &amp; Return</button>
+   <button onclick="switchDesk('auth')" id="tab-btn-auth" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-shield-halved"></i>Account Authorization</button>
+   <button onclick="switchDesk('settings')" id="tab-btn-settings" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-gear"></i>Settings Desk</button>
+  </nav>
+ </div>
+</header>
+<main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 flex-grow">
+ <section class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between"><div><p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Catalog Records</p><h2 id="total-books-count" class="text-2xl font-extrabold text-slate-900 mt-1">0</h2><p class="text-[11px] text-slate-500 mt-1">Actual books saved in your catalog</p></div><div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl"><i class="fa-solid fa-book"></i></div></div></section>
+ <section id="desk-catalog" class="desk-view space-y-5">
+  <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4"><div class="relative w-full md:w-96"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i><input id="catalog-search" type="search" oninput="renderCatalog()" placeholder="Search title, author, accession #, or DDC..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm"></div><div class="flex flex-wrap gap-2 w-full md:w-auto justify-end"><button onclick="openCSVModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold"><i class="fa-solid fa-file-csv mr-2"></i>Import CSV</button><button onclick="openAddBookModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold"><i class="fa-solid fa-plus mr-2"></i>Add New Book</button></div></div>
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase text-slate-500"><th class="py-3.5 px-4">Accession #</th><th class="py-3.5 px-4">DDC / Subject</th><th class="py-3.5 px-4">Book Details</th><th class="py-3.5 px-4">Category</th><th class="py-3.5 px-4">Shelf Location</th><th class="py-3.5 px-4">Availability</th><th class="py-3.5 px-4 text-right">Actions</th></tr></thead><tbody id="catalog-table-body" class="divide-y divide-slate-100 text-sm"></tbody></table></div></div>
+  <p class="px-1 text-xs text-slate-500"><i class="fa-solid fa-circle-info mr-1"></i>Use Edit and Delete to manage individual books. CSV imports are added to the catalog. Changes are saved in this browser.</p>
+ </section>
+ <section id="desk-accession" class="desk-view hidden"><div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4"><div><h2 class="text-lg font-bold text-slate-900">Accession Number Inventory Desk</h2><p class="text-xs text-slate-500">Automatically generated from your catalog records.</p></div><div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead><tr class="bg-slate-50 border-b text-[11px] uppercase text-slate-500"><th class="py-3 px-4">Accession #</th><th class="py-3 px-4">Title</th><th class="py-3 px-4">Author</th><th class="py-3 px-4">Shelf</th><th class="py-3 px-4">Copies</th></tr></thead><tbody id="accession-table-body" class="divide-y divide-slate-100"></tbody></table></div></div></section>
+ <section id="desk-shelf" class="desk-view hidden"><div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4"><h2 class="text-lg font-bold text-slate-900">Physical Shelf Breakdown</h2><p class="text-xs text-slate-500">Counts are calculated from shelf locations in your catalog.</p><div id="shelf-inventory-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div></div></section>
+ <section id="desk-ddc" class="desk-view hidden"><div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3"><h2 class="text-lg font-bold text-slate-900">Dewey Decimal Classification (DDC)</h2><p class="text-xs text-slate-500">Counts are calculated from DDC numbers in your catalog.</p><div id="ddc-inventory-list" class="space-y-2"></div></div></section>
+ <section id="desk-borrowers" class="desk-view hidden"><div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"><h2 class="text-lg font-bold text-slate-900">Borrowers</h2><p class="text-sm text-slate-500 mt-2">No borrower records have been added yet. This desk is ready for borrower-management features.</p></div></section>
+ <section id="desk-circulation" class="desk-view hidden"><div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"><h2 class="text-lg font-bold text-slate-900">Borrow &amp; Return</h2><p class="text-sm text-slate-500 mt-2">No circulation records yet. Borrowing and return transactions are not connected to the catalog in this version.</p></div></section>
+ <section id="desk-auth" class="desk-view hidden"><div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"><h2 class="text-lg font-bold text-slate-900">Account Authorization</h2><p class="text-sm text-slate-500 mt-2">Account authorization has not been configured. This page currently runs as a browser-based catalog.</p></div></section>
+ <section id="desk-settings" class="desk-view hidden space-y-5"><div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5"><div><h2 class="text-lg font-bold text-slate-900">Library Appearance</h2><p class="text-xs text-slate-500 mt-1">Customize the look and readability of your library portal. Preferences are saved in this browser.</p></div><div class="grid grid-cols-1 md:grid-cols-2 gap-5"><div class="space-y-2"><label for="theme-choice" class="block text-sm font-semibold text-slate-700">Color Theme</label><select id="theme-choice" onchange="applyLibrarySettings()" class="w-full p-3 border border-slate-200 rounded-xl text-sm bg-white"><option value="light">Light (Default)</option><option value="dark">Dark</option><option value="blue">Soft Blue</option><option value="green">Soft Green</option></select></div><div class="space-y-2"><label for="font-choice" class="block text-sm font-semibold text-slate-700">Font Family</label><select id="font-choice" onchange="applyLibrarySettings()" class="w-full p-3 border border-slate-200 rounded-xl text-sm bg-white"><option value="jakarta">Plus Jakarta Sans</option><option value="arial">Arial</option><option value="times">Times New Roman</option><option value="georgia">Georgia</option><option value="mono">JetBrains Mono</option></select></div><div class="space-y-2 md:col-span-2"><label for="font-size-choice" class="block text-sm font-semibold text-slate-700">Font Size</label><div class="flex flex-col sm:flex-row sm:items-center gap-3"><select id="font-size-choice" onchange="applyLibrarySettings()" class="w-full sm:w-64 p-3 border border-slate-200 rounded-xl text-sm bg-white"><option value="14">Small</option><option value="16" selected>Medium (Default)</option><option value="18">Large</option><option value="20">Extra Large</option></select><span class="text-xs text-slate-500">Preview: <span id="font-preview" class="font-semibold">The quick brown fox jumps over the lazy dog.</span></span></div></div></div><div class="flex flex-wrap gap-2 pt-3 border-t border-slate-100"><button onclick="resetLibrarySettings()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600">Reset Appearance</button><span id="settings-saved-message" class="text-xs text-emerald-600 self-center" role="status"></span></div></div></section>
+</main>
+<div id="add-book-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50"><div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"><div class="flex justify-between items-center border-b border-slate-100 pb-3"><h3 id="book-modal-title" class="text-lg font-bold text-slate-900">Add Book to Catalog</h3><button type="button" onclick="closeModal('add-book-modal')" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button></div><form id="book-form" onsubmit="saveBook(event)" class="space-y-3 text-sm"><input type="hidden" id="book-edit-id"><div class="grid grid-cols-2 gap-3"><input id="book-accession" required placeholder="Accession Number" class="p-2.5 border border-slate-200 rounded-xl w-full"><input id="book-ddc" placeholder="Subject / DDC #" class="p-2.5 border border-slate-200 rounded-xl w-full"></div><input id="book-title" required placeholder="Book Title" class="w-full p-2.5 border border-slate-200 rounded-xl"><input id="book-author" placeholder="Author(s)" class="w-full p-2.5 border border-slate-200 rounded-xl"><div class="grid grid-cols-2 gap-3"><input id="book-category" placeholder="Category" class="p-2.5 border border-slate-200 rounded-xl w-full"><input id="book-shelf" placeholder="Shelf Location" class="p-2.5 border border-slate-200 rounded-xl w-full"></div><input id="book-edition" placeholder="Edition / Volume / Year (optional)" class="w-full p-2.5 border border-slate-200 rounded-xl"><div class="grid grid-cols-2 gap-3"><label class="text-xs text-slate-600">Available copies<input id="book-available" type="number" min="0" value="1" required class="mt-1 p-2.5 border border-slate-200 rounded-xl w-full"></label><label class="text-xs text-slate-600">Total copies<input id="book-total" type="number" min="0" value="1" required class="mt-1 p-2.5 border border-slate-200 rounded-xl w-full"></label></div><div class="flex justify-end gap-2 pt-3 border-t border-slate-100"><button type="button" onclick="closeModal('add-book-modal')" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold">Cancel</button><button id="book-save-button" type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-semibold">Save Book</button></div></form></div></div>
+<div id="csv-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50"><div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"><div class="flex justify-between items-center border-b border-slate-100 pb-3"><h3 class="text-lg font-bold text-slate-900">Import Books from CSV</h3><button type="button" onclick="closeModal('csv-modal')" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button></div><p class="text-xs text-slate-500">Choose a CSV file. The first row must contain column headings. Map the headings to library fields, then import. Existing records will not be replaced.</p><input id="csv-file-input" type="file" accept=".csv,text/csv" onchange="handleCSVFile(event)" class="block w-full text-sm border border-slate-200 rounded-xl p-3"><p id="csv-file-status" class="text-xs text-slate-500" role="status">No file selected.</p><div id="csv-mapping-area" class="hidden space-y-2"><p class="text-xs font-bold text-slate-700">Match your CSV columns</p><div id="csv-mapping-fields" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div><p class="text-[11px] text-slate-500">Required: Book Title and Accession Number. Other columns are optional.</p></div><div class="flex justify-end gap-2 pt-3 border-t border-slate-100"><button type="button" onclick="closeModal('csv-modal')" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold">Cancel</button><button id="csv-import-button" type="button" onclick="importCSVBooks()" disabled class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold disabled:opacity-40">Import CSV</button></div></div></div>
+<footer class="bg-white border-t border-slate-200 py-4 mt-10"><div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">LWCS Library Portal • Designed for Academic &amp; Seminary Collections</div></footer>
+<script>
+'use strict';
+const BOOKS_KEY='lwcs-library-books-v3';
+const SETTINGS_KEY='lwcs-library-settings-v1';
+let libraryBooks=[];
+let pendingCSVRows=[];
+let pendingCSVHeaders=[];
+const CSV_FIELDS=[
+ ['title','Book Title',['title','book title','book_title','name']],
+ ['accession','Accession Number',['accession','accession number','acc no','acc_no','accession no','accession_no','acc number','acc #']],
+ ['author','Author(s)',['author','authors','author(s)']],
+ ['ddc','DDC / Subject',['ddc','ddc number','classification','call number']],
+ ['category','Category',['category','subject']],
+ ['shelf','Shelf Location',['shelf','shelf location','location']],
+ ['edition','Edition / Volume / Year',['edition','volume','year','edition/volume/year']],
+ ['total','Total Copies',['total','total copies','copies','quantity']],
+ ['available','Available Copies',['available','available copies','available quantity']]
+];
+function escapeHTML(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function switchDesk(name){document.querySelectorAll('.desk-view').forEach(el=>el.classList.add('hidden'));document.querySelectorAll('.desk-btn').forEach(btn=>{btn.classList.remove('bg-indigo-600','text-white');btn.classList.add('text-slate-300');});document.getElementById('desk-'+name).classList.remove('hidden');const active=document.getElementById('tab-btn-'+name);active.classList.remove('text-slate-300');active.classList.add('bg-indigo-600','text-white');}
+function openModal(id){const el=document.getElementById(id);el.classList.remove('hidden');el.classList.add('flex');}
+function closeModal(id){const el=document.getElementById(id);el.classList.add('hidden');el.classList.remove('flex');}
+function loadCatalog(){try{const saved=localStorage.getItem(BOOKS_KEY);const parsed=saved===null?[]:JSON.parse(saved);libraryBooks=Array.isArray(parsed)?parsed.map((b,i)=>({id:String(b.id||`book-${Date.now()}-${i}`),accession:String(b.accession||''),ddc:String(b.ddc||''),title:String(b.title||''),author:String(b.author||''),edition:String(b.edition||''),category:String(b.category||''),shelf:String(b.shelf||''),available:Math.max(0,Number(b.available)||0),total:Math.max(0,Number(b.total)||0)})):[];}catch(err){console.error(err);libraryBooks=[];alert('The saved catalog could not be read. The catalog has been opened empty.');}renderCatalog();}
+function saveCatalog(){try{localStorage.setItem(BOOKS_KEY,JSON.stringify(libraryBooks));return true;}catch(err){console.error(err);alert('Your browser could not save these changes. Check that site storage is allowed.');return false;}}
+function renderCatalog(){const body=document.getElementById('catalog-table-body');if(!body)return;const q=(document.getElementById('catalog-search').value||'').trim().toLowerCase();const filtered=libraryBooks.filter(b=>[b.accession,b.ddc,b.title,b.author,b.edition,b.category,b.shelf].join(' ').toLowerCase().includes(q));document.getElementById('total-books-count').textContent=libraryBooks.length.toLocaleString();if(!filtered.length){body.innerHTML=`<tr><td colspan="7" class="px-4 py-10 text-center text-sm text-slate-500">${libraryBooks.length?'No books match your search.':'Your catalog is empty. Import your CSV file or add your first book.'}</td></tr>`;}else{body.innerHTML=filtered.map(b=>{const a=Math.max(0,Number(b.available)||0),t=Math.max(0,Number(b.total)||0),status=a===0?'bg-rose-50 text-rose-700 border-rose-200':a<t?'bg-amber-50 text-amber-700 border-amber-200':'bg-emerald-50 text-emerald-700 border-emerald-200';return `<tr class="hover:bg-slate-50/80"><td class="py-3.5 px-4 font-mono text-xs font-semibold text-indigo-600">${escapeHTML(b.accession)}</td><td class="py-3.5 px-4 font-mono text-xs text-slate-600">${escapeHTML(b.ddc)}</td><td class="py-3.5 px-4"><p class="font-bold text-slate-900">${escapeHTML(b.title)}</p><p class="text-xs text-slate-500">${escapeHTML(b.author)}${b.edition?' • '+escapeHTML(b.edition):''}</p></td><td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700">${escapeHTML(b.category)}</span></td><td class="py-3.5 px-4 text-xs text-slate-700">${escapeHTML(b.shelf)}</td><td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold border ${status}">${a} / ${t} Available</span></td><td class="py-3.5 px-4 text-right whitespace-nowrap"><div class="inline-flex gap-2"><button type="button" data-action="edit" data-id="${escapeHTML(b.id)}" class="px-3 py-2 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-semibold"><i class="fa-solid fa-pen-to-square mr-1"></i>Edit</button><button type="button" data-action="delete" data-id="${escapeHTML(b.id)}" class="px-3 py-2 rounded-lg bg-rose-50 text-rose-700 text-xs font-semibold"><i class="fa-solid fa-trash mr-1"></i>Delete</button></div></td></tr>`;}).join('');}renderInventory();}
+function renderInventory(){const ab=document.getElementById('accession-table-body');ab.innerHTML=libraryBooks.length?libraryBooks.map(b=>`<tr><td class="py-3 px-4 font-mono font-bold text-indigo-600">${escapeHTML(b.accession)}</td><td class="py-3 px-4 font-semibold">${escapeHTML(b.title)}</td><td class="py-3 px-4 text-slate-600">${escapeHTML(b.author)}</td><td class="py-3 px-4 text-slate-600">${escapeHTML(b.shelf)}</td><td class="py-3 px-4">${Number(b.available)||0} / ${Number(b.total)||0}</td></tr>`).join(''):'<tr><td colspan="5" class="py-8 text-center text-slate-500">No accession records yet. Import books into the Catalog first.</td></tr>';
+ const shelves={};libraryBooks.forEach(b=>{const k=b.shelf.trim()||'Shelf not specified';shelves[k]=(shelves[k]||0)+1;});document.getElementById('shelf-inventory-list').innerHTML=Object.keys(shelves).length?Object.entries(shelves).sort((a,b)=>a[0].localeCompare(b[0])).map(([name,count])=>`<div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 flex justify-between items-center gap-3"><h3 class="font-bold text-slate-800">${escapeHTML(name)}</h3><span class="px-3 py-1 bg-indigo-600 text-white font-bold rounded-lg text-sm">${count}</span></div>`).join(''):'<p class="text-sm text-slate-500">No shelf locations recorded yet.</p>';
+ const names=['Computer science, information & general works','Philosophy & psychology','Religion','Social sciences','Language','Science','Technology','Arts & recreation','Literature','History & geography'];const ddc={};libraryBooks.forEach(b=>{const raw=b.ddc.trim(),n=parseInt(raw,10),key=raw?`${Math.floor(n/100)*100} — ${Number.isFinite(n)?(names[Math.floor(n/100)]||'Other'):'Unclassified'}`:'DDC not specified';ddc[key]=(ddc[key]||0)+1;});document.getElementById('ddc-inventory-list').innerHTML=Object.keys(ddc).length?Object.entries(ddc).sort((a,b)=>a[0].localeCompare(b[0])).map(([name,count])=>`<div class="p-3.5 rounded-xl border border-slate-200 flex justify-between items-center gap-3"><span class="font-mono text-sm font-semibold text-indigo-700">${escapeHTML(name)}</span><span class="px-3 py-1 bg-slate-100 rounded-lg text-xs font-bold text-slate-700">${count} Records</span></div>`).join(''):'<p class="text-sm text-slate-500">No DDC records yet.</p>';}
+function openAddBookModal(){document.getElementById('book-form').reset();document.getElementById('book-edit-id').value='';document.getElementById('book-available').value=1;document.getElementById('book-total').value=1;document.getElementById('book-modal-title').textContent='Add Book to Catalog';document.getElementById('book-save-button').textContent='Save Book';openModal('add-book-modal');}
+function editBookById(id){const b=libraryBooks.find(x=>x.id===id);if(!b)return alert('This book could not be found.');document.getElementById('book-edit-id').value=b.id;for(const [field,key] of [['accession','accession'],['ddc','ddc'],['title','title'],['author','author'],['category','category'],['shelf','shelf'],['edition','edition'],['available','available'],['total','total']])document.getElementById('book-'+field).value=b[key]??'';document.getElementById('book-modal-title').textContent='Edit Book Details';document.getElementById('book-save-button').textContent='Save Changes';openModal('add-book-modal');}
+function saveBook(event){event.preventDefault();const id=document.getElementById('book-edit-id').value,available=Number(document.getElementById('book-available').value),total=Number(document.getElementById('book-total').value);if(available>total)return alert('Available copies cannot be greater than total copies.');const b={id:id||(crypto.randomUUID?crypto.randomUUID():'book-'+Date.now()),accession:document.getElementById('book-accession').value.trim(),ddc:document.getElementById('book-ddc').value.trim(),title:document.getElementById('book-title').value.trim(),author:document.getElementById('book-author').value.trim(),category:document.getElementById('book-category').value.trim(),shelf:document.getElementById('book-shelf').value.trim(),edition:document.getElementById('book-edition').value.trim(),available,total};if(!b.accession||!b.title)return alert('Enter the accession number and book title.');if(libraryBooks.some(x=>x.accession.toLowerCase()===b.accession.toLowerCase()&&x.id!==id))return alert('That accession number is already used by another book.');if(id){const i=libraryBooks.findIndex(x=>x.id===id);if(i<0)return alert('This book no longer exists.');libraryBooks[i]=b;}else libraryBooks.push(b);if(!saveCatalog())return;renderCatalog();closeModal('add-book-modal');document.getElementById('book-form').reset();}
+function deleteBookById(id){const b=libraryBooks.find(x=>x.id===id);if(!b)return;if(!confirm(`Delete “${b.title}” (${b.accession}) from the catalog? This cannot be undone.`))return;libraryBooks=libraryBooks.filter(x=>x.id!==id);if(saveCatalog())renderCatalog();}
+function parseCSV(text){const rows=[];let row=[],cell='',quoted=false;for(let i=0;i<text.length;i++){const ch=text[i];if(quoted){if(ch==='"'&&text[i+1]==='"'){cell+='"';i++;}else if(ch==='"')quoted=false;else cell+=ch;}else if(ch==='"')quoted=true;else if(ch===','){row.push(cell);cell='';}else if(ch==='\n'){row.push(cell.replace(/\r$/,''));if(row.some(v=>v.trim()))rows.push(row);row=[];cell='';}else cell+=ch;}row.push(cell.replace(/\r$/,''));if(row.some(v=>v.trim()))rows.push(row);return rows;}
+function normalizeHeader(s){return String(s||'').toLowerCase().trim().replace(/[._-]+/g,' ').replace(/\s+/g,' ');}
+function openCSVModal(){document.getElementById('csv-file-input').value='';document.getElementById('csv-file-status').textContent='No file selected.';document.getElementById('csv-mapping-area').classList.add('hidden');document.getElementById('csv-import-button').disabled=true;pendingCSVRows=[];pendingCSVHeaders=[];openModal('csv-modal');}
+async function handleCSVFile(event){const file=event.target.files?.[0];if(!file)return;const status=document.getElementById('csv-file-status'),area=document.getElementById('csv-mapping-area'),button=document.getElementById('csv-import-button');try{const rows=parseCSV(await file.text());if(rows.length<2)throw new Error('The CSV must contain a header row and at least one book row.');pendingCSVHeaders=rows[0].map((h,i)=>String(h||'').replace(/^\uFEFF/,'').trim()||`Column ${i+1}`);pendingCSVRows=rows.slice(1);const fields=document.getElementById('csv-mapping-fields');fields.innerHTML=CSV_FIELDS.map(([key,label,aliases])=>{const found=pendingCSVHeaders.findIndex(h=>aliases.includes(normalizeHeader(h)));const options='<option value="">— Do not import —</option>'+pendingCSVHeaders.map((h,i)=>`<option value="${i}" ${i===found?'selected':''}>${escapeHTML(h)}</option>`).join('');return `<label class="text-xs font-semibold text-slate-700">${label}<select data-csv-field="${key}" class="mt-1 block w-full p-2.5 border border-slate-200 rounded-lg bg-white text-xs">${options}</select></label>`;}).join('');area.classList.remove('hidden');button.disabled=false;status.textContent=`${file.name} loaded: ${pendingCSVRows.length} data rows found. Check the column mapping before importing.`;}catch(err){pendingCSVRows=[];area.classList.add('hidden');button.disabled=true;status.textContent=err.message||'Could not read this CSV file.';}}
+function importCSVBooks(){if(!pendingCSVRows.length)return alert('Please select a valid CSV file first.');const map={};document.querySelectorAll('[data-csv-field]').forEach(el=>map[el.dataset.csvField]=el.value===''?-1:Number(el.value));if(map.title<0||map.accession<0)return alert('Map both Book Title and Accession Number.');const seen=new Set(libraryBooks.map(b=>b.accession.trim().toLowerCase()));let imported=0,skipped=0;pendingCSVRows.forEach((row,index)=>{const get=k=>map[k]>=0?String(row[map[k]]??'').trim():'';const title=get('title'),accession=get('accession');if(!title||!accession||seen.has(accession.toLowerCase())){skipped++;return;}const totalText=get('total'),availableText=get('available'),total=totalText===''?1:Math.max(0,Number(totalText)||0),available=availableText===''?total:Math.min(total,Math.max(0,Number(availableText)||0));libraryBooks.push({id:crypto.randomUUID?crypto.randomUUID():`book-${Date.now()}-${index}`,title,accession,author:get('author'),ddc:get('ddc'),category:get('category'),shelf:get('shelf'),edition:get('edition'),total,available});seen.add(accession.toLowerCase());imported++;});if(imported&&!saveCatalog())return;renderCatalog();closeModal('csv-modal');pendingCSVRows=[];pendingCSVHeaders=[];alert(`CSV import finished.\nImported: ${imported}\nSkipped: ${skipped}${skipped?' (blank rows or duplicate accession numbers)':''}`);}
+function applyLibrarySettings(){const theme=document.getElementById('theme-choice').value,font=document.getElementById('font-choice').value,size=document.getElementById('font-size-choice').value;document.body.classList.remove('theme-dark','theme-blue','theme-green');if(theme!=='light')document.body.classList.add('theme-'+theme);const fonts={jakarta:"'Plus Jakarta Sans', sans-serif",arial:'Arial, Helvetica, sans-serif',times:"'Times New Roman', Times, serif",georgia:'Georgia, serif',mono:"'JetBrains Mono', monospace"};document.body.style.fontFamily=fonts[font]||fonts.jakarta;document.documentElement.style.fontSize=size+'px';document.getElementById('font-preview').style.fontFamily=fonts[font]||fonts.jakarta;document.getElementById('font-preview').style.fontSize=size+'px';try{localStorage.setItem(SETTINGS_KEY,JSON.stringify({theme,font,size}));document.getElementById('settings-saved-message').textContent='Settings saved.';}catch(e){document.getElementById('settings-saved-message').textContent='Settings applied, but could not be saved.';}}
+function loadLibrarySettings(){let s={theme:'light',font:'jakarta',size:'16'};try{s={...s,...JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')};}catch(e){}document.getElementById('theme-choice').value=s.theme;document.getElementById('font-choice').value=s.font;document.getElementById('font-size-choice').value=s.size;applyLibrarySettings();document.getElementById('settings-saved-message').textContent='';}
+function resetLibrarySettings(){document.getElementById('theme-choice').value='light';document.getElementById('font-choice').value='jakarta';document.getElementById('font-size-choice').value='16';applyLibrarySettings();}
+function updateClock(){document.getElementById('live-clock').textContent=new Date().toLocaleString('en-PH',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+document.addEventListener('DOMContentLoaded',()=>{loadLibrarySettings();loadCatalog();updateClock();setInterval(updateClock,30000);document.getElementById('catalog-table-body').addEventListener('click',event=>{const button=event.target.closest('button[data-action]');if(!button)return;const id=button.dataset.id;if(button.dataset.action==='edit')editBookById(id);if(button.dataset.action==='delete')deleteBookById(id);});});
+</script>
 </body>
 </html>
