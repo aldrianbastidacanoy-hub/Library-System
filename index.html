@@ -113,6 +113,7 @@
                 <button onclick="switchDesk('auth')" id="tab-btn-auth" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition whitespace-nowrap">
                     <i class="fa-solid fa-shield-halved"></i><span>Account Authorization</span>
                 </button>
+
                 <button onclick="switchDesk('settings')" id="tab-btn-settings" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition whitespace-nowrap">
                     <i class="fa-solid fa-gear"></i><span>Settings Desk</span>
                 </button>
@@ -176,13 +177,13 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="relative w-full md:w-96">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-                    <input type="text" placeholder="Search by title, author, accession #, or DDC..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition">
+                    <input id="catalog-search" type="search" oninput="renderCatalog()" placeholder="Search by title, author, accession #, or DDC..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition">
                 </div>
                 <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-end">
                     <button onclick="openModal('csv-modal')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-2">
                         <i class="fa-solid fa-file-csv"></i><span>Import CSV</span>
                     </button>
-                    <button onclick="openModal('add-book-modal')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-2">
+                    <button onclick="openAddBookModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-sm transition flex items-center space-x-2">
                         <i class="fa-solid fa-plus"></i><span>Add New Book</span>
                     </button>
                 </div>
@@ -203,77 +204,11 @@
                                 <th class="py-3.5 px-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100 text-sm">
-                            <!-- Sample Row 1 -->
-                            <tr class="hover:bg-slate-50/80 transition">
-                                <td class="py-3.5 px-4 font-mono text-xs font-semibold text-indigo-600">ACC-2026-001</td>
-                                <td class="py-3.5 px-4 font-mono text-xs text-slate-600">189.4</td>
-                                <td class="py-3.5 px-4">
-                                    <p class="font-bold text-slate-900">Summa Theologiae (Prima Pars)</p>
-                                    <p class="text-xs text-slate-500">St. Thomas Aquinas • Vol. 1 • 2022</p>
-                                </td>
-                                <td class="py-3.5 px-4">
-                                    <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700">Philosophy</span>
-                                </td>
-                                <td class="py-3.5 px-4 text-xs font-medium text-slate-700">
-                                    <i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>Shelf A, Row 2
-                                </td>
-                                <td class="py-3.5 px-4">
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">3 / 3 Available</span>
-                                </td>
-                                <td class="py-3.5 px-4 text-right space-x-2">
-                                    <button class="p-1.5 text-slate-400 hover:text-indigo-600 transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="p-1.5 text-slate-400 hover:text-rose-600 transition" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <!-- Sample Row 2 -->
-                            <tr class="hover:bg-slate-50/80 transition">
-                                <td class="py-3.5 px-4 font-mono text-xs font-semibold text-indigo-600">ACC-2026-014</td>
-                                <td class="py-3.5 px-4 font-mono text-xs text-slate-600">193</td>
-                                <td class="py-3.5 px-4">
-                                    <p class="font-bold text-slate-900">Critique of Pure Reason</p>
-                                    <p class="text-xs text-slate-500">Immanuel Kant • 2nd Ed. • 2019</p>
-                                </td>
-                                <td class="py-3.5 px-4">
-                                    <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-purple-50 text-purple-700">Metaphysics</span>
-                                </td>
-                                <td class="py-3.5 px-4 text-xs font-medium text-slate-700">
-                                    <i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>Shelf B, Row 1
-                                </td>
-                                <td class="py-3.5 px-4">
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">1 / 2 Available</span>
-                                </td>
-                                <td class="py-3.5 px-4 text-right space-x-2">
-                                    <button class="p-1.5 text-slate-400 hover:text-indigo-600 transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="p-1.5 text-slate-400 hover:text-rose-600 transition" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <!-- Sample Row 3 -->
-                            <tr class="hover:bg-slate-50/80 transition">
-                                <td class="py-3.5 px-4 font-mono text-xs font-semibold text-indigo-600">ACC-2026-042</td>
-                                <td class="py-3.5 px-4 font-mono text-xs text-slate-600">230.2</td>
-                                <td class="py-3.5 px-4">
-                                    <p class="font-bold text-slate-900">Introduction to Christianity</p>
-                                    <p class="text-xs text-slate-500">Joseph Ratzinger • 2004</p>
-                                </td>
-                                <td class="py-3.5 px-4">
-                                    <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-sky-50 text-sky-700">Theology</span>
-                                </td>
-                                <td class="py-3.5 px-4 text-xs font-medium text-slate-700">
-                                    <i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>Shelf C, Row 4
-                                </td>
-                                <td class="py-3.5 px-4">
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">0 / 1 Available</span>
-                                </td>
-                                <td class="py-3.5 px-4 text-right space-x-2">
-                                    <button class="p-1.5 text-slate-400 hover:text-indigo-600 transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="p-1.5 text-slate-400 hover:text-rose-600 transition" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody id="catalog-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
                     </table>
                 </div>
             </div>
+            <p class="px-1 text-xs text-slate-500"><i class="fa-solid fa-circle-info mr-1"></i>Use the Edit and Delete buttons in each row to manage individual books. Catalog changes are saved in this browser.</p>
         </section>
 
         <!-- DESK 2: ACCESSION INVENTORY -->
@@ -495,6 +430,7 @@
             </div>
         </section>
 
+
         <!-- DESK 8: SETTINGS -->
         <section id="desk-settings" class="desk-view hidden space-y-5">
             <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5">
@@ -549,29 +485,35 @@
 
     </main>
 
-    <!-- MODAL: ADD BOOK -->
+    <!-- MODAL: ADD / EDIT BOOK -->
     <div id="add-book-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="text-lg font-bold text-slate-900">Add Book to Catalog</h3>
-                <button onclick="closeModal('add-book-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <h3 id="book-modal-title" class="text-lg font-bold text-slate-900">Add Book to Catalog</h3>
+                <button onclick="closeModal('add-book-modal')" type="button" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div class="space-y-3 text-sm">
+            <form id="book-form" onsubmit="saveBook(event)" class="space-y-3 text-sm">
+                <input type="hidden" id="book-edit-id">
                 <div class="grid grid-cols-2 gap-3">
-                    <input type="text" placeholder="Accession Number" class="p-2.5 border border-slate-200 rounded-xl">
-                    <input type="text" placeholder="Subject / DDC #" class="p-2.5 border border-slate-200 rounded-xl">
+                    <input id="book-accession" type="text" required placeholder="Accession Number" class="p-2.5 border border-slate-200 rounded-xl w-full">
+                    <input id="book-ddc" type="text" placeholder="Subject / DDC #" class="p-2.5 border border-slate-200 rounded-xl w-full">
                 </div>
-                <input type="text" placeholder="Book Title" class="w-full p-2.5 border border-slate-200 rounded-xl">
-                <input type="text" placeholder="Author(s)" class="w-full p-2.5 border border-slate-200 rounded-xl">
+                <input id="book-title" type="text" required placeholder="Book Title" class="w-full p-2.5 border border-slate-200 rounded-xl">
+                <input id="book-author" type="text" placeholder="Author(s)" class="w-full p-2.5 border border-slate-200 rounded-xl">
                 <div class="grid grid-cols-2 gap-3">
-                    <input type="text" placeholder="Category (e.g. Philosophy)" class="p-2.5 border border-slate-200 rounded-xl">
-                    <input type="text" placeholder="Shelf Location" class="p-2.5 border border-slate-200 rounded-xl">
+                    <input id="book-category" type="text" placeholder="Category (e.g. Philosophy)" class="p-2.5 border border-slate-200 rounded-xl w-full">
+                    <input id="book-shelf" type="text" placeholder="Shelf Location" class="p-2.5 border border-slate-200 rounded-xl w-full">
                 </div>
-            </div>
-            <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
-                <button onclick="closeModal('add-book-modal')" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600">Cancel</button>
-                <button onclick="closeModal('add-book-modal')" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-semibold">Save Book</button>
-            </div>
+                <input id="book-edition" type="text" placeholder="Edition / Volume / Year (optional)" class="w-full p-2.5 border border-slate-200 rounded-xl">
+                <div class="grid grid-cols-2 gap-3">
+                    <input id="book-available" type="number" min="0" value="1" required placeholder="Available copies" class="p-2.5 border border-slate-200 rounded-xl w-full">
+                    <input id="book-total" type="number" min="0" value="1" required placeholder="Total copies" class="p-2.5 border border-slate-200 rounded-xl w-full">
+                </div>
+                <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
+                    <button onclick="closeModal('add-book-modal')" type="button" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600">Cancel</button>
+                    <button id="book-save-button" type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold">Save Book</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -649,6 +591,170 @@
         // Library appearance preferences
         const LIBRARY_SETTINGS_KEY = 'lwcs-library-settings-v1';
 
+
+        // Catalog data is stored in this browser so edits and deletions remain after refresh.
+        const LIBRARY_BOOKS_KEY = 'lwcs-library-books-v2';
+        const LEGACY_LIBRARY_BOOKS_KEY = 'lwcs-library-books-v1';
+        let libraryBooks = [];
+
+        const starterBooks = [
+            { id: 'sample-001', accession: 'ACC-2026-001', ddc: '189.4', title: 'Summa Theologiae (Prima Pars)', author: 'St. Thomas Aquinas', edition: 'Vol. 1 • 2022', category: 'Philosophy', shelf: 'Shelf A, Row 2', available: 3, total: 3 },
+            { id: 'sample-014', accession: 'ACC-2026-014', ddc: '193', title: 'Critique of Pure Reason', author: 'Immanuel Kant', edition: '2nd Ed. • 2019', category: 'Metaphysics', shelf: 'Shelf B, Row 1', available: 1, total: 2 },
+            { id: 'sample-042', accession: 'ACC-2026-042', ddc: '230.2', title: 'Introduction to Christianity', author: 'Joseph Ratzinger', edition: '2004', category: 'Theology', shelf: 'Shelf C, Row 4', available: 0, total: 1 }
+        ];
+
+        function escapeHTML(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+        }
+
+        function loadCatalog() {
+            try {
+                // Load the newest catalog first. If this is the first visit after
+                // this update, migrate the earlier v1 catalog without losing books.
+                let saved = localStorage.getItem(LIBRARY_BOOKS_KEY);
+                if (saved === null) {
+                    saved = localStorage.getItem(LEGACY_LIBRARY_BOOKS_KEY);
+                    if (saved !== null) localStorage.setItem(LIBRARY_BOOKS_KEY, saved);
+                }
+                const parsed = saved === null ? null : JSON.parse(saved);
+                libraryBooks = Array.isArray(parsed)
+                    ? parsed.map((book, index) => ({
+                        id: String(book.id || `book-${Date.now()}-${index}`),
+                        accession: String(book.accession || ''),
+                        ddc: String(book.ddc || ''),
+                        title: String(book.title || ''),
+                        author: String(book.author || ''),
+                        edition: String(book.edition || ''),
+                        category: String(book.category || ''),
+                        shelf: String(book.shelf || ''),
+                        available: Math.max(0, Number(book.available) || 0),
+                        total: Math.max(0, Number(book.total) || 0)
+                    }))
+                    : starterBooks.map(book => ({ ...book }));
+            } catch (error) {
+                console.error('Could not load the saved library catalog:', error);
+                libraryBooks = starterBooks.map(book => ({ ...book }));
+                alert('The saved catalog could not be read. Your sample books have been loaded.');
+            }
+            renderCatalog();
+        }
+
+        function saveCatalog() {
+            try {
+                const catalogJSON = JSON.stringify(libraryBooks);
+                localStorage.setItem(LIBRARY_BOOKS_KEY, catalogJSON);
+                // Keep the previous key in sync for compatibility with an older copy.
+                localStorage.setItem(LEGACY_LIBRARY_BOOKS_KEY, catalogJSON);
+                return true;
+            } catch (error) {
+                console.error('Could not save the library catalog:', error);
+                alert('The browser could not save your changes. Make sure this page is opened in a normal browser window and that site storage is allowed.');
+                return false;
+            }
+        }
+
+        function renderCatalog() {
+            const tbody = document.getElementById('catalog-table-body');
+            if (!tbody) return;
+            const search = (document.getElementById('catalog-search')?.value || '').trim().toLowerCase();
+            const filtered = libraryBooks.filter(book => [book.accession, book.ddc, book.title, book.author, book.edition, book.category, book.shelf].join(' ').toLowerCase().includes(search));
+            if (!filtered.length) {
+                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-10 text-center text-sm text-slate-500">No books found. Add a new book or change your search.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = filtered.map(book => {
+                const available = Math.max(0, Number(book.available) || 0);
+                const total = Math.max(0, Number(book.total) || 0);
+                const statusClass = available === 0 ? 'bg-rose-50 text-rose-700 border-rose-200' : available < total ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                return `<tr class="hover:bg-slate-50/80 transition">
+                    <td class="py-3.5 px-4 font-mono text-xs font-semibold text-indigo-600">${escapeHTML(book.accession)}</td>
+                    <td class="py-3.5 px-4 font-mono text-xs text-slate-600">${escapeHTML(book.ddc)}</td>
+                    <td class="py-3.5 px-4"><p class="font-bold text-slate-900">${escapeHTML(book.title)}</p><p class="text-xs text-slate-500">${escapeHTML(book.author)}${book.edition ? ' • ' + escapeHTML(book.edition) : ''}</p></td>
+                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700">${escapeHTML(book.category)}</span></td>
+                    <td class="py-3.5 px-4 text-xs font-medium text-slate-700"><i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>${escapeHTML(book.shelf)}</td>
+                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${statusClass} border">${available} / ${total} Available</span></td>
+                    <td class="py-3.5 px-4 text-right whitespace-nowrap"><div class="inline-flex items-center gap-2"><button type="button" data-book-action="edit" data-book-id="${escapeHTML(book.id)}" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold transition" title="Edit this book"><i class="fa-solid fa-pen-to-square"></i><span>Edit</span></button><button type="button" data-book-action="delete" data-book-id="${escapeHTML(book.id)}" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold transition" title="Delete this book"><i class="fa-solid fa-trash"></i><span>Delete</span></button></div></td>
+                </tr>`;
+            }).join('');
+        }
+
+        function openAddBookModal() {
+            document.getElementById('book-form').reset();
+            document.getElementById('book-edit-id').value = '';
+            document.getElementById('book-available').value = 1;
+            document.getElementById('book-total').value = 1;
+            document.getElementById('book-modal-title').textContent = 'Add Book to Catalog';
+            document.getElementById('book-save-button').textContent = 'Save Book';
+            openModal('add-book-modal');
+        }
+
+        function editBook(encodedId) {
+            editBookById(decodeURIComponent(encodedId));
+        }
+
+        function editBookById(id) {
+            const book = libraryBooks.find(item => item.id === id);
+            if (!book) return alert('This book could not be found. Refresh the catalog and try again.');
+            document.getElementById('book-edit-id').value = book.id;
+            document.getElementById('book-accession').value = book.accession || '';
+            document.getElementById('book-ddc').value = book.ddc || '';
+            document.getElementById('book-title').value = book.title || '';
+            document.getElementById('book-author').value = book.author || '';
+            document.getElementById('book-category').value = book.category || '';
+            document.getElementById('book-shelf').value = book.shelf || '';
+            document.getElementById('book-edition').value = book.edition || '';
+            document.getElementById('book-available').value = Number(book.available) || 0;
+            document.getElementById('book-total').value = Number(book.total) || 0;
+            document.getElementById('book-modal-title').textContent = 'Edit Book Details';
+            document.getElementById('book-save-button').textContent = 'Save Changes';
+            openModal('add-book-modal');
+        }
+
+        function saveBook(event) {
+            event.preventDefault();
+            const id = document.getElementById('book-edit-id').value;
+            const available = Number(document.getElementById('book-available').value);
+            const total = Number(document.getElementById('book-total').value);
+            if (available > total) return alert('Available copies cannot be greater than total copies.');
+            const book = {
+                id: id || (window.crypto?.randomUUID ? crypto.randomUUID() : 'book-' + Date.now()),
+                accession: document.getElementById('book-accession').value.trim(),
+                ddc: document.getElementById('book-ddc').value.trim(),
+                title: document.getElementById('book-title').value.trim(),
+                author: document.getElementById('book-author').value.trim(),
+                category: document.getElementById('book-category').value.trim(),
+                shelf: document.getElementById('book-shelf').value.trim(),
+                edition: document.getElementById('book-edition').value.trim(),
+                available, total
+            };
+            if (!book.accession || !book.title) return alert('Please enter at least the accession number and book title.');
+            const duplicate = libraryBooks.some(item => item.accession.toLowerCase() === book.accession.toLowerCase() && item.id !== id);
+            if (duplicate) return alert('That accession number is already used by another book.');
+            if (id) {
+                const index = libraryBooks.findIndex(item => item.id === id);
+                if (index === -1) return alert('This book no longer exists in the catalog.');
+                libraryBooks[index] = book;
+            } else {
+                libraryBooks.push(book);
+            }
+            if (!saveCatalog()) return;
+            renderCatalog();
+            closeModal('add-book-modal');
+            document.getElementById('book-form').reset();
+        }
+
+        function deleteBook(encodedId) {
+            deleteBookById(decodeURIComponent(encodedId));
+        }
+
+        function deleteBookById(id) {
+            const book = libraryBooks.find(item => item.id === id);
+            if (!book) return;
+            if (!confirm(`Delete “${book.title}” (${book.accession}) from the catalog? This cannot be undone.`)) return;
+            libraryBooks = libraryBooks.filter(item => item.id !== id);
+            if (saveCatalog()) renderCatalog();
+        }
+
         function applyLibrarySettings() {
             const theme = document.getElementById('theme-choice').value;
             const font = document.getElementById('font-choice').value;
@@ -701,7 +807,20 @@
         }
 
         // Restore preferences whenever the page is opened.
-        document.addEventListener('DOMContentLoaded', loadLibrarySettings);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadLibrarySettings();
+            loadCatalog();
+
+            // One delegated listener handles Edit and Delete for every catalog row,
+            // including rows recreated after searching or saving an edit.
+            document.getElementById('catalog-table-body').addEventListener('click', event => {
+                const button = event.target.closest('button[data-book-action]');
+                if (!button) return;
+                const bookId = button.getAttribute('data-book-id');
+                if (button.getAttribute('data-book-action') === 'edit') editBookById(bookId);
+                if (button.getAttribute('data-book-action') === 'delete') deleteBookById(bookId);
+            });
+        });
 
     </script>
 </body>
