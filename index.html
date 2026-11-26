@@ -82,7 +82,7 @@ body.theme-green{background:#f0fdf4!important}
 <div>
 <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Catalog Records</p>
 <h2 id="total-books-count" class="text-2xl font-extrabold text-slate-900 mt-1">0</h2>
-<p class="text-[11px] text-slate-500 mt-1">Actual books saved in your catalog</p>
+<p class="text-[11px] text-slate-500 mt-1">Counts every individual copy, including duplicate titles</p>
 </div>
 <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
 <i class="fa-solid fa-book"></i>
@@ -97,7 +97,7 @@ body.theme-green{background:#f0fdf4!important}
 
 <div class="relative w-full md:w-96">
 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-<input id="catalog-search" type="search" oninput="renderCatalog()" placeholder="Search title, author, accession #, or DDC..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+<input id="catalog-search" type="search" oninput="renderCatalog()" placeholder="Search title, author, accession #, copy number, or DDC..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm">
 </div>
 
 <div class="flex flex-wrap gap-2 w-full md:w-auto justify-end">
@@ -131,7 +131,7 @@ body.theme-green{background:#f0fdf4!important}
 
 <p class="px-1 text-xs text-slate-500">
 <i class="fa-solid fa-circle-info mr-1"></i>
-Use Edit and Delete to manage individual books. CSV imports are added to the catalog. Changes are saved in this browser.
+Books with matching bibliographic details are grouped together. Use Show Individual Copies to view, edit, or delete each physical copy separately. Every copy is counted as an individual catalog record.
 </p>
 
 </section>
@@ -141,13 +141,14 @@ Use Edit and Delete to manage individual books. CSV imports are added to the cat
 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
 <div>
 <h2 class="text-lg font-bold text-slate-900">Accession Number Inventory Desk</h2>
-<p class="text-xs text-slate-500">Automatically generated from your catalog records.</p>
+<p class="text-xs text-slate-500">Every physical copy has its own accession and copy number record.</p>
 </div>
 <div class="overflow-x-auto">
 <table class="w-full text-left text-sm">
 <thead>
 <tr class="bg-slate-50 border-b text-[11px] uppercase text-slate-500">
 <th class="py-3 px-4">Accession #</th>
+<th class="py-3 px-4">Copy Number</th>
 <th class="py-3 px-4">Title</th>
 <th class="py-3 px-4">Author</th>
 <th class="py-3 px-4">Shelf</th>
@@ -164,7 +165,7 @@ Use Edit and Delete to manage individual books. CSV imports are added to the cat
 <section id="desk-shelf" class="desk-view hidden">
 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
 <h2 class="text-lg font-bold text-slate-900">Physical Shelf Breakdown</h2>
-<p class="text-xs text-slate-500">Counts are calculated from shelf locations in your catalog.</p>
+<p class="text-xs text-slate-500">Counts are calculated from individual catalog records and shelf locations.</p>
 <div id="shelf-inventory-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 </div>
 </section>
@@ -173,7 +174,7 @@ Use Edit and Delete to manage individual books. CSV imports are added to the cat
 <section id="desk-ddc" class="desk-view hidden">
 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
 <h2 class="text-lg font-bold text-slate-900">Dewey Decimal Classification (DDC)</h2>
-<p class="text-xs text-slate-500">Counts are calculated from DDC numbers in your catalog.</p>
+<p class="text-xs text-slate-500">Counts are calculated from individual catalog records.</p>
 <div id="ddc-inventory-list" class="space-y-2"></div>
 </div>
 </section>
@@ -271,8 +272,9 @@ Use Edit and Delete to manage individual books. CSV imports are added to the cat
 
 <input type="hidden" id="book-edit-id">
 
-<div class="grid grid-cols-2 gap-3">
+<div class="grid grid-cols-3 gap-3">
 <input id="book-accession" required placeholder="Accession Number" class="p-2.5 border border-slate-200 rounded-xl w-full">
+<input id="book-copy-number" placeholder="Copy Number" class="p-2.5 border border-slate-200 rounded-xl w-full">
 <input id="book-ddc" placeholder="Subject / DDC #" class="p-2.5 border border-slate-200 rounded-xl w-full">
 </div>
 
@@ -329,7 +331,7 @@ Use Edit and Delete to manage individual books. CSV imports are added to the cat
 </div>
 
 <p class="text-xs text-slate-500">
-Choose a CSV file. The first row must contain column headings. You can individually match each CSV column to its corresponding library field.
+Choose a CSV file. The first row must contain column headings. You can individually match each CSV column to its corresponding library field. Every valid CSV row will become an individual book-copy record.
 </p>
 
 <input id="csv-file-input" type="file" accept=".csv,text/csv" onchange="handleCSVFile(event)" class="block w-full text-sm border border-slate-200 rounded-xl p-3">
@@ -343,7 +345,7 @@ Choose a CSV file. The first row must contain column headings. You can individua
 <div id="csv-mapping-fields" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
 
 <p class="text-[11px] text-slate-500">
-Required: Book Title and Accession Number. Edition, Volume, and Year are separate optional fields.
+Required: Book Title and Accession Number. Copy Number, Edition, Volume, and Year are separate optional fields. Repeated titles and authors are allowed. Only duplicate accession numbers are skipped.
 </p>
 </div>
 
@@ -374,6 +376,7 @@ let pendingCSVHeaders = [];
 const CSV_FIELDS = [
  ['title','Book Title',['title','book title','book_title','name']],
  ['accession','Accession Number',['accession','accession number','acc no','acc_no','accession no','accession_no','acc number','acc #']],
+ ['copyNumber','Copy Number',['copy number','copy no','copy #','copy','copy_number','copy no.']],
  ['author','Author(s)',['author','authors','author(s)']],
  ['ddc','DDC / Subject',['ddc','ddc number','classification','call number']],
  ['category','Category',['category','subject']],
@@ -427,6 +430,7 @@ function loadCatalog() {
   libraryBooks = Array.isArray(parsed) ? parsed.map((b,i) => ({
    id: String(b.id || `book-${Date.now()}-${i}`),
    accession: String(b.accession || ''),
+   copyNumber: String(b.copyNumber || ''),
    ddc: String(b.ddc || ''),
    title: String(b.title || ''),
    author: String(b.author || ''),
@@ -459,68 +463,239 @@ function saveCatalog() {
  }
 }
 
+/*
+ GROUPING RULE:
+ Books are grouped when their bibliographic details match.
+ Accession Number, Copy Number, and Shelf Location are excluded
+ from the grouping identity. Each physical copy remains a separate
+ object in libraryBooks and is individually editable and deletable.
+*/
+
+function getBookGroupKey(b) {
+ return [
+  b.title,
+  b.author,
+  b.ddc,
+  b.category,
+  b.edition,
+  b.volume,
+  b.year
+ ]
+ .map(v => String(v || '').trim().toLowerCase())
+ .join('||');
+}
+
+function groupCatalogBooks(books) {
+ const groups = new Map();
+
+ books.forEach(book => {
+  const key = getBookGroupKey(book);
+
+  if (!groups.has(key)) {
+   groups.set(key, []);
+  }
+
+  groups.get(key).push(book);
+ });
+
+ return Array.from(groups.values());
+}
+
 function renderCatalog() {
  const body = document.getElementById('catalog-table-body');
  if (!body) return;
 
  const q = (document.getElementById('catalog-search').value || '').trim().toLowerCase();
 
- const filtered = libraryBooks.filter(b =>
-  [b.accession,b.ddc,b.title,b.author,b.edition,b.volume,b.year,b.category,b.shelf]
-  .join(' ').toLowerCase().includes(q)
+ const matching = libraryBooks.filter(b =>
+  [
+   b.accession,
+   b.copyNumber,
+   b.ddc,
+   b.title,
+   b.author,
+   b.edition,
+   b.volume,
+   b.year,
+   b.category,
+   b.shelf
+  ].join(' ').toLowerCase().includes(q)
  );
 
- document.getElementById('total-books-count').textContent = libraryBooks.length.toLocaleString();
+ // This count always represents individual records, not grouped titles.
+ document.getElementById('total-books-count').textContent =
+  libraryBooks.length.toLocaleString();
 
- if (!filtered.length) {
-  body.innerHTML = `<tr><td colspan="7" class="px-4 py-10 text-center text-sm text-slate-500">
-  ${libraryBooks.length ? 'No books match your search.' : 'Your catalog is empty. Import your CSV file or add your first book.'}
-  </td></tr>`;
- } else {
+ const groups = groupCatalogBooks(matching);
 
-  body.innerHTML = filtered.map(b => {
-   const a = Math.max(0,Number(b.available) || 0);
-   const t = Math.max(0,Number(b.total) || 0);
-
-   const status = a === 0
-    ? 'bg-rose-50 text-rose-700 border-rose-200'
-    : a < t
-    ? 'bg-amber-50 text-amber-700 border-amber-200'
-    : 'bg-emerald-50 text-emerald-700 border-emerald-200';
-
-   const details = [
-    b.author,
-    b.edition ? 'Edition: ' + b.edition : '',
-    b.volume ? 'Volume: ' + b.volume : '',
-    b.year ? 'Year: ' + b.year : ''
-   ].filter(Boolean).map(escapeHTML).join(' • ');
-
-   return `
-   <tr class="hover:bg-slate-50/80">
-    <td class="py-3.5 px-4 font-mono text-xs font-semibold text-indigo-600">${escapeHTML(b.accession)}</td>
-    <td class="py-3.5 px-4 font-mono text-xs text-slate-600">${escapeHTML(b.ddc)}</td>
-    <td class="py-3.5 px-4">
-     <p class="font-bold text-slate-900">${escapeHTML(b.title)}</p>
-     <p class="text-xs text-slate-500">${details}</p>
-    </td>
-    <td class="py-3.5 px-4">
-     <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700">${escapeHTML(b.category)}</span>
-    </td>
-    <td class="py-3.5 px-4 text-xs text-slate-700">${escapeHTML(b.shelf)}</td>
-    <td class="py-3.5 px-4">
-     <span class="px-2.5 py-1 rounded-full text-xs font-bold border ${status}">${a} / ${t} Available</span>
-    </td>
-    <td class="py-3.5 px-4 text-right whitespace-nowrap">
-     <div class="inline-flex gap-2">
-      <button type="button" data-action="edit" data-id="${escapeHTML(b.id)}" class="px-3 py-2 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-semibold">
-       <i class="fa-solid fa-pen-to-square mr-1"></i>Edit
-      </button>
-      <button type="button" data-action="delete" data-id="${escapeHTML(b.id)}" class="px-3 py-2 rounded-lg bg-rose-50 text-rose-700 text-xs font-semibold">
-       <i class="fa-solid fa-trash mr-1"></i>Delete
-      </button>
-     </div>
+ if (!groups.length) {
+  body.innerHTML = `
+   <tr>
+    <td colspan="7" class="px-4 py-10 text-center text-sm text-slate-500">
+     ${libraryBooks.length
+      ? 'No books match your search.'
+      : 'Your catalog is empty. Import your CSV file or add your first book.'}
     </td>
    </tr>`;
+ } else {
+
+  body.innerHTML = groups.map((copies, groupIndex) => {
+   const first = copies[0];
+   const groupId = 'book-group-' + groupIndex;
+
+   const totalAvailable = copies.reduce(
+    (sum,b) => sum + Math.max(0,Number(b.available) || 0),
+    0
+   );
+
+   const totalOwned = copies.length;
+
+   const details = [
+    first.author,
+    first.edition ? 'Edition: ' + first.edition : '',
+    first.volume ? 'Volume: ' + first.volume : '',
+    first.year ? 'Year: ' + first.year : ''
+   ]
+   .filter(Boolean)
+   .map(escapeHTML)
+   .join(' • ');
+
+   // Each individual copy gets its own row and its own Edit/Delete buttons.
+   const copyRows = copies.map(b => {
+    const a = Math.max(0,Number(b.available) || 0);
+    const t = Math.max(0,Number(b.total) || 0);
+
+    const status = a === 0
+     ? 'bg-rose-50 text-rose-700 border-rose-200'
+     : a < t
+     ? 'bg-amber-50 text-amber-700 border-amber-200'
+     : 'bg-emerald-50 text-emerald-700 border-emerald-200';
+
+    return `
+     <tr class="bg-slate-50/70 border-t border-slate-200">
+      <td class="py-3 px-4 font-mono text-xs font-semibold text-indigo-600">
+       ${escapeHTML(b.accession)}
+      </td>
+
+      <td class="py-3 px-4 font-mono text-xs text-slate-600">
+       ${escapeHTML(b.copyNumber || '—')}
+      </td>
+
+      <td class="py-3 px-4 text-xs text-slate-600">
+       ${escapeHTML(b.shelf || '—')}
+      </td>
+
+      <td class="py-3 px-4">
+       <span class="px-2.5 py-1 rounded-full text-xs font-bold border ${status}">
+        ${a} / ${t} Available
+       </span>
+      </td>
+
+      <td class="py-3 px-4 text-right whitespace-nowrap">
+       <div class="inline-flex gap-2">
+        <button
+         type="button"
+         data-action="edit"
+         data-id="${escapeHTML(b.id)}"
+         class="px-3 py-2 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-semibold">
+         <i class="fa-solid fa-pen-to-square mr-1"></i>Edit
+        </button>
+
+        <button
+         type="button"
+         data-action="delete"
+         data-id="${escapeHTML(b.id)}"
+         class="px-3 py-2 rounded-lg bg-rose-50 text-rose-700 text-xs font-semibold">
+         <i class="fa-solid fa-trash mr-1"></i>Delete
+        </button>
+       </div>
+      </td>
+     </tr>`;
+   }).join('');
+
+   return `
+    <tr class="hover:bg-slate-50/80 border-t border-slate-200">
+
+     <td class="py-3.5 px-4 font-mono text-xs font-semibold text-indigo-600">
+      ${copies.length === 1
+       ? escapeHTML(first.accession)
+       : `<span class="text-slate-500">${copies.length} copies</span>`}
+     </td>
+
+     <td class="py-3.5 px-4 font-mono text-xs text-slate-600">
+      ${escapeHTML(first.ddc)}
+     </td>
+
+     <td class="py-3.5 px-4">
+      <p class="font-bold text-slate-900">${escapeHTML(first.title)}</p>
+      <p class="text-xs text-slate-500">${details}</p>
+      <p class="text-[11px] text-indigo-600 font-semibold mt-1">
+       ${copies.length} individual ${copies.length === 1 ? 'copy' : 'copies'} recorded
+      </p>
+     </td>
+
+     <td class="py-3.5 px-4">
+      <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700">
+       ${escapeHTML(first.category)}
+      </span>
+     </td>
+
+     <td class="py-3.5 px-4 text-xs text-slate-700">
+      ${copies.length === 1
+       ? escapeHTML(first.shelf)
+       : 'Multiple / see copies'}
+     </td>
+
+     <td class="py-3.5 px-4">
+      <span class="px-2.5 py-1 rounded-full text-xs font-bold border bg-emerald-50 text-emerald-700 border-emerald-200">
+       ${totalAvailable} available of ${totalOwned} records
+      </span>
+     </td>
+
+     <td class="py-3.5 px-4 text-right">
+      <button
+       type="button"
+       data-action="toggle-group"
+       data-group="${groupId}"
+       class="px-3 py-2 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold">
+       <i class="fa-solid fa-list-ul mr-1"></i>
+       ${copies.length > 1 ? 'Show Individual Copies' : 'Show Record'}
+      </button>
+     </td>
+
+    </tr>
+
+    <tr id="${groupId}" class="hidden">
+     <td colspan="7" class="p-0">
+      <div class="px-4 py-3 bg-slate-100/70">
+
+       <p class="text-xs font-bold text-slate-600 mb-2">
+        INDIVIDUAL COPY RECORDS
+       </p>
+
+       <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+
+         <thead>
+          <tr class="text-[10px] uppercase text-slate-500">
+           <th class="py-2 px-4">Accession Number</th>
+           <th class="py-2 px-4">Copy Number</th>
+           <th class="py-2 px-4">Shelf</th>
+           <th class="py-2 px-4">Availability</th>
+           <th class="py-2 px-4 text-right">Actions</th>
+          </tr>
+         </thead>
+
+         <tbody>
+          ${copyRows}
+         </tbody>
+
+        </table>
+       </div>
+
+      </div>
+     </td>
+    </tr>`;
   }).join('');
  }
 
@@ -530,31 +705,54 @@ function renderCatalog() {
 function renderInventory() {
  const ab = document.getElementById('accession-table-body');
 
+ // Every individual copy appears in the accession inventory.
  ab.innerHTML = libraryBooks.length
- ? libraryBooks.map(b => `
-  <tr>
-   <td class="py-3 px-4 font-mono font-bold text-indigo-600">${escapeHTML(b.accession)}</td>
-   <td class="py-3 px-4 font-semibold">${escapeHTML(b.title)}</td>
-   <td class="py-3 px-4 text-slate-600">${escapeHTML(b.author)}</td>
-   <td class="py-3 px-4 text-slate-600">${escapeHTML(b.shelf)}</td>
-   <td class="py-3 px-4">${Number(b.available)||0} / ${Number(b.total)||0}</td>
-  </tr>`).join('')
- : '<tr><td colspan="5" class="py-8 text-center text-slate-500">No accession records yet. Import books into the Catalog first.</td></tr>';
+  ? libraryBooks.map(b => `
+   <tr>
+    <td class="py-3 px-4 font-mono font-bold text-indigo-600">
+     ${escapeHTML(b.accession)}
+    </td>
 
+    <td class="py-3 px-4">
+     ${escapeHTML(b.copyNumber || '—')}
+    </td>
+
+    <td class="py-3 px-4 font-semibold">
+     ${escapeHTML(b.title)}
+    </td>
+
+    <td class="py-3 px-4 text-slate-600">
+     ${escapeHTML(b.author)}
+    </td>
+
+    <td class="py-3 px-4 text-slate-600">
+     ${escapeHTML(b.shelf)}
+    </td>
+
+    <td class="py-3 px-4">
+     ${Number(b.available) || 0} / ${Number(b.total) || 0}
+    </td>
+   </tr>`).join('')
+  : '<tr><td colspan="6" class="py-8 text-center text-slate-500">No accession records yet. Import books into the Catalog first.</td></tr>';
+
+ // Shelf counts are based on individual records.
  const shelves = {};
+
  libraryBooks.forEach(b => {
   const k = b.shelf.trim() || 'Shelf not specified';
   shelves[k] = (shelves[k] || 0) + 1;
  });
 
  document.getElementById('shelf-inventory-list').innerHTML =
- Object.keys(shelves).length
- ? Object.entries(shelves).sort((a,b)=>a[0].localeCompare(b[0])).map(([name,count])=>`
-  <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 flex justify-between items-center gap-3">
-   <h3 class="font-bold text-slate-800">${escapeHTML(name)}</h3>
-   <span class="px-3 py-1 bg-indigo-600 text-white font-bold rounded-lg text-sm">${count}</span>
-  </div>`).join('')
- : '<p class="text-sm text-slate-500">No shelf locations recorded yet.</p>';
+  Object.keys(shelves).length
+   ? Object.entries(shelves)
+      .sort((a,b) => a[0].localeCompare(b[0]))
+      .map(([name,count]) => `
+       <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 flex justify-between items-center gap-3">
+        <h3 class="font-bold text-slate-800">${escapeHTML(name)}</h3>
+        <span class="px-3 py-1 bg-indigo-600 text-white font-bold rounded-lg text-sm">${count}</span>
+       </div>`).join('')
+   : '<p class="text-sm text-slate-500">No shelf locations recorded yet.</p>';
 
  const names = [
   'Computer science, information & general works',
@@ -574,6 +772,7 @@ function renderInventory() {
  libraryBooks.forEach(b => {
   const raw = b.ddc.trim();
   const n = parseInt(raw,10);
+
   const key = raw
    ? `${Math.floor(n/100)*100} — ${Number.isFinite(n) ? (names[Math.floor(n/100)] || 'Other') : 'Unclassified'}`
    : 'DDC not specified';
@@ -582,13 +781,15 @@ function renderInventory() {
  });
 
  document.getElementById('ddc-inventory-list').innerHTML =
- Object.keys(ddc).length
- ? Object.entries(ddc).sort((a,b)=>a[0].localeCompare(b[0])).map(([name,count])=>`
-  <div class="p-3.5 rounded-xl border border-slate-200 flex justify-between items-center gap-3">
-   <span class="font-mono text-sm font-semibold text-indigo-700">${escapeHTML(name)}</span>
-   <span class="px-3 py-1 bg-slate-100 rounded-lg text-xs font-bold text-slate-700">${count} Records</span>
-  </div>`).join('')
- : '<p class="text-sm text-slate-500">No DDC records yet.</p>';
+  Object.keys(ddc).length
+   ? Object.entries(ddc)
+      .sort((a,b) => a[0].localeCompare(b[0]))
+      .map(([name,count]) => `
+       <div class="p-3.5 rounded-xl border border-slate-200 flex justify-between items-center gap-3">
+        <span class="font-mono text-sm font-semibold text-indigo-700">${escapeHTML(name)}</span>
+        <span class="px-3 py-1 bg-slate-100 rounded-lg text-xs font-bold text-slate-700">${count} Records</span>
+       </div>`).join('')
+   : '<p class="text-sm text-slate-500">No DDC records yet.</p>';
 }
 
 function openAddBookModal() {
@@ -606,8 +807,18 @@ function editBookById(id) {
  if (!b) return alert('This book could not be found.');
 
  const fields = [
-  'accession','ddc','title','author','category','shelf',
-  'edition','volume','year','available','total'
+  'accession',
+  'copyNumber',
+  'ddc',
+  'title',
+  'author',
+  'category',
+  'shelf',
+  'edition',
+  'volume',
+  'year',
+  'available',
+  'total'
  ];
 
  document.getElementById('book-edit-id').value = b.id;
@@ -635,7 +846,9 @@ function saveBook(event) {
 
  const b = {
   id: id || (crypto.randomUUID ? crypto.randomUUID() : 'book-' + Date.now()),
+
   accession: document.getElementById('book-accession').value.trim(),
+  copyNumber: document.getElementById('book-copy-number').value.trim(),
   ddc: document.getElementById('book-ddc').value.trim(),
   title: document.getElementById('book-title').value.trim(),
   author: document.getElementById('book-author').value.trim(),
@@ -652,7 +865,10 @@ function saveBook(event) {
   return alert('Enter the accession number and book title.');
  }
 
- if (libraryBooks.some(x => x.accession.toLowerCase() === b.accession.toLowerCase() && x.id !== id)) {
+ // Accession numbers must be unique. Titles and authors do not need to be unique.
+ if (libraryBooks.some(x =>
+  x.accession.toLowerCase() === b.accession.toLowerCase() && x.id !== id
+ )) {
   return alert('That accession number is already used by another book.');
  }
 
@@ -675,11 +891,15 @@ function deleteBookById(id) {
  const b = libraryBooks.find(x => x.id === id);
  if (!b) return;
 
- if (!confirm(`Delete “${b.title}” (${b.accession}) from the catalog? This cannot be undone.`)) return;
+ if (!confirm(`Delete this individual copy?\n\nTitle: ${b.title}\nCopy Number: ${b.copyNumber || 'Not specified'}\nAccession Number: ${b.accession}\n\nThis will not delete the other copies of this title.`)) {
+  return;
+ }
 
  libraryBooks = libraryBooks.filter(x => x.id !== id);
 
- if (saveCatalog()) renderCatalog();
+ if (saveCatalog()) {
+  renderCatalog();
+ }
 }
 
 /* CSV READER */
@@ -709,7 +929,11 @@ function parseCSV(text) {
    cell = '';
   } else if (ch === '\n') {
    row.push(cell.replace(/\r$/,''));
-   if (row.some(v => v.trim())) rows.push(row);
+
+   if (row.some(v => v.trim())) {
+    rows.push(row);
+   }
+
    row = [];
    cell = '';
   } else {
@@ -718,7 +942,10 @@ function parseCSV(text) {
  }
 
  row.push(cell.replace(/\r$/,''));
- if (row.some(v => v.trim())) rows.push(row);
+
+ if (row.some(v => v.trim())) {
+  rows.push(row);
+ }
 
  return rows;
 }
@@ -780,7 +1007,9 @@ async function handleCSVFile(event) {
    return `
     <label class="text-xs font-semibold text-slate-700">
      ${label}
-     <select data-csv-field="${key}" class="mt-1 block w-full p-2.5 border border-slate-200 rounded-lg bg-white text-xs">
+     <select
+      data-csv-field="${key}"
+      class="mt-1 block w-full p-2.5 border border-slate-200 rounded-lg bg-white text-xs">
       ${options}
      </select>
     </label>`;
@@ -831,6 +1060,9 @@ function importCSVBooks() {
   const title = get('title');
   const accession = get('accession');
 
+  // Only a missing title, missing accession, or repeated accession
+  // prevents a row from being imported.
+  // Repeated titles, authors, editions, and other book details are allowed.
   if (!title || !accession || seen.has(accession.toLowerCase())) {
    skipped++;
    return;
@@ -854,6 +1086,7 @@ function importCSVBooks() {
 
    title,
    accession,
+   copyNumber: get('copyNumber'),
    author: get('author'),
    ddc: get('ddc'),
    category: get('category'),
@@ -880,8 +1113,10 @@ function importCSVBooks() {
  pendingCSVHeaders = [];
 
  alert(
-  `CSV import finished.\nImported: ${imported}\nSkipped: ${skipped}` +
-  (skipped ? ' (blank rows or duplicate accession numbers)' : '')
+  `CSV import finished.\nImported individual records: ${imported}\nSkipped rows: ${skipped}` +
+  (skipped
+   ? '\nSkipped rows had a blank title, blank accession number, or duplicate accession number.'
+   : '')
  );
 }
 
@@ -968,6 +1203,21 @@ document.addEventListener('DOMContentLoaded',() => {
 
   const button = event.target.closest('button[data-action]');
   if (!button) return;
+
+  // Expand or collapse the individual copies inside a grouped book.
+  if (button.dataset.action === 'toggle-group') {
+   const row = document.getElementById(button.dataset.group);
+
+   if (row) {
+    row.classList.toggle('hidden');
+
+    button.innerHTML = row.classList.contains('hidden')
+     ? '<i class="fa-solid fa-list-ul mr-1"></i>Show Individual Copies'
+     : '<i class="fa-solid fa-eye-slash mr-1"></i>Hide Individual Copies';
+   }
+
+   return;
+  }
 
   const id = button.dataset.id;
 
