@@ -14,19 +14,19 @@
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc}
 .font-mono{font-family:'JetBrains Mono',monospace}
 ::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:#f1f5f9}
-::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:5px}
 body.theme-dark{background:#0f172a!important;color:#e2e8f0!important}
 body.theme-dark .bg-white{background:#1e293b!important;border-color:#334155!important}
-body.theme-dark .bg-slate-50,body.theme-dark .bg-slate-50\/60{background:#273449!important}
+body.theme-dark .bg-slate-50,body.theme-dark .bg-slate-50\/70,body.theme-dark .bg-slate-50\/60{background:#273449!important}
 body.theme-dark .text-slate-900,body.theme-dark .text-slate-800,body.theme-dark .text-slate-700{color:#f1f5f9!important}
 body.theme-dark .text-slate-600,body.theme-dark .text-slate-500,body.theme-dark .text-slate-400{color:#cbd5e1!important}
-body.theme-dark input,body.theme-dark select{background:#0f172a!important;color:#f8fafc!important;border-color:#475569!important}
+body.theme-dark input,body.theme-dark select,body.theme-dark textarea{background:#0f172a!important;color:#f8fafc!important;border-color:#475569!important}
 body.theme-dark table thead tr{background:#273449!important}
 body.theme-dark table tbody tr{border-color:#334155!important}
-body.theme-dark .border-slate-100,body.theme-dark .border-slate-200,body.theme-dark .border-slate-200\/80{border-color:#334155!important}
+body.theme-dark .border-slate-100,body.theme-dark .border-slate-200{border-color:#334155!important}
 body.theme-blue{background:#eff6ff!important}
 body.theme-green{background:#f0fdf4!important}
+.modal-backdrop{background:rgba(15,23,42,.65);backdrop-filter:blur(4px)}
 </style>
 </head>
 
@@ -34,7 +34,6 @@ body.theme-green{background:#f0fdf4!important}
 
 <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg border-b border-slate-800">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
 <div class="flex justify-between items-center h-16">
 <div class="flex items-center space-x-3.5">
 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
@@ -45,7 +44,6 @@ body.theme-green{background:#f0fdf4!important}
 <p class="text-[11px] text-indigo-300 font-medium mt-1">Management &amp; Catalog System</p>
 </div>
 </div>
-
 <div class="flex items-center space-x-3">
 <div class="hidden md:flex items-center space-x-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs text-slate-300">
 <i class="fa-regular fa-clock text-indigo-400"></i>
@@ -62,16 +60,15 @@ body.theme-green{background:#f0fdf4!important}
 </div>
 
 <nav class="flex gap-1 overflow-x-auto pb-2 pt-1 text-xs font-semibold" aria-label="Library desks">
-<button onclick="switchDesk('catalog')" id="tab-btn-catalog" class="desk-btn px-3.5 py-2 rounded-lg bg-indigo-600 text-white flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-book"></i>Catalog</button>
-<button onclick="switchDesk('accession')" id="tab-btn-accession" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-barcode"></i>Accession Inventory</button>
-<button onclick="switchDesk('shelf')" id="tab-btn-shelf" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-layer-group"></i>Shelf Inventory</button>
-<button onclick="switchDesk('ddc')" id="tab-btn-ddc" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-sitemap"></i>DDC Inventory</button>
-<button onclick="switchDesk('borrowers')" id="tab-btn-borrowers" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-users"></i>Borrowers</button>
-<button onclick="switchDesk('circulation')" id="tab-btn-circulation" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-right-left"></i>Borrow &amp; Return</button>
-<button onclick="switchDesk('auth')" id="tab-btn-auth" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-shield-halved"></i>Account Authorization</button>
-<button onclick="switchDesk('settings')" id="tab-btn-settings" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-gear"></i>Settings Desk</button>
+<button onclick="switchDesk('catalog')" id="tab-btn-catalog" class="desk-btn px-3.5 py-2 rounded-lg bg-indigo-600 text-white whitespace-nowrap"><i class="fa-solid fa-book mr-1"></i>Catalog</button>
+<button onclick="switchDesk('accession')" id="tab-btn-accession" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-barcode mr-1"></i>Accession Inventory</button>
+<button onclick="switchDesk('shelf')" id="tab-btn-shelf" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-layer-group mr-1"></i>Shelf Inventory</button>
+<button onclick="switchDesk('ddc')" id="tab-btn-ddc" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-sitemap mr-1"></i>DDC Inventory</button>
+<button onclick="switchDesk('borrowers')" id="tab-btn-borrowers" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-users mr-1"></i>Borrowers</button>
+<button onclick="switchDesk('circulation')" id="tab-btn-circulation" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-right-left mr-1"></i>Borrow &amp; Return</button>
+<button onclick="switchDesk('auth')" id="tab-btn-auth" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-shield-halved mr-1"></i>Account Authorization</button>
+<button onclick="switchDesk('settings')" id="tab-btn-settings" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-gear mr-1"></i>Settings Desk</button>
 </nav>
-
 </div>
 </header>
 
@@ -82,31 +79,22 @@ body.theme-green{background:#f0fdf4!important}
 <div>
 <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Catalog Records</p>
 <h2 id="total-books-count" class="text-2xl font-extrabold text-slate-900 mt-1">0</h2>
-<p class="text-[11px] text-slate-500 mt-1">Counts every individual copy, including duplicate titles</p>
+<p class="text-[11px] text-slate-500 mt-1">Every individual book copy and volume is counted</p>
 </div>
-<div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
-<i class="fa-solid fa-book"></i>
-</div>
+<div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl"><i class="fa-solid fa-book"></i></div>
 </div>
 </section>
 
 <!-- CATALOG -->
 <section id="desk-catalog" class="desk-view space-y-5">
-
 <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
-
 <div class="relative w-full md:w-96">
 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-<input id="catalog-search" type="search" oninput="renderCatalog()" placeholder="Search title, author, accession #, copy number, or DDC..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+<input id="catalog-search" type="search" oninput="renderCatalog()" placeholder="Search title, author, accession, copy number..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm">
 </div>
-
 <div class="flex flex-wrap gap-2 w-full md:w-auto justify-end">
-<button onclick="openCSVModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold">
-<i class="fa-solid fa-file-csv mr-2"></i>Import CSV
-</button>
-<button onclick="openAddBookModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold">
-<i class="fa-solid fa-plus mr-2"></i>Add New Book
-</button>
+<button onclick="openCSVModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold"><i class="fa-solid fa-file-csv mr-2"></i>Import CSV</button>
+<button onclick="startAddBook()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold"><i class="fa-solid fa-plus mr-2"></i>Add New Book</button>
 </div>
 </div>
 
@@ -129,239 +117,271 @@ body.theme-green{background:#f0fdf4!important}
 </div>
 </div>
 
-<p class="px-1 text-xs text-slate-500">
-<i class="fa-solid fa-circle-info mr-1"></i>
-Books with matching bibliographic details are grouped together. Use Show Individual Copies to view, edit, or delete each physical copy separately. Every copy is counted as an individual catalog record.
-</p>
-
+<p class="px-1 text-xs text-slate-500"><i class="fa-solid fa-circle-info mr-1"></i>Matching books are grouped in the catalog. Every copy and volume remains an individual record that you can edit or delete separately.</p>
 </section>
 
-<!-- ACCESSION INVENTORY -->
+<!-- ACCESSION -->
 <section id="desk-accession" class="desk-view hidden">
 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-<div>
 <h2 class="text-lg font-bold text-slate-900">Accession Number Inventory Desk</h2>
-<p class="text-xs text-slate-500">Every physical copy has its own accession and copy number record.</p>
-</div>
+<p class="text-xs text-slate-500">Every physical copy and volume appears as a separate record.</p>
 <div class="overflow-x-auto">
 <table class="w-full text-left text-sm">
-<thead>
-<tr class="bg-slate-50 border-b text-[11px] uppercase text-slate-500">
-<th class="py-3 px-4">Accession #</th>
-<th class="py-3 px-4">Copy Number</th>
-<th class="py-3 px-4">Title</th>
-<th class="py-3 px-4">Author</th>
-<th class="py-3 px-4">Shelf</th>
-<th class="py-3 px-4">Copies</th>
-</tr>
-</thead>
+<thead><tr class="bg-slate-50 border-b text-[11px] uppercase text-slate-500">
+<th class="py-3 px-4">Accession #</th><th class="py-3 px-4">Copy Number</th><th class="py-3 px-4">Title</th><th class="py-3 px-4">Author</th><th class="py-3 px-4">Volume</th><th class="py-3 px-4">Shelf</th>
+</tr></thead>
 <tbody id="accession-table-body" class="divide-y divide-slate-100"></tbody>
 </table>
 </div>
 </div>
 </section>
 
-<!-- SHELF INVENTORY -->
+<!-- SHELF -->
 <section id="desk-shelf" class="desk-view hidden">
 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
 <h2 class="text-lg font-bold text-slate-900">Physical Shelf Breakdown</h2>
-<p class="text-xs text-slate-500">Counts are calculated from individual catalog records and shelf locations.</p>
+<p class="text-xs text-slate-500">Counts are based on individual book-copy records.</p>
 <div id="shelf-inventory-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 </div>
 </section>
 
-<!-- DDC INVENTORY -->
+<!-- DDC -->
 <section id="desk-ddc" class="desk-view hidden">
 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
 <h2 class="text-lg font-bold text-slate-900">Dewey Decimal Classification (DDC)</h2>
-<p class="text-xs text-slate-500">Counts are calculated from individual catalog records.</p>
+<p class="text-xs text-slate-500">Counts are based on individual book-copy records.</p>
 <div id="ddc-inventory-list" class="space-y-2"></div>
 </div>
 </section>
 
-<!-- OTHER DESKS -->
 <section id="desk-borrowers" class="desk-view hidden">
 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
 <h2 class="text-lg font-bold text-slate-900">Borrowers</h2>
-<p class="text-sm text-slate-500 mt-2">No borrower records have been added yet. This desk is ready for borrower-management features.</p>
+<p class="text-sm text-slate-500 mt-2">No borrower records have been added yet.</p>
 </div>
 </section>
 
 <section id="desk-circulation" class="desk-view hidden">
 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
 <h2 class="text-lg font-bold text-slate-900">Borrow &amp; Return</h2>
-<p class="text-sm text-slate-500 mt-2">No circulation records yet. Borrowing and return transactions are not connected to the catalog in this version.</p>
+<p class="text-sm text-slate-500 mt-2">Borrowing and return transactions are not yet connected to the catalog.</p>
 </div>
 </section>
 
 <section id="desk-auth" class="desk-view hidden">
 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
 <h2 class="text-lg font-bold text-slate-900">Account Authorization</h2>
-<p class="text-sm text-slate-500 mt-2">Account authorization has not been configured. This page currently runs as a browser-based catalog.</p>
+<p class="text-sm text-slate-500 mt-2">Account authorization has not been configured in this browser-based version.</p>
 </div>
 </section>
 
-<!-- SETTINGS DESK -->
+<!-- SETTINGS -->
 <section id="desk-settings" class="desk-view hidden space-y-5">
-<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
 
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
 <div>
 <h2 class="text-lg font-bold text-slate-900">Library Appearance</h2>
-<p class="text-xs text-slate-500 mt-1">Customize the look and readability of your library portal. Preferences are saved in this browser.</p>
+<p class="text-xs text-slate-500 mt-1">Customize the look and readability of your library portal.</p>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
 <div class="space-y-2">
 <label for="theme-choice" class="block text-sm font-semibold text-slate-700">Color Theme</label>
 <select id="theme-choice" onchange="applyLibrarySettings()" class="w-full p-3 border border-slate-200 rounded-xl text-sm bg-white">
-<option value="light">Light (Default)</option>
-<option value="dark">Dark</option>
-<option value="blue">Soft Blue</option>
-<option value="green">Soft Green</option>
+<option value="light">Light (Default)</option><option value="dark">Dark</option><option value="blue">Soft Blue</option><option value="green">Soft Green</option>
 </select>
 </div>
-
 <div class="space-y-2">
 <label for="font-choice" class="block text-sm font-semibold text-slate-700">Font Family</label>
 <select id="font-choice" onchange="applyLibrarySettings()" class="w-full p-3 border border-slate-200 rounded-xl text-sm bg-white">
-<option value="jakarta">Plus Jakarta Sans</option>
-<option value="arial">Arial</option>
-<option value="times">Times New Roman</option>
-<option value="georgia">Georgia</option>
-<option value="mono">JetBrains Mono</option>
+<option value="jakarta">Plus Jakarta Sans</option><option value="arial">Arial</option><option value="times">Times New Roman</option><option value="georgia">Georgia</option><option value="mono">JetBrains Mono</option>
 </select>
 </div>
-
 <div class="space-y-2 md:col-span-2">
 <label for="font-size-choice" class="block text-sm font-semibold text-slate-700">Font Size</label>
 <div class="flex flex-col sm:flex-row sm:items-center gap-3">
 <select id="font-size-choice" onchange="applyLibrarySettings()" class="w-full sm:w-64 p-3 border border-slate-200 rounded-xl text-sm bg-white">
-<option value="14">Small</option>
-<option value="16" selected>Medium (Default)</option>
-<option value="18">Large</option>
-<option value="20">Extra Large</option>
+<option value="14">Small</option><option value="16" selected>Medium (Default)</option><option value="18">Large</option><option value="20">Extra Large</option>
 </select>
 <span class="text-xs text-slate-500">Preview: <span id="font-preview" class="font-semibold">The quick brown fox jumps over the lazy dog.</span></span>
 </div>
 </div>
 </div>
-
 <div class="flex flex-wrap gap-2 pt-3 border-t border-slate-100">
 <button onclick="resetLibrarySettings()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600">Reset Appearance</button>
-<span id="settings-saved-message" class="text-xs text-emerald-600 self-center" role="status"></span>
+<span id="settings-saved-message" class="text-xs text-emerald-600 self-center"></span>
+</div>
 </div>
 
+<!-- BACKUP -->
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+<div>
+<h2 class="text-lg font-bold text-slate-900"><i class="fa-solid fa-database text-indigo-600 mr-2"></i>Library Backup &amp; Restore</h2>
+<p class="text-xs text-slate-500 mt-1">Create a backup of your complete catalog or restore a previously saved backup file.</p>
 </div>
-</section>
 
-</main>
-
-<!-- ADD / EDIT BOOK MODAL -->
-<div id="add-book-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-<div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-
-<div class="flex justify-between items-center border-b border-slate-100 pb-3">
-<h3 id="book-modal-title" class="text-lg font-bold text-slate-900">Add Book to Catalog</h3>
-<button type="button" onclick="closeModal('add-book-modal')" class="text-slate-400">
-<i class="fa-solid fa-xmark text-lg"></i>
+<div class="rounded-xl bg-indigo-50 border border-indigo-100 p-4">
+<p class="text-sm font-semibold text-indigo-900">Create Backup</p>
+<p class="text-xs text-indigo-800 mt-1">Download all individual book records, including accession numbers, copy numbers, volumes, editions, years, shelf locations, and availability.</p>
+<button onclick="downloadBackup()" class="mt-3 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold">
+<i class="fa-solid fa-download mr-2"></i>Download Catalog Backup
 </button>
 </div>
 
-<form id="book-form" onsubmit="saveBook(event)" class="space-y-3 text-sm">
+<div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
+<p class="text-sm font-semibold text-slate-800">Restore Backup</p>
+<p class="text-xs text-slate-500 mt-1">Select a JSON backup previously downloaded from this library. Restoring will replace the current catalog with the records in the backup.</p>
+<input type="file" id="backup-file" accept=".json,application/json" class="block w-full mt-3 text-xs border border-slate-200 rounded-xl p-3 bg-white">
+<button onclick="restoreBackup()" class="mt-3 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold">
+<i class="fa-solid fa-upload mr-2"></i>Restore Catalog Backup
+</button>
+</div>
 
+<p id="backup-message" class="text-xs text-slate-500" role="status"></p>
+</div>
+
+<!-- DANGER ZONE -->
+<div class="bg-white p-6 rounded-2xl border border-rose-200 shadow-sm space-y-3">
+<div>
+<h2 class="text-lg font-bold text-rose-700"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Danger Zone</h2>
+<p class="text-xs text-slate-500 mt-1">Use this action carefully. It permanently clears all book records saved in this browser.</p>
+</div>
+<button onclick="deleteAllBooks()" class="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold">
+<i class="fa-solid fa-trash-can mr-2"></i>Delete All Books
+</button>
+<p class="text-[11px] text-slate-400">This action does not delete your downloaded backup files.</p>
+</div>
+
+</section>
+</main>
+
+<footer class="bg-white border-t border-slate-200 py-4 mt-10">
+<div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">LWCS Library Portal • Designed for Academic &amp; Seminary Collections</div>
+</footer>
+
+<!-- ADD TYPE CHOICE -->
+<div id="add-type-modal" class="fixed inset-0 modal-backdrop hidden items-center justify-center p-4 z-50">
+<div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5">
+<div class="flex justify-between items-center">
+<h3 class="text-lg font-bold text-slate-900">What kind of book are you adding?</h3>
+<button onclick="closeModal('add-type-modal')" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button>
+</div>
+<p class="text-sm text-slate-500">Choose how you want to record this book in the catalog.</p>
+
+<button onclick="chooseAddMode('single')" class="w-full text-left border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 rounded-xl p-4">
+<div class="flex gap-3 items-center">
+<div class="w-11 h-11 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-book text-lg"></i></div>
+<div>
+<p class="font-bold text-slate-900 text-sm">Single Book / Single Copy</p>
+<p class="text-xs text-slate-500 mt-1">Add one individual book record.</p>
+</div>
+</div>
+</button>
+
+<button onclick="chooseAddMode('multiple')" class="w-full text-left border border-slate-200 hover:border-emerald-400 hover:bg-emerald-50 rounded-xl p-4">
+<div class="flex gap-3 items-center">
+<div class="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-books text-lg"></i></div>
+<div>
+<p class="font-bold text-slate-900 text-sm">Book with Multiple Copies / Volumes</p>
+<p class="text-xs text-slate-500 mt-1">Enter shared book details once, then add separate records for each copy or volume.</p>
+</div>
+</div>
+</button>
+</div>
+</div>
+
+<!-- BOOK FORM -->
+<div id="add-book-modal" class="fixed inset-0 modal-backdrop hidden items-center justify-center p-4 z-50">
+<div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
+
+<div class="flex justify-between items-center border-b border-slate-100 pb-3">
+<div>
+<h3 id="book-modal-title" class="text-lg font-bold text-slate-900">Add Book</h3>
+<p id="book-modal-subtitle" class="text-xs text-slate-500 mt-1"></p>
+</div>
+<button onclick="closeModal('add-book-modal')" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button>
+</div>
+
+<form id="book-form" onsubmit="saveBook(event)" class="space-y-4">
 <input type="hidden" id="book-edit-id">
+<input type="hidden" id="book-entry-mode">
 
-<div class="grid grid-cols-3 gap-3">
-<input id="book-accession" required placeholder="Accession Number" class="p-2.5 border border-slate-200 rounded-xl w-full">
-<input id="book-copy-number" placeholder="Copy Number" class="p-2.5 border border-slate-200 rounded-xl w-full">
-<input id="book-ddc" placeholder="Subject / DDC #" class="p-2.5 border border-slate-200 rounded-xl w-full">
-</div>
+<div class="space-y-3">
+<p class="text-xs font-bold uppercase tracking-wide text-indigo-600">Shared Book Information</p>
 
-<input id="book-title" required placeholder="Book Title" class="w-full p-2.5 border border-slate-200 rounded-xl">
-<input id="book-author" placeholder="Author(s)" class="w-full p-2.5 border border-slate-200 rounded-xl">
-
-<div class="grid grid-cols-2 gap-3">
-<input id="book-category" placeholder="Category" class="p-2.5 border border-slate-200 rounded-xl w-full">
-<input id="book-shelf" placeholder="Shelf Location" class="p-2.5 border border-slate-200 rounded-xl w-full">
-</div>
-
-<div class="grid grid-cols-3 gap-3">
-<div>
-<label for="book-edition" class="block text-xs font-semibold text-slate-600 mb-1">Edition</label>
-<input id="book-edition" placeholder="Edition" class="p-2.5 border border-slate-200 rounded-xl w-full">
-</div>
-<div>
-<label for="book-volume" class="block text-xs font-semibold text-slate-600 mb-1">Volume</label>
-<input id="book-volume" placeholder="Volume" class="p-2.5 border border-slate-200 rounded-xl w-full">
-</div>
-<div>
-<label for="book-year" class="block text-xs font-semibold text-slate-600 mb-1">Year</label>
-<input id="book-year" placeholder="Year" class="p-2.5 border border-slate-200 rounded-xl w-full">
-</div>
-</div>
-
-<div class="grid grid-cols-2 gap-3">
-<label class="text-xs text-slate-600">Available copies
-<input id="book-available" type="number" min="0" value="1" required class="mt-1 p-2.5 border border-slate-200 rounded-xl w-full">
+<label class="block text-xs font-semibold text-slate-600">Book Title *
+<input id="book-title" required class="mt-1 w-full p-2.5 border border-slate-200 rounded-xl text-sm" placeholder="Enter book title">
 </label>
-<label class="text-xs text-slate-600">Total copies
-<input id="book-total" type="number" min="0" value="1" required class="mt-1 p-2.5 border border-slate-200 rounded-xl w-full">
+
+<label class="block text-xs font-semibold text-slate-600">Author(s)
+<input id="book-author" class="mt-1 w-full p-2.5 border border-slate-200 rounded-xl text-sm" placeholder="Enter author(s)">
 </label>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<label class="block text-xs font-semibold text-slate-600">DDC / Subject
+<input id="book-ddc" class="mt-1 w-full p-2.5 border border-slate-200 rounded-xl text-sm" placeholder="DDC number">
+</label>
+<label class="block text-xs font-semibold text-slate-600">Category
+<input id="book-category" class="mt-1 w-full p-2.5 border border-slate-200 rounded-xl text-sm" placeholder="Category">
+</label>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<label class="block text-xs font-semibold text-slate-600">Edition
+<input id="book-edition" class="mt-1 w-full p-2.5 border border-slate-200 rounded-xl text-sm" placeholder="Edition">
+</label>
+<label class="block text-xs font-semibold text-slate-600">Year
+<input id="book-year" class="mt-1 w-full p-2.5 border border-slate-200 rounded-xl text-sm" placeholder="Year">
+</label>
+<label class="block text-xs font-semibold text-slate-600">General Shelf (optional)
+<input id="book-default-shelf" class="mt-1 w-full p-2.5 border border-slate-200 rounded-xl text-sm" placeholder="Shelf location">
+</label>
+</div>
+</div>
+
+<div class="border-t border-slate-100 pt-4 space-y-3">
+<div class="flex justify-between items-center gap-3">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-indigo-600">Individual Copy / Volume Records</p>
+<p class="text-xs text-slate-500 mt-1">Each row is saved as a separate catalog record.</p>
+</div>
+<button type="button" id="add-copy-row-button" onclick="addCopyRow()" class="hidden px-3 py-2 bg-emerald-600 text-white rounded-lg text-xs font-semibold whitespace-nowrap">
+<i class="fa-solid fa-plus mr-1"></i>Add Copy / Volume
+</button>
+</div>
+
+<div id="copy-records-container" class="space-y-3"></div>
 </div>
 
 <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
 <button type="button" onclick="closeModal('add-book-modal')" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold">Cancel</button>
 <button id="book-save-button" type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-semibold">Save Book</button>
 </div>
-
 </form>
 </div>
 </div>
 
-<!-- CSV IMPORT MODAL -->
-<div id="csv-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+<!-- CSV MODAL -->
+<div id="csv-modal" class="fixed inset-0 modal-backdrop hidden items-center justify-center p-4 z-50">
 <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-
 <div class="flex justify-between items-center border-b border-slate-100 pb-3">
 <h3 class="text-lg font-bold text-slate-900">Import Books from CSV</h3>
-<button type="button" onclick="closeModal('csv-modal')" class="text-slate-400">
-<i class="fa-solid fa-xmark text-lg"></i>
-</button>
+<button onclick="closeModal('csv-modal')" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button>
 </div>
-
-<p class="text-xs text-slate-500">
-Choose a CSV file. The first row must contain column headings. You can individually match each CSV column to its corresponding library field. Every valid CSV row will become an individual book-copy record.
-</p>
-
+<p class="text-xs text-slate-500">The first row must contain column headings. Every valid CSV row becomes an individual book record. Repeated titles and authors are allowed.</p>
 <input id="csv-file-input" type="file" accept=".csv,text/csv" onchange="handleCSVFile(event)" class="block w-full text-sm border border-slate-200 rounded-xl p-3">
-
-<p id="csv-file-status" class="text-xs text-slate-500" role="status">No file selected.</p>
-
+<p id="csv-file-status" class="text-xs text-slate-500">No file selected.</p>
 <div id="csv-mapping-area" class="hidden space-y-3">
-
 <p class="text-xs font-bold text-slate-700">Match your CSV columns</p>
-
 <div id="csv-mapping-fields" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
-
-<p class="text-[11px] text-slate-500">
-Required: Book Title and Accession Number. Copy Number, Edition, Volume, and Year are separate optional fields. Repeated titles and authors are allowed. Only duplicate accession numbers are skipped.
-</p>
+<p class="text-[11px] text-slate-500">Required: Book Title and Accession Number. Copy Number, Edition, Volume, and Year are separate optional fields. Only duplicate accession numbers are skipped.</p>
 </div>
-
 <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-<button type="button" onclick="closeModal('csv-modal')" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold">Cancel</button>
-<button id="csv-import-button" type="button" onclick="importCSVBooks()" disabled class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold disabled:opacity-40">Import CSV</button>
-</div>
-
+<button onclick="closeModal('csv-modal')" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold">Cancel</button>
+<button id="csv-import-button" onclick="importCSVBooks()" disabled class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold disabled:opacity-40">Import CSV</button>
 </div>
 </div>
-
-<footer class="bg-white border-t border-slate-200 py-4 mt-10">
-<div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
-LWCS Library Portal • Designed for Academic &amp; Seminary Collections
 </div>
-</footer>
 
 <script>
 'use strict';
@@ -372,6 +392,7 @@ const SETTINGS_KEY = 'lwcs-library-settings-v1';
 let libraryBooks = [];
 let pendingCSVRows = [];
 let pendingCSVHeaders = [];
+let copyRowCounter = 0;
 
 const CSV_FIELDS = [
  ['title','Book Title',['title','book title','book_title','name']],
@@ -390,12 +411,12 @@ const CSV_FIELDS = [
 
 function escapeHTML(value) {
  return String(value ?? '').replace(/[&<>"']/g, c => ({
-  '&':'&amp;',
-  '<':'&lt;',
-  '>':'&gt;',
-  '"':'&quot;',
-  "'":'&#39;'
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
  }[c]));
+}
+
+function makeId() {
+ return crypto.randomUUID ? crypto.randomUUID() : 'book-' + Date.now() + '-' + Math.random().toString(36).slice(2);
 }
 
 function switchDesk(name) {
@@ -422,82 +443,66 @@ function closeModal(id) {
  el.classList.remove('flex');
 }
 
+function normalizeBook(b,i=0) {
+ return {
+  id:String(b.id || makeId()),
+  accession:String(b.accession || ''),
+  copyNumber:String(b.copyNumber || ''),
+  ddc:String(b.ddc || ''),
+  title:String(b.title || ''),
+  author:String(b.author || ''),
+  edition:String(b.edition || ''),
+  volume:String(b.volume || ''),
+  year:String(b.year || ''),
+  category:String(b.category || ''),
+  shelf:String(b.shelf || ''),
+  available:Math.max(0,Number(b.available ?? 0) || 0),
+  total:Math.max(0,Number(b.total ?? 0) || 0)
+ };
+}
+
 function loadCatalog() {
  try {
   const saved = localStorage.getItem(BOOKS_KEY);
   const parsed = saved === null ? [] : JSON.parse(saved);
-
-  libraryBooks = Array.isArray(parsed) ? parsed.map((b,i) => ({
-   id: String(b.id || `book-${Date.now()}-${i}`),
-   accession: String(b.accession || ''),
-   copyNumber: String(b.copyNumber || ''),
-   ddc: String(b.ddc || ''),
-   title: String(b.title || ''),
-   author: String(b.author || ''),
-   edition: String(b.edition || ''),
-   volume: String(b.volume || ''),
-   year: String(b.year || ''),
-   category: String(b.category || ''),
-   shelf: String(b.shelf || ''),
-   available: Math.max(0,Number(b.available) || 0),
-   total: Math.max(0,Number(b.total) || 0)
-  })) : [];
-
+  libraryBooks = Array.isArray(parsed) ? parsed.map(normalizeBook) : [];
  } catch(err) {
   console.error(err);
   libraryBooks = [];
   alert('The saved catalog could not be read. The catalog has been opened empty.');
  }
-
  renderCatalog();
 }
 
 function saveCatalog() {
  try {
-  localStorage.setItem(BOOKS_KEY, JSON.stringify(libraryBooks));
+  localStorage.setItem(BOOKS_KEY,JSON.stringify(libraryBooks));
   return true;
  } catch(err) {
   console.error(err);
-  alert('Your browser could not save these changes. Check that site storage is allowed.');
+  alert('Your browser could not save these changes. Check whether site storage is available.');
   return false;
  }
 }
 
-/*
- GROUPING RULE:
- Books are grouped when their bibliographic details match.
- Accession Number, Copy Number, and Shelf Location are excluded
- from the grouping identity. Each physical copy remains a separate
- object in libraryBooks and is individually editable and deletable.
+/* GROUPING
+   Title, author and shared bibliographic information determine a group.
+   Volume, accession number, copy number and shelf are excluded so that
+   multiple copies and different volumes can be viewed together.
 */
-
 function getBookGroupKey(b) {
  return [
-  b.title,
-  b.author,
-  b.ddc,
-  b.category,
-  b.edition,
-  b.volume,
-  b.year
- ]
- .map(v => String(v || '').trim().toLowerCase())
- .join('||');
+  b.title,b.author,b.ddc,b.category,b.edition,b.year
+ ].map(v => String(v || '').trim().toLowerCase()).join('||');
 }
 
 function groupCatalogBooks(books) {
  const groups = new Map();
-
  books.forEach(book => {
   const key = getBookGroupKey(book);
-
-  if (!groups.has(key)) {
-   groups.set(key, []);
-  }
-
+  if (!groups.has(key)) groups.set(key,[]);
   groups.get(key).push(book);
  });
-
  return Array.from(groups.values());
 }
 
@@ -508,63 +513,31 @@ function renderCatalog() {
  const q = (document.getElementById('catalog-search').value || '').trim().toLowerCase();
 
  const matching = libraryBooks.filter(b =>
-  [
-   b.accession,
-   b.copyNumber,
-   b.ddc,
-   b.title,
-   b.author,
-   b.edition,
-   b.volume,
-   b.year,
-   b.category,
-   b.shelf
-  ].join(' ').toLowerCase().includes(q)
+  [b.accession,b.copyNumber,b.ddc,b.title,b.author,b.edition,b.volume,b.year,b.category,b.shelf]
+   .join(' ').toLowerCase().includes(q)
  );
 
- // This count always represents individual records, not grouped titles.
- document.getElementById('total-books-count').textContent =
-  libraryBooks.length.toLocaleString();
+ document.getElementById('total-books-count').textContent = libraryBooks.length.toLocaleString();
 
  const groups = groupCatalogBooks(matching);
 
  if (!groups.length) {
-  body.innerHTML = `
-   <tr>
-    <td colspan="7" class="px-4 py-10 text-center text-sm text-slate-500">
-     ${libraryBooks.length
-      ? 'No books match your search.'
-      : 'Your catalog is empty. Import your CSV file or add your first book.'}
-    </td>
-   </tr>`;
+  body.innerHTML = `<tr><td colspan="7" class="px-4 py-10 text-center text-sm text-slate-500">${libraryBooks.length ? 'No books match your search.' : 'Your catalog is empty. Import your CSV file or add your first book.'}</td></tr>`;
  } else {
-
-  body.innerHTML = groups.map((copies, groupIndex) => {
+  body.innerHTML = groups.map((copies,index) => {
    const first = copies[0];
-   const groupId = 'book-group-' + groupIndex;
-
-   const totalAvailable = copies.reduce(
-    (sum,b) => sum + Math.max(0,Number(b.available) || 0),
-    0
-   );
-
-   const totalOwned = copies.length;
+   const groupId = 'book-group-' + index;
+   const availableCount = copies.reduce((sum,b) => sum + (Number(b.available) || 0),0);
 
    const details = [
     first.author,
     first.edition ? 'Edition: ' + first.edition : '',
-    first.volume ? 'Volume: ' + first.volume : '',
     first.year ? 'Year: ' + first.year : ''
-   ]
-   .filter(Boolean)
-   .map(escapeHTML)
-   .join(' • ');
+   ].filter(Boolean).map(escapeHTML).join(' • ');
 
-   // Each individual copy gets its own row and its own Edit/Delete buttons.
-   const copyRows = copies.map(b => {
-    const a = Math.max(0,Number(b.available) || 0);
-    const t = Math.max(0,Number(b.total) || 0);
-
+   const individualRows = copies.map(b => {
+    const a = Number(b.available) || 0;
+    const t = Number(b.total) || 0;
     const status = a === 0
      ? 'bg-rose-50 text-rose-700 border-rose-200'
      : a < t
@@ -573,129 +546,56 @@ function renderCatalog() {
 
     return `
      <tr class="bg-slate-50/70 border-t border-slate-200">
-      <td class="py-3 px-4 font-mono text-xs font-semibold text-indigo-600">
-       ${escapeHTML(b.accession)}
-      </td>
-
-      <td class="py-3 px-4 font-mono text-xs text-slate-600">
-       ${escapeHTML(b.copyNumber || '—')}
-      </td>
-
-      <td class="py-3 px-4 text-xs text-slate-600">
-       ${escapeHTML(b.shelf || '—')}
-      </td>
-
-      <td class="py-3 px-4">
-       <span class="px-2.5 py-1 rounded-full text-xs font-bold border ${status}">
-        ${a} / ${t} Available
-       </span>
-      </td>
-
+      <td class="py-3 px-4 font-mono text-xs font-semibold text-indigo-600">${escapeHTML(b.accession)}</td>
+      <td class="py-3 px-4 text-xs">${escapeHTML(b.copyNumber || '—')}</td>
+      <td class="py-3 px-4 text-xs">${escapeHTML(b.volume || '—')}</td>
+      <td class="py-3 px-4 text-xs">${escapeHTML(b.shelf || '—')}</td>
+      <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold border ${status}">${a} / ${t} Available</span></td>
       <td class="py-3 px-4 text-right whitespace-nowrap">
-       <div class="inline-flex gap-2">
-        <button
-         type="button"
-         data-action="edit"
-         data-id="${escapeHTML(b.id)}"
-         class="px-3 py-2 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-semibold">
-         <i class="fa-solid fa-pen-to-square mr-1"></i>Edit
-        </button>
-
-        <button
-         type="button"
-         data-action="delete"
-         data-id="${escapeHTML(b.id)}"
-         class="px-3 py-2 rounded-lg bg-rose-50 text-rose-700 text-xs font-semibold">
-         <i class="fa-solid fa-trash mr-1"></i>Delete
-        </button>
-       </div>
+       <button type="button" data-action="edit" data-id="${escapeHTML(b.id)}" class="px-3 py-2 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-semibold"><i class="fa-solid fa-pen-to-square mr-1"></i>Edit</button>
+       <button type="button" data-action="delete" data-id="${escapeHTML(b.id)}" class="px-3 py-2 rounded-lg bg-rose-50 text-rose-700 text-xs font-semibold"><i class="fa-solid fa-trash mr-1"></i>Delete</button>
       </td>
      </tr>`;
    }).join('');
 
+   const isGrouped = copies.length > 1;
+
    return `
     <tr class="hover:bg-slate-50/80 border-t border-slate-200">
-
      <td class="py-3.5 px-4 font-mono text-xs font-semibold text-indigo-600">
-      ${copies.length === 1
-       ? escapeHTML(first.accession)
-       : `<span class="text-slate-500">${copies.length} copies</span>`}
+      ${isGrouped ? `<span class="text-slate-500">${copies.length} copies / volumes</span>` : escapeHTML(first.accession)}
      </td>
-
-     <td class="py-3.5 px-4 font-mono text-xs text-slate-600">
-      ${escapeHTML(first.ddc)}
-     </td>
-
+     <td class="py-3.5 px-4 font-mono text-xs text-slate-600">${escapeHTML(first.ddc)}</td>
      <td class="py-3.5 px-4">
       <p class="font-bold text-slate-900">${escapeHTML(first.title)}</p>
       <p class="text-xs text-slate-500">${details}</p>
-      <p class="text-[11px] text-indigo-600 font-semibold mt-1">
-       ${copies.length} individual ${copies.length === 1 ? 'copy' : 'copies'} recorded
-      </p>
+      ${isGrouped ? `<p class="text-[11px] text-indigo-600 font-semibold mt-1">${copies.length} individual records</p>` : ''}
      </td>
-
-     <td class="py-3.5 px-4">
-      <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700">
-       ${escapeHTML(first.category)}
-      </span>
-     </td>
-
-     <td class="py-3.5 px-4 text-xs text-slate-700">
-      ${copies.length === 1
-       ? escapeHTML(first.shelf)
-       : 'Multiple / see copies'}
-     </td>
-
-     <td class="py-3.5 px-4">
-      <span class="px-2.5 py-1 rounded-full text-xs font-bold border bg-emerald-50 text-emerald-700 border-emerald-200">
-       ${totalAvailable} available of ${totalOwned} records
-      </span>
-     </td>
-
+     <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700">${escapeHTML(first.category)}</span></td>
+     <td class="py-3.5 px-4 text-xs text-slate-700">${isGrouped ? 'Multiple / see records' : escapeHTML(first.shelf)}</td>
+     <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold border bg-emerald-50 text-emerald-700 border-emerald-200">${availableCount} available of ${copies.length} records</span></td>
      <td class="py-3.5 px-4 text-right">
-      <button
-       type="button"
-       data-action="toggle-group"
-       data-group="${groupId}"
-       class="px-3 py-2 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold">
-       <i class="fa-solid fa-list-ul mr-1"></i>
-       ${copies.length > 1 ? 'Show Individual Copies' : 'Show Record'}
-      </button>
+      ${isGrouped
+       ? `<button type="button" data-action="toggle-group" data-group="${groupId}" class="px-3 py-2 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold"><i class="fa-solid fa-list-ul mr-1"></i>Show Individual Copies</button>`
+       : `<span class="text-xs text-slate-400">Single record</span>`}
      </td>
-
     </tr>
-
+    ${isGrouped ? `
     <tr id="${groupId}" class="hidden">
      <td colspan="7" class="p-0">
       <div class="px-4 py-3 bg-slate-100/70">
-
-       <p class="text-xs font-bold text-slate-600 mb-2">
-        INDIVIDUAL COPY RECORDS
-       </p>
-
+       <p class="text-xs font-bold text-slate-600 mb-2">INDIVIDUAL COPY / VOLUME RECORDS</p>
        <div class="overflow-x-auto">
         <table class="w-full text-left text-xs">
-
-         <thead>
-          <tr class="text-[10px] uppercase text-slate-500">
-           <th class="py-2 px-4">Accession Number</th>
-           <th class="py-2 px-4">Copy Number</th>
-           <th class="py-2 px-4">Shelf</th>
-           <th class="py-2 px-4">Availability</th>
-           <th class="py-2 px-4 text-right">Actions</th>
-          </tr>
-         </thead>
-
-         <tbody>
-          ${copyRows}
-         </tbody>
-
+         <thead><tr class="text-[10px] uppercase text-slate-500">
+          <th class="py-2 px-4">Accession Number</th><th class="py-2 px-4">Copy Number</th><th class="py-2 px-4">Volume</th><th class="py-2 px-4">Shelf</th><th class="py-2 px-4">Availability</th><th class="py-2 px-4 text-right">Actions</th>
+         </tr></thead>
+         <tbody>${individualRows}</tbody>
         </table>
        </div>
-
       </div>
      </td>
-    </tr>`;
+    </tr>` : ''}`;
   }).join('');
  }
 
@@ -705,39 +605,19 @@ function renderCatalog() {
 function renderInventory() {
  const ab = document.getElementById('accession-table-body');
 
- // Every individual copy appears in the accession inventory.
  ab.innerHTML = libraryBooks.length
   ? libraryBooks.map(b => `
    <tr>
-    <td class="py-3 px-4 font-mono font-bold text-indigo-600">
-     ${escapeHTML(b.accession)}
-    </td>
-
-    <td class="py-3 px-4">
-     ${escapeHTML(b.copyNumber || '—')}
-    </td>
-
-    <td class="py-3 px-4 font-semibold">
-     ${escapeHTML(b.title)}
-    </td>
-
-    <td class="py-3 px-4 text-slate-600">
-     ${escapeHTML(b.author)}
-    </td>
-
-    <td class="py-3 px-4 text-slate-600">
-     ${escapeHTML(b.shelf)}
-    </td>
-
-    <td class="py-3 px-4">
-     ${Number(b.available) || 0} / ${Number(b.total) || 0}
-    </td>
+    <td class="py-3 px-4 font-mono font-bold text-indigo-600">${escapeHTML(b.accession)}</td>
+    <td class="py-3 px-4">${escapeHTML(b.copyNumber || '—')}</td>
+    <td class="py-3 px-4 font-semibold">${escapeHTML(b.title)}</td>
+    <td class="py-3 px-4 text-slate-600">${escapeHTML(b.author)}</td>
+    <td class="py-3 px-4">${escapeHTML(b.volume || '—')}</td>
+    <td class="py-3 px-4 text-slate-600">${escapeHTML(b.shelf)}</td>
    </tr>`).join('')
-  : '<tr><td colspan="6" class="py-8 text-center text-slate-500">No accession records yet. Import books into the Catalog first.</td></tr>';
+  : '<tr><td colspan="6" class="py-8 text-center text-slate-500">No accession records yet.</td></tr>';
 
- // Shelf counts are based on individual records.
  const shelves = {};
-
  libraryBooks.forEach(b => {
   const k = b.shelf.trim() || 'Shelf not specified';
   shelves[k] = (shelves[k] || 0) + 1;
@@ -745,164 +625,235 @@ function renderInventory() {
 
  document.getElementById('shelf-inventory-list').innerHTML =
   Object.keys(shelves).length
-   ? Object.entries(shelves)
-      .sort((a,b) => a[0].localeCompare(b[0]))
-      .map(([name,count]) => `
-       <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 flex justify-between items-center gap-3">
-        <h3 class="font-bold text-slate-800">${escapeHTML(name)}</h3>
-        <span class="px-3 py-1 bg-indigo-600 text-white font-bold rounded-lg text-sm">${count}</span>
-       </div>`).join('')
+   ? Object.entries(shelves).sort((a,b) => a[0].localeCompare(b[0])).map(([name,count]) => `
+    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 flex justify-between items-center gap-3">
+     <h3 class="font-bold text-slate-800">${escapeHTML(name)}</h3>
+     <span class="px-3 py-1 bg-indigo-600 text-white font-bold rounded-lg text-sm">${count}</span>
+    </div>`).join('')
    : '<p class="text-sm text-slate-500">No shelf locations recorded yet.</p>';
 
- const names = [
-  'Computer science, information & general works',
-  'Philosophy & psychology',
-  'Religion',
-  'Social sciences',
-  'Language',
-  'Science',
-  'Technology',
-  'Arts & recreation',
-  'Literature',
-  'History & geography'
+ const ddcNames = [
+  'Computer science, information & general works','Philosophy & psychology','Religion','Social sciences','Language','Science','Technology','Arts & recreation','Literature','History & geography'
  ];
-
  const ddc = {};
 
  libraryBooks.forEach(b => {
   const raw = b.ddc.trim();
   const n = parseInt(raw,10);
-
   const key = raw
-   ? `${Math.floor(n/100)*100} — ${Number.isFinite(n) ? (names[Math.floor(n/100)] || 'Other') : 'Unclassified'}`
+   ? `${Math.floor(n/100)*100} — ${Number.isFinite(n) ? (ddcNames[Math.floor(n/100)] || 'Other') : 'Unclassified'}`
    : 'DDC not specified';
-
   ddc[key] = (ddc[key] || 0) + 1;
  });
 
  document.getElementById('ddc-inventory-list').innerHTML =
   Object.keys(ddc).length
-   ? Object.entries(ddc)
-      .sort((a,b) => a[0].localeCompare(b[0]))
-      .map(([name,count]) => `
-       <div class="p-3.5 rounded-xl border border-slate-200 flex justify-between items-center gap-3">
-        <span class="font-mono text-sm font-semibold text-indigo-700">${escapeHTML(name)}</span>
-        <span class="px-3 py-1 bg-slate-100 rounded-lg text-xs font-bold text-slate-700">${count} Records</span>
-       </div>`).join('')
+   ? Object.entries(ddc).sort((a,b) => a[0].localeCompare(b[0])).map(([name,count]) => `
+    <div class="p-3.5 rounded-xl border border-slate-200 flex justify-between items-center gap-3">
+     <span class="font-mono text-sm font-semibold text-indigo-700">${escapeHTML(name)}</span>
+     <span class="px-3 py-1 bg-slate-100 rounded-lg text-xs font-bold text-slate-700">${count} Records</span>
+    </div>`).join('')
    : '<p class="text-sm text-slate-500">No DDC records yet.</p>';
 }
 
-function openAddBookModal() {
+/* ADD BOOK FLOW */
+
+function startAddBook() {
+ openModal('add-type-modal');
+}
+
+function chooseAddMode(mode) {
+ closeModal('add-type-modal');
  document.getElementById('book-form').reset();
  document.getElementById('book-edit-id').value = '';
- document.getElementById('book-available').value = 1;
- document.getElementById('book-total').value = 1;
- document.getElementById('book-modal-title').textContent = 'Add Book to Catalog';
- document.getElementById('book-save-button').textContent = 'Save Book';
+ document.getElementById('book-entry-mode').value = mode;
+
+ document.getElementById('book-modal-title').textContent =
+  mode === 'multiple' ? 'Add Book with Multiple Copies / Volumes' : 'Add Single Book';
+
+ document.getElementById('book-modal-subtitle').textContent =
+  mode === 'multiple'
+   ? 'Enter the shared book details once, then add a row for every copy or volume.'
+   : 'Enter the details of this individual book record.';
+
+ document.getElementById('add-copy-row-button').classList.toggle('hidden',mode !== 'multiple');
+
+ document.getElementById('book-save-button').textContent =
+  mode === 'multiple' ? 'Save All Copy / Volume Records' : 'Save Book';
+
+ document.getElementById('copy-records-container').innerHTML = '';
+ copyRowCounter = 0;
+
+ addCopyRow(mode === 'single');
+
  openModal('add-book-modal');
 }
 
-function editBookById(id) {
- const b = libraryBooks.find(x => x.id === id);
- if (!b) return alert('This book could not be found.');
+function addCopyRow(single=false) {
+ const container = document.getElementById('copy-records-container');
+ const rowId = 'copy-row-' + (++copyRowCounter);
+ const mode = document.getElementById('book-entry-mode').value;
 
- const fields = [
-  'accession',
-  'copyNumber',
-  'ddc',
-  'title',
-  'author',
-  'category',
-  'shelf',
-  'edition',
-  'volume',
-  'year',
-  'available',
-  'total'
- ];
+ const row = document.createElement('div');
+ row.id = rowId;
+ row.className = 'border border-slate-200 rounded-xl p-3 space-y-3 bg-slate-50/60';
 
- document.getElementById('book-edit-id').value = b.id;
+ row.innerHTML = `
+  <div class="flex justify-between items-center">
+   <p class="text-xs font-bold text-slate-700">Individual Record ${copyRowCounter}</p>
+   ${mode === 'multiple' ? `<button type="button" onclick="removeCopyRow('${rowId}')" class="text-xs text-rose-600 font-semibold"><i class="fa-solid fa-xmark mr-1"></i>Remove</button>` : ''}
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+   <label class="block text-xs font-semibold text-slate-600">Accession Number *
+    <input data-copy-field="accession" required class="mt-1 w-full p-2.5 border border-slate-200 rounded-lg text-sm bg-white" placeholder="Accession number">
+   </label>
+   <label class="block text-xs font-semibold text-slate-600">Copy Number
+    <input data-copy-field="copyNumber" class="mt-1 w-full p-2.5 border border-slate-200 rounded-lg text-sm bg-white" placeholder="Copy number">
+   </label>
+   <label class="block text-xs font-semibold text-slate-600">Volume
+    <input data-copy-field="volume" class="mt-1 w-full p-2.5 border border-slate-200 rounded-lg text-sm bg-white" placeholder="e.g. Volume I">
+   </label>
+   <label class="block text-xs font-semibold text-slate-600">Shelf Location
+    <input data-copy-field="shelf" class="mt-1 w-full p-2.5 border border-slate-200 rounded-lg text-sm bg-white" placeholder="Shelf location">
+   </label>
+   <label class="block text-xs font-semibold text-slate-600">Available Copies
+    <input data-copy-field="available" type="number" min="0" value="1" required class="mt-1 w-full p-2.5 border border-slate-200 rounded-lg text-sm bg-white">
+   </label>
+   <label class="block text-xs font-semibold text-slate-600">Total Copies
+    <input data-copy-field="total" type="number" min="0" value="1" required class="mt-1 w-full p-2.5 border border-slate-200 rounded-lg text-sm bg-white">
+   </label>
+  </div>`;
 
- fields.forEach(field => {
-  document.getElementById('book-' + field).value = b[field] ?? '';
- });
+ container.appendChild(row);
+}
 
- document.getElementById('book-modal-title').textContent = 'Edit Book Details';
- document.getElementById('book-save-button').textContent = 'Save Changes';
-
- openModal('add-book-modal');
+function removeCopyRow(id) {
+ const container = document.getElementById('copy-records-container');
+ if (container.children.length <= 1) {
+  alert('At least one individual record is required.');
+  return;
+ }
+ document.getElementById(id)?.remove();
 }
 
 function saveBook(event) {
  event.preventDefault();
 
- const id = document.getElementById('book-edit-id').value;
- const available = Number(document.getElementById('book-available').value);
- const total = Number(document.getElementById('book-total').value);
+ const editId = document.getElementById('book-edit-id').value;
+ const mode = document.getElementById('book-entry-mode').value;
 
- if (available > total) {
-  return alert('Available copies cannot be greater than total copies.');
- }
-
- const b = {
-  id: id || (crypto.randomUUID ? crypto.randomUUID() : 'book-' + Date.now()),
-
-  accession: document.getElementById('book-accession').value.trim(),
-  copyNumber: document.getElementById('book-copy-number').value.trim(),
-  ddc: document.getElementById('book-ddc').value.trim(),
-  title: document.getElementById('book-title').value.trim(),
-  author: document.getElementById('book-author').value.trim(),
-  category: document.getElementById('book-category').value.trim(),
-  shelf: document.getElementById('book-shelf').value.trim(),
-  edition: document.getElementById('book-edition').value.trim(),
-  volume: document.getElementById('book-volume').value.trim(),
-  year: document.getElementById('book-year').value.trim(),
-  available,
-  total
+ const shared = {
+  title:document.getElementById('book-title').value.trim(),
+  author:document.getElementById('book-author').value.trim(),
+  ddc:document.getElementById('book-ddc').value.trim(),
+  category:document.getElementById('book-category').value.trim(),
+  edition:document.getElementById('book-edition').value.trim(),
+  year:document.getElementById('book-year').value.trim()
  };
 
- if (!b.accession || !b.title) {
-  return alert('Enter the accession number and book title.');
+ if (!shared.title) return alert('Enter the book title.');
+
+ const rows = [...document.querySelectorAll('#copy-records-container > div')];
+ if (!rows.length) return alert('Add at least one individual copy or volume record.');
+
+ const newRecords = [];
+
+ for (const row of rows) {
+  const get = field => row.querySelector(`[data-copy-field="${field}"]`).value.trim();
+
+  const record = {
+   id:editId || makeId(),
+   ...shared,
+   accession:get('accession'),
+   copyNumber:get('copyNumber'),
+   volume:get('volume'),
+   shelf:get('shelf') || document.getElementById('book-default-shelf').value.trim(),
+   available:Number(get('available')),
+   total:Number(get('total'))
+  };
+
+  if (!record.accession) return alert('Every individual record must have an accession number.');
+  if (record.available > record.total) return alert('Available copies cannot be greater than total copies.');
+
+  newRecords.push(record);
  }
 
- // Accession numbers must be unique. Titles and authors do not need to be unique.
- if (libraryBooks.some(x =>
-  x.accession.toLowerCase() === b.accession.toLowerCase() && x.id !== id
- )) {
-  return alert('That accession number is already used by another book.');
+ const existingIds = new Set(libraryBooks.map(b => b.id));
+ const seenAccession = new Set(
+  libraryBooks.filter(b => b.id !== editId).map(b => b.accession.trim().toLowerCase())
+ );
+
+ for (const record of newRecords) {
+  const key = record.accession.toLowerCase();
+  if (seenAccession.has(key)) return alert('Accession number "' + record.accession + '" is already used. Each record must have a unique accession number.');
+  seenAccession.add(key);
  }
 
- if (id) {
-  const i = libraryBooks.findIndex(x => x.id === id);
-  if (i < 0) return alert('This book no longer exists.');
-  libraryBooks[i] = b;
+ if (editId) {
+  const index = libraryBooks.findIndex(b => b.id === editId);
+  if (index < 0) return alert('This book no longer exists.');
+  libraryBooks[index] = newRecords[0];
  } else {
-  libraryBooks.push(b);
+  libraryBooks.push(...newRecords);
  }
 
  if (!saveCatalog()) return;
 
  renderCatalog();
  closeModal('add-book-modal');
+ alert(editId ? 'Book record updated.' : `${newRecords.length} individual record(s) added to the catalog.`);
+}
+
+/* EDIT EXISTING INDIVIDUAL RECORD */
+
+function editBookById(id) {
+ const b = libraryBooks.find(x => x.id === id);
+ if (!b) return alert('This book could not be found.');
+
  document.getElementById('book-form').reset();
+ document.getElementById('book-edit-id').value = b.id;
+ document.getElementById('book-entry-mode').value = 'single';
+
+ document.getElementById('book-title').value = b.title;
+ document.getElementById('book-author').value = b.author;
+ document.getElementById('book-ddc').value = b.ddc;
+ document.getElementById('book-category').value = b.category;
+ document.getElementById('book-edition').value = b.edition;
+ document.getElementById('book-year').value = b.year;
+ document.getElementById('book-default-shelf').value = '';
+
+ document.getElementById('book-modal-title').textContent = 'Edit Individual Book Record';
+ document.getElementById('book-modal-subtitle').textContent = 'Changes apply only to this individual record.';
+ document.getElementById('add-copy-row-button').classList.add('hidden');
+ document.getElementById('book-save-button').textContent = 'Save Changes';
+
+ const container = document.getElementById('copy-records-container');
+ container.innerHTML = '';
+ copyRowCounter = 0;
+ addCopyRow(true);
+
+ const row = container.querySelector('div');
+ row.querySelector('[data-copy-field="accession"]').value = b.accession;
+ row.querySelector('[data-copy-field="copyNumber"]').value = b.copyNumber;
+ row.querySelector('[data-copy-field="volume"]').value = b.volume;
+ row.querySelector('[data-copy-field="shelf"]').value = b.shelf;
+ row.querySelector('[data-copy-field="available"]').value = b.available;
+ row.querySelector('[data-copy-field="total"]').value = b.total;
+
+ openModal('add-book-modal');
 }
 
 function deleteBookById(id) {
  const b = libraryBooks.find(x => x.id === id);
  if (!b) return;
 
- if (!confirm(`Delete this individual copy?\n\nTitle: ${b.title}\nCopy Number: ${b.copyNumber || 'Not specified'}\nAccession Number: ${b.accession}\n\nThis will not delete the other copies of this title.`)) {
-  return;
- }
+ if (!confirm(`Delete this individual record?\n\nTitle: ${b.title}\nVolume: ${b.volume || 'Not specified'}\nCopy Number: ${b.copyNumber || 'Not specified'}\nAccession Number: ${b.accession}\n\nOther copies and volumes will remain in the catalog.`)) return;
 
  libraryBooks = libraryBooks.filter(x => x.id !== id);
-
- if (saveCatalog()) {
-  renderCatalog();
- }
+ if (saveCatalog()) renderCatalog();
 }
 
-/* CSV READER */
+/* CSV IMPORT */
 
 function parseCSV(text) {
  const rows = [];
@@ -910,7 +861,7 @@ function parseCSV(text) {
  let cell = '';
  let quoted = false;
 
- for (let i = 0; i < text.length; i++) {
+ for (let i=0;i<text.length;i++) {
   const ch = text[i];
 
   if (quoted) {
@@ -929,11 +880,7 @@ function parseCSV(text) {
    cell = '';
   } else if (ch === '\n') {
    row.push(cell.replace(/\r$/,''));
-
-   if (row.some(v => v.trim())) {
-    rows.push(row);
-   }
-
+   if (row.some(v => v.trim())) rows.push(row);
    row = [];
    cell = '';
   } else {
@@ -942,20 +889,12 @@ function parseCSV(text) {
  }
 
  row.push(cell.replace(/\r$/,''));
-
- if (row.some(v => v.trim())) {
-  rows.push(row);
- }
-
+ if (row.some(v => v.trim())) rows.push(row);
  return rows;
 }
 
 function normalizeHeader(s) {
- return String(s || '')
-  .toLowerCase()
-  .trim()
-  .replace(/[._-]+/g,' ')
-  .replace(/\s+/g,' ');
+ return String(s || '').toLowerCase().trim().replace(/[._-]+/g,' ').replace(/\s+/g,' ');
 }
 
 function openCSVModal() {
@@ -963,10 +902,8 @@ function openCSVModal() {
  document.getElementById('csv-file-status').textContent = 'No file selected.';
  document.getElementById('csv-mapping-area').classList.add('hidden');
  document.getElementById('csv-import-button').disabled = true;
-
  pendingCSVRows = [];
  pendingCSVHeaders = [];
-
  openModal('csv-modal');
 }
 
@@ -980,46 +917,24 @@ async function handleCSVFile(event) {
 
  try {
   const rows = parseCSV(await file.text());
+  if (rows.length < 2) throw new Error('The CSV must contain a header row and at least one book row.');
 
-  if (rows.length < 2) {
-   throw new Error('The CSV must contain a header row and at least one book row.');
-  }
-
-  pendingCSVHeaders = rows[0].map((h,i) =>
-   String(h || '').replace(/^\uFEFF/,'').trim() || `Column ${i+1}`
-  );
-
+  pendingCSVHeaders = rows[0].map((h,i) => String(h || '').replace(/^\uFEFF/,'').trim() || `Column ${i+1}`);
   pendingCSVRows = rows.slice(1);
 
-  const fields = document.getElementById('csv-mapping-fields');
+  document.getElementById('csv-mapping-fields').innerHTML = CSV_FIELDS.map(([key,label,aliases]) => {
+   const found = pendingCSVHeaders.findIndex(h => aliases.includes(normalizeHeader(h)));
+   const options = '<option value="">— Do not import —</option>' +
+    pendingCSVHeaders.map((h,i) => `<option value="${i}" ${i === found ? 'selected' : ''}>${escapeHTML(h)}</option>`).join('');
 
-  fields.innerHTML = CSV_FIELDS.map(([key,label,aliases]) => {
-   const found = pendingCSVHeaders.findIndex(h =>
-    aliases.includes(normalizeHeader(h))
-   );
-
-   const options =
-    '<option value="">— Do not import —</option>' +
-    pendingCSVHeaders.map((h,i) =>
-     `<option value="${i}" ${i === found ? 'selected' : ''}>${escapeHTML(h)}</option>`
-    ).join('');
-
-   return `
-    <label class="text-xs font-semibold text-slate-700">
-     ${label}
-     <select
-      data-csv-field="${key}"
-      class="mt-1 block w-full p-2.5 border border-slate-200 rounded-lg bg-white text-xs">
-      ${options}
-     </select>
-    </label>`;
+   return `<label class="text-xs font-semibold text-slate-700">${label}
+    <select data-csv-field="${key}" class="mt-1 block w-full p-2.5 border border-slate-200 rounded-lg bg-white text-xs">${options}</select>
+   </label>`;
   }).join('');
 
   area.classList.remove('hidden');
   button.disabled = false;
-
-  status.textContent =
-   `${file.name} loaded: ${pendingCSVRows.length} data rows found. Check the column mapping before importing.`;
+  status.textContent = `${file.name} loaded: ${pendingCSVRows.length} data rows found. Check the column mapping before importing.`;
 
  } catch(err) {
   pendingCSVRows = [];
@@ -1030,39 +945,24 @@ async function handleCSVFile(event) {
 }
 
 function importCSVBooks() {
- if (!pendingCSVRows.length) {
-  return alert('Please select a valid CSV file first.');
- }
+ if (!pendingCSVRows.length) return alert('Please select a valid CSV file first.');
 
  const map = {};
-
  document.querySelectorAll('[data-csv-field]').forEach(el => {
-  map[el.dataset.csvField] =
-   el.value === '' ? -1 : Number(el.value);
+  map[el.dataset.csvField] = el.value === '' ? -1 : Number(el.value);
  });
 
- if (map.title < 0 || map.accession < 0) {
-  return alert('Map both Book Title and Accession Number.');
- }
+ if (map.title < 0 || map.accession < 0) return alert('Map both Book Title and Accession Number.');
 
- const seen = new Set(
-  libraryBooks.map(b => b.accession.trim().toLowerCase())
- );
-
+ const seen = new Set(libraryBooks.map(b => b.accession.trim().toLowerCase()));
  let imported = 0;
  let skipped = 0;
 
  pendingCSVRows.forEach((row,index) => {
-
-  const get = key =>
-   map[key] >= 0 ? String(row[map[key]] ?? '').trim() : '';
-
+  const get = key => map[key] >= 0 ? String(row[map[key]] ?? '').trim() : '';
   const title = get('title');
   const accession = get('accession');
 
-  // Only a missing title, missing accession, or repeated accession
-  // prevents a row from being imported.
-  // Repeated titles, authors, editions, and other book details are allowed.
   if (!title || !accession || seen.has(accession.toLowerCase())) {
    skipped++;
    return;
@@ -1070,32 +970,21 @@ function importCSVBooks() {
 
   const totalText = get('total');
   const availableText = get('available');
-
-  const total = totalText === ''
-   ? 1
-   : Math.max(0,Number(totalText) || 0);
-
-  const available = availableText === ''
-   ? total
-   : Math.min(total,Math.max(0,Number(availableText) || 0));
+  const total = totalText === '' ? 1 : Math.max(0,Number(totalText) || 0);
+  const available = availableText === '' ? total : Math.min(total,Math.max(0,Number(availableText) || 0));
 
   libraryBooks.push({
-   id: crypto.randomUUID
-    ? crypto.randomUUID()
-    : `book-${Date.now()}-${index}`,
-
+   id:makeId(),
    title,
    accession,
-   copyNumber: get('copyNumber'),
-   author: get('author'),
-   ddc: get('ddc'),
-   category: get('category'),
-   shelf: get('shelf'),
-
-   edition: get('edition'),
-   volume: get('volume'),
-   year: get('year'),
-
+   copyNumber:get('copyNumber'),
+   author:get('author'),
+   ddc:get('ddc'),
+   category:get('category'),
+   shelf:get('shelf'),
+   edition:get('edition'),
+   volume:get('volume'),
+   year:get('year'),
    total,
    available
   });
@@ -1108,16 +997,127 @@ function importCSVBooks() {
 
  renderCatalog();
  closeModal('csv-modal');
-
  pendingCSVRows = [];
  pendingCSVHeaders = [];
 
- alert(
-  `CSV import finished.\nImported individual records: ${imported}\nSkipped rows: ${skipped}` +
-  (skipped
-   ? '\nSkipped rows had a blank title, blank accession number, or duplicate accession number.'
-   : '')
+ alert(`CSV import finished.\nImported individual records: ${imported}\nSkipped rows: ${skipped}\n\nRepeated titles and authors were imported as separate records. Only rows with missing required details or duplicate accession numbers were skipped.`);
+}
+
+/* BACKUP AND RESTORE */
+
+function downloadBackup() {
+ const backup = {
+  application:'LWCS Library Portal',
+  backupVersion:1,
+  createdAt:new Date().toISOString(),
+  totalRecords:libraryBooks.length,
+  books:libraryBooks
+ };
+
+ const blob = new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+ const url = URL.createObjectURL(blob);
+ const a = document.createElement('a');
+
+ const date = new Date().toISOString().slice(0,10);
+ a.href = url;
+ a.download = `LWCS-Library-Backup-${date}.json`;
+
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+ URL.revokeObjectURL(url);
+
+ document.getElementById('backup-message').textContent =
+  `Backup downloaded successfully. ${libraryBooks.length} individual records included.`;
+}
+
+async function restoreBackup() {
+ const file = document.getElementById('backup-file').files?.[0];
+ if (!file) return alert('Please select a JSON backup file.');
+
+ try {
+  const content = JSON.parse(await file.text());
+  const records = Array.isArray(content) ? content : content.books;
+
+  if (!Array.isArray(records)) {
+   throw new Error('This file does not contain a valid LWCS catalog backup.');
+  }
+
+  const restored = records.map(normalizeBook);
+  const accessionSet = new Set();
+
+  for (const b of restored) {
+   if (!b.title.trim() || !b.accession.trim()) {
+    throw new Error('The backup contains a record without a title or accession number. No changes were made.');
+   }
+
+   const key = b.accession.trim().toLowerCase();
+   if (accessionSet.has(key)) {
+    throw new Error('The backup contains duplicate accession numbers. No changes were made.');
+   }
+   accessionSet.add(key);
+  }
+
+  const proceed = confirm(
+   `Restore this backup?\n\nRecords in backup: ${restored.length}\nCurrent catalog records: ${libraryBooks.length}\n\nRestoring will replace the current catalog. Download a backup of your current catalog first if you want to keep it.`
+  );
+
+  if (!proceed) return;
+
+  const oldBooks = libraryBooks;
+  libraryBooks = restored;
+
+  if (!saveCatalog()) {
+   libraryBooks = oldBooks;
+   return;
+  }
+
+  renderCatalog();
+  document.getElementById('backup-message').textContent =
+   `Backup restored successfully. ${restored.length} individual records are now in the catalog.`;
+
+  document.getElementById('backup-file').value = '';
+  alert(`Backup restored successfully.\n${restored.length} individual records loaded.`);
+
+ } catch(err) {
+  alert(err.message || 'Could not restore this backup file.');
+ }
+}
+
+/* DELETE ALL BOOKS */
+
+function deleteAllBooks() {
+ if (!libraryBooks.length) {
+  alert('The catalog is already empty.');
+  return;
+ }
+
+ const firstConfirm = confirm(
+  `WARNING: You are about to delete ALL ${libraryBooks.length} individual book records from the catalog.\n\nThis includes every copy and volume.\n\nDo you want to continue?`
  );
+
+ if (!firstConfirm) return;
+
+ const secondConfirm = confirm(
+  'FINAL CONFIRMATION\n\nAre you absolutely sure you want to delete all books? This action cannot be undone unless you have a backup.'
+ );
+
+ if (!secondConfirm) return;
+
+ const previousBooks = libraryBooks;
+ libraryBooks = [];
+
+ if (!saveCatalog()) {
+  libraryBooks = previousBooks;
+  return;
+ }
+
+ renderCatalog();
+
+ document.getElementById('backup-message').textContent =
+  'All book records have been deleted. Your downloaded backup files have not been affected.';
+
+ alert('All book records have been deleted from this browser.');
 }
 
 /* SETTINGS */
@@ -1128,10 +1128,7 @@ function applyLibrarySettings() {
  const size = document.getElementById('font-size-choice').value;
 
  document.body.classList.remove('theme-dark','theme-blue','theme-green');
-
- if (theme !== 'light') {
-  document.body.classList.add('theme-' + theme);
- }
+ if (theme !== 'light') document.body.classList.add('theme-' + theme);
 
  const fonts = {
   jakarta:"'Plus Jakarta Sans', sans-serif",
@@ -1143,7 +1140,6 @@ function applyLibrarySettings() {
 
  document.body.style.fontFamily = fonts[font] || fonts.jakarta;
  document.documentElement.style.fontSize = size + 'px';
-
  document.getElementById('font-preview').style.fontFamily = fonts[font] || fonts.jakarta;
  document.getElementById('font-preview').style.fontSize = size + 'px';
 
@@ -1157,7 +1153,6 @@ function applyLibrarySettings() {
 
 function loadLibrarySettings() {
  let s = {theme:'light',font:'jakarta',size:'16'};
-
  try {
   s = {...s,...JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')};
  } catch(e) {}
@@ -1165,7 +1160,6 @@ function loadLibrarySettings() {
  document.getElementById('theme-choice').value = s.theme;
  document.getElementById('font-choice').value = s.font;
  document.getElementById('font-size-choice').value = s.size;
-
  applyLibrarySettings();
  document.getElementById('settings-saved-message').textContent = '';
 }
@@ -1174,62 +1168,43 @@ function resetLibrarySettings() {
  document.getElementById('theme-choice').value = 'light';
  document.getElementById('font-choice').value = 'jakarta';
  document.getElementById('font-size-choice').value = '16';
-
  applyLibrarySettings();
-}
-
-function updateClock() {
- document.getElementById('live-clock').textContent =
-  new Date().toLocaleString('en-PH',{
-   month:'short',
-   day:'numeric',
-   year:'numeric',
-   hour:'2-digit',
-   minute:'2-digit'
-  });
 }
 
 /* INITIALIZATION */
 
-document.addEventListener('DOMContentLoaded',() => {
+function updateClock() {
+ document.getElementById('live-clock').textContent =
+  new Date().toLocaleString('en-PH',{
+   month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'
+  });
+}
 
+document.addEventListener('DOMContentLoaded',() => {
  loadLibrarySettings();
  loadCatalog();
  updateClock();
-
  setInterval(updateClock,30000);
 
  document.getElementById('catalog-table-body').addEventListener('click',event => {
-
   const button = event.target.closest('button[data-action]');
   if (!button) return;
 
-  // Expand or collapse the individual copies inside a grouped book.
   if (button.dataset.action === 'toggle-group') {
    const row = document.getElementById(button.dataset.group);
-
    if (row) {
     row.classList.toggle('hidden');
-
     button.innerHTML = row.classList.contains('hidden')
      ? '<i class="fa-solid fa-list-ul mr-1"></i>Show Individual Copies'
      : '<i class="fa-solid fa-eye-slash mr-1"></i>Hide Individual Copies';
    }
-
    return;
   }
 
   const id = button.dataset.id;
-
-  if (button.dataset.action === 'edit') {
-   editBookById(id);
-  }
-
-  if (button.dataset.action === 'delete') {
-   deleteBookById(id);
-  }
+  if (button.dataset.action === 'edit') editBookById(id);
+  if (button.dataset.action === 'delete') deleteBookById(id);
  });
-
 });
 </script>
 
