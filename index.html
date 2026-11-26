@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -342,7 +343,7 @@ function makeFieldKey(label){
 let base=String(label).trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
 if(!base)base='custom_field';
 let key=base,i=2;
-while(BASE_FIELDS.some(f=>f.key===key)||customFields.some(f=>f.key===key))key=base+'_'+i++;
+while(BASE_FIELDS.some(f=>f.key===key)||customFields.some(f=>f.key==='custom_'+key||f.key===key))key=base+'_'+i++;
 return key;
 }
 
@@ -482,8 +483,6 @@ const values=[b.accession,b.copyNumber,b.ddc,b.title,b.author,b.edition,b.volume
 return values.join(' ').toLowerCase().includes(q);
 });
 
-/* FIX: The old code tried to update a missing total-books-count element.
-   This guarded lookup prevents a JavaScript error from stopping initialization. */
 const totalBooksCount=document.getElementById('total-books-count');
 if(totalBooksCount)totalBooksCount.textContent=libraryBooks.length.toLocaleString();
 
@@ -502,7 +501,7 @@ const isGrouped=copies.length>1;
 const cells=columns.map(f=>{
 let value=getFieldValue(first,f.key);
 if(f.key==='accession'&&isGrouped)value=`${copies.length} records`;
-if(f.key==='availability)value=`${availableCount}/${totalCount}`;
+if(f.key==='availability')value=`${availableCount}/${totalCount}`;
 if(f.key==='shelf'&&isGrouped)value='Multiple / see records';
 const cls=f.key==='accession'?'font-mono text-xs font-semibold text-indigo-600':'text-xs text-slate-700';
 return`<td class="py-3.5 px-4 ${cls}">${escapeHTML(value||'—')}</td>`;
@@ -759,7 +758,7 @@ libraryBooks=libraryBooks.filter(x=>x.id!==id);
 if(saveCatalog())renderCatalog();else libraryBooks=previousBooks;
 }
 
-/* CSV IMPORT - REPAIRED */
+/* CSV IMPORT */
 
 function parseCSV(text){
 const rows=[];
@@ -1007,8 +1006,8 @@ loadCatalog();
 updateClock();
 setInterval(updateClock,30000);
 
-/* Event delegation is attached after the catalog has rendered. */
 const catalogBody=document.getElementById('catalog-table-body');
+if(catalogBody){
 catalogBody.addEventListener('click',event=>{
 const button=event.target.closest('button[data-action]');
 if(!button)return;
@@ -1026,6 +1025,7 @@ const id=button.dataset.id;
 if(button.dataset.action==='edit')editBookById(id);
 if(button.dataset.action==='delete')deleteBookById(id);
 });
+}
 }catch(error){
 console.error('Library initialization error:',error);
 alert('The Library Portal encountered an initialization error. Please open the browser Console and check the error details.');
