@@ -4,16 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LWCS Library Portal — UI Design</title>
-    
-    <!-- Tailwind CSS -->
+
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- FontAwesome Icons -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -24,7 +21,6 @@
         .font-mono {
             font-family: 'JetBrains Mono', monospace;
         }
-        /* Custom subtle scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -39,6 +35,20 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+
+        /* Settings Desk themes */
+        body.theme-dark { background-color: #0f172a !important; color: #e2e8f0 !important; }
+        body.theme-dark .bg-white { background-color: #1e293b !important; border-color: #334155 !important; }
+        body.theme-dark .bg-slate-50, body.theme-dark .bg-slate-50\/60 { background-color: #273449 !important; }
+        body.theme-dark .text-slate-900, body.theme-dark .text-slate-800, body.theme-dark .text-slate-700 { color: #f1f5f9 !important; }
+        body.theme-dark .text-slate-600, body.theme-dark .text-slate-500, body.theme-dark .text-slate-400 { color: #cbd5e1 !important; }
+        body.theme-dark input, body.theme-dark select { background-color: #0f172a !important; color: #f8fafc !important; border-color: #475569 !important; }
+        body.theme-dark table thead tr { background-color: #273449 !important; }
+        body.theme-dark table tbody tr { border-color: #334155 !important; }
+        body.theme-dark .border-slate-100, body.theme-dark .border-slate-200, body.theme-dark .border-slate-200\/80 { border-color: #334155 !important; }
+        body.theme-blue { background-color: #eff6ff !important; }
+        body.theme-green { background-color: #f0fdf4 !important; }
+        body.theme-blue main > section > .bg-white, body.theme-green main > section > .bg-white { border-color: #cbd5e1 !important; }
     </style>
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col">
@@ -47,8 +57,7 @@
     <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                
-                <!-- Brand Logo & Title -->
+
                 <div class="flex items-center space-x-3.5">
                     <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md shadow-indigo-500/20">
                         <i class="fa-solid fa-book-open-reader text-lg text-white"></i>
@@ -59,7 +68,6 @@
                     </div>
                 </div>
 
-                <!-- Right Controls: Clock & User Profile -->
                 <div class="flex items-center space-x-4">
                     <div class="hidden md:flex items-center space-x-2 bg-slate-800/80 border border-slate-700/80 px-3.5 py-1.5 rounded-lg text-xs text-slate-300">
                         <i class="fa-regular fa-clock text-indigo-400"></i>
@@ -98,6 +106,9 @@
                 </button>
                 <button onclick="switchDesk('auth')" id="tab-btn-auth" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition whitespace-nowrap">
                     <i class="fa-solid fa-shield-halved"></i><span>Account Authorization</span>
+                </button>
+                <button onclick="switchDesk('settings')" id="tab-btn-settings" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition whitespace-nowrap">
+                    <i class="fa-solid fa-gear"></i><span>Settings Desk</span>
                 </button>
             </nav>
         </div>
@@ -155,7 +166,6 @@
 
         <!-- DESK 1: CATALOG -->
         <section id="desk-catalog" class="desk-view space-y-5">
-            <!-- Toolbar -->
             <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="relative w-full md:w-96">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
@@ -171,7 +181,6 @@
                 </div>
             </div>
 
-            <!-- Catalog Table -->
             <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
@@ -187,7 +196,6 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 text-sm">
-                            <!-- Sample Row 1 -->
                             <tr class="hover:bg-slate-50/80 transition">
                                 <td class="py-3.5 px-4 font-mono text-xs font-semibold text-indigo-600">ACC-2026-001</td>
                                 <td class="py-3.5 px-4 font-mono text-xs text-slate-600">189.4</td>
@@ -195,21 +203,14 @@
                                     <p class="font-bold text-slate-900">Summa Theologiae (Prima Pars)</p>
                                     <p class="text-xs text-slate-500">St. Thomas Aquinas • Vol. 1 • 2022</p>
                                 </td>
-                                <td class="py-3.5 px-4">
-                                    <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700">Philosophy</span>
-                                </td>
-                                <td class="py-3.5 px-4 text-xs font-medium text-slate-700">
-                                    <i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>Shelf A, Row 2
-                                </td>
-                                <td class="py-3.5 px-4">
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">3 / 3 Available</span>
-                                </td>
+                                <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700">Philosophy</span></td>
+                                <td class="py-3.5 px-4 text-xs font-medium text-slate-700"><i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>Shelf A, Row 2</td>
+                                <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">3 / 3 Available</span></td>
                                 <td class="py-3.5 px-4 text-right space-x-2">
                                     <button class="p-1.5 text-slate-400 hover:text-indigo-600 transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
                                     <button class="p-1.5 text-slate-400 hover:text-rose-600 transition" title="Delete"><i class="fa-solid fa-trash"></i></button>
                                 </td>
                             </tr>
-                            <!-- Sample Row 2 -->
                             <tr class="hover:bg-slate-50/80 transition">
                                 <td class="py-3.5 px-4 font-mono text-xs font-semibold text-indigo-600">ACC-2026-014</td>
                                 <td class="py-3.5 px-4 font-mono text-xs text-slate-600">193</td>
@@ -217,21 +218,14 @@
                                     <p class="font-bold text-slate-900">Critique of Pure Reason</p>
                                     <p class="text-xs text-slate-500">Immanuel Kant • 2nd Ed. • 2019</p>
                                 </td>
-                                <td class="py-3.5 px-4">
-                                    <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-purple-50 text-purple-700">Metaphysics</span>
-                                </td>
-                                <td class="py-3.5 px-4 text-xs font-medium text-slate-700">
-                                    <i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>Shelf B, Row 1
-                                </td>
-                                <td class="py-3.5 px-4">
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">1 / 2 Available</span>
-                                </td>
+                                <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-purple-50 text-purple-700">Metaphysics</span></td>
+                                <td class="py-3.5 px-4 text-xs font-medium text-slate-700"><i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>Shelf B, Row 1</td>
+                                <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">1 / 2 Available</span></td>
                                 <td class="py-3.5 px-4 text-right space-x-2">
                                     <button class="p-1.5 text-slate-400 hover:text-indigo-600 transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
                                     <button class="p-1.5 text-slate-400 hover:text-rose-600 transition" title="Delete"><i class="fa-solid fa-trash"></i></button>
                                 </td>
                             </tr>
-                            <!-- Sample Row 3 -->
                             <tr class="hover:bg-slate-50/80 transition">
                                 <td class="py-3.5 px-4 font-mono text-xs font-semibold text-indigo-600">ACC-2026-042</td>
                                 <td class="py-3.5 px-4 font-mono text-xs text-slate-600">230.2</td>
@@ -239,8 +233,20 @@
                                     <p class="font-bold text-slate-900">Introduction to Christianity</p>
                                     <p class="text-xs text-slate-500">Joseph Ratzinger • 2004</p>
                                 </td>
-                                <td class="py-3.5 px-4">
-                                    <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-sky-50 text-sky-700">Theology</span>
+                                <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-sky-50 text-sky-700">Theology</span></td>
+                                <td class="py-3.5 px-4 text-xs font-medium text-slate-700"><i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>Shelf C, Row 4</td>
+                                <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">0 / 1 Available</span></td>
+                                <td class="py-3.5 px-4 text-right space-x-2">
+                                    <button class="p-1.5 text-slate-400 hover:text-indigo-600 transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="p-1.5 text-slate-400 hover:text-rose-600 transition" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+                                            <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-sky-50 text-sky-700">Theology</span>
                                 </td>
                                 <td class="py-3.5 px-4 text-xs font-medium text-slate-700">
                                     <i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>Shelf C, Row 4
@@ -478,6 +484,87 @@
             </div>
         </section>
 
+
+        <!-- DESK 8: SETTINGS -->
+        <section id="desk-settings" class="desk-view hidden space-y-5">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">Library Appearance</h2>
+                    <p class="text-xs text-slate-500 mt-1">Customize the look and readability of your library portal. Your preferences are saved in this browser.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="space-y-2">
+                        <label for="theme-choice" class="block text-sm font-semibold text-slate-700">Color Theme</label>
+                        <select id="theme-choice" onchange="applyLibrarySettings()" class="w-full p-3 border border-slate-200 rounded-xl text-sm bg-white">
+                            <option value="light">Light (Default)</option>
+                            <option value="dark">Dark</option>
+                            <option value="blue">Soft Blue</option>
+                            <option value="green">Soft Green</option>
+                        </select>
+                        <p class="text-xs text-slate-400">Choose the overall appearance of the portal.</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="font-choice" class="block text-sm font-semibold text-slate-700">Font Family</label>
+                        <select id="font-choice" onchange="applyLibrarySettings()" class="w-full p-3 border border-slate-200 rounded-xl text-sm bg-white">
+                            <option value="'Plus Jakarta Sans', sans-serif">Plus Jakarta Sans</option>
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+                        </select>
+                        <p class="text-xs text-slate-400">Choose the font style used throughout the portal.</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="font-size-choice" class="block text-sm font-semibold text-slate-700">Font Size</label>
+                        <select id="font-size-choice" onchange="applyLibrarySettings()" class="w-full p-3 border border-slate-200 rounded-xl text-sm bg-white">
+                            <option value="14px">Small — 14px</option>
+                            <option value="16px" selected>Normal — 16px</option>
+                            <option value="18px">Large — 18px</option>
+                            <option value="20px">Extra Large — 20px</option>
+                        </select>
+                        <p class="text-xs text-slate-400">Adjust the general text size for easier reading.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Preview</p>
+                    <div id="font-preview" class="p-4 bg-white rounded-lg border border-slate-200">
+                        <h3 class="font-bold text-slate-900">Little Way College Seminary Library</h3>
+                        <p class="text-sm text-slate-600 mt-1">This is a preview of your selected font family and font size.</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <button onclick="applyLibrarySettings(true)" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-semibold transition">
+                        Save Appearance
+                    </button>
+                    <button onclick="resetLibrarySettings()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition">
+                        Reset Appearance
+                    </button>
+                    <span id="settings-saved-message" class="text-xs text-emerald-600 font-semibold hidden">Settings saved.</span>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-rose-200 shadow-sm space-y-4">
+                <div>
+                    <h2 class="text-lg font-bold text-rose-700">Danger Zone</h2>
+                    <p class="text-xs text-slate-500 mt-1">Permanently clear all displayed book records from this portal.</p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-rose-50 border border-rose-100">
+                    <h3 class="text-sm font-bold text-rose-800">Delete All Books</h3>
+                    <p class="text-xs text-rose-700 mt-1">This action will remove all displayed books, accession inventory entries, and circulation records. This cannot be undone from this page.</p>
+                    <button onclick="confirmDeleteAllBooks()" class="mt-4 px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-semibold transition">
+                        <i class="fa-solid fa-trash mr-2"></i>Delete All Books
+                    </button>
+                </div>
+            </div>
+        </section>
+                </section>
+
     </main>
 
     <!-- MODAL: ADD BOOK -->
@@ -485,8 +572,11 @@
         <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                 <h3 class="text-lg font-bold text-slate-900">Add Book to Catalog</h3>
-                <button onclick="closeModal('add-book-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <button onclick="closeModal('add-book-modal')" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
             </div>
+
             <div class="space-y-3 text-sm">
                 <div class="grid grid-cols-2 gap-3">
                     <input type="text" placeholder="Accession Number" class="p-2.5 border border-slate-200 rounded-xl">
@@ -499,6 +589,7 @@
                     <input type="text" placeholder="Shelf Location" class="p-2.5 border border-slate-200 rounded-xl">
                 </div>
             </div>
+
             <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
                 <button onclick="closeModal('add-book-modal')" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600">Cancel</button>
                 <button onclick="closeModal('add-book-modal')" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-semibold">Save Book</button>
@@ -506,28 +597,41 @@
         </div>
     </div>
 
-    <!-- MODAL: CSV COLUMN MAPPER PREVIEW -->
+    <!-- MODAL: CSV COLUMN MAPPER -->
     <div id="csv-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                 <h3 class="text-lg font-bold text-slate-900">CSV Column Mapping</h3>
-                <button onclick="closeModal('csv-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <button onclick="closeModal('csv-modal')" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
             </div>
+
             <p class="text-xs text-slate-500">Match your CSV headers to the library catalog fields:</p>
+
             <div class="space-y-2.5 text-xs">
                 <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                     <span class="font-bold text-slate-700">Book Title</span>
-                    <select class="p-1.5 border border-slate-300 rounded-lg bg-white"><option>[Col 1] Title</option></select>
+                    <select class="p-1.5 border border-slate-300 rounded-lg bg-white">
+                        <option>[Col 1] Title</option>
+                    </select>
                 </div>
+
                 <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                     <span class="font-bold text-slate-700">Author(s)</span>
-                    <select class="p-1.5 border border-slate-300 rounded-lg bg-white"><option>[Col 2] Author</option></select>
+                    <select class="p-1.5 border border-slate-300 rounded-lg bg-white">
+                        <option>[Col 2] Author</option>
+                    </select>
                 </div>
+
                 <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                     <span class="font-bold text-slate-700">Accession Number</span>
-                    <select class="p-1.5 border border-slate-300 rounded-lg bg-white"><option>[Col 3] Acc_No</option></select>
+                    <select class="p-1.5 border border-slate-300 rounded-lg bg-white">
+                        <option>[Col 3] Acc_No</option>
+                    </select>
                 </div>
             </div>
+
             <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
                 <button onclick="closeModal('csv-modal')" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600">Cancel</button>
                 <button onclick="closeModal('csv-modal')" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold">Import CSV</button>
@@ -544,38 +648,226 @@
 
     <!-- UI INTERACTION SCRIPT -->
     <script>
+        // Switch between library desks
         function switchDesk(deskName) {
-            // Hide all desk sections
-            document.querySelectorAll('.desk-view').forEach(el => el.classList.add('hidden'));
-            // Reset all nav buttons
-            document.querySelectorAll('.desk-btn').forEach(btn => {
-                btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm');
-                btn.classList.add('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
+            document.querySelectorAll('.desk-view').forEach(section => {
+                section.classList.add('hidden');
             });
 
-            // Show selected desk
-            document.getElementById(`desk-${deskName}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`tab-btn-${deskName}`);
-            activeBtn.classList.remove('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
-            activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
-        }
+            document.querySelectorAll('.desk-btn').forEach(button => {
+                button.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm');
+                button.classList.add('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
+            });
 
-        function toggleCustomType(selectEl) {
-            const box = document.getElementById('custom-type-box');
-            if (selectEl.value === 'Other') {
-                box.classList.remove('hidden');
-            } else {
-                box.classList.add('hidden');
+            const selectedDesk = document.getElementById('desk-' + deskName);
+            const selectedButton = document.getElementById('tab-btn-' + deskName);
+
+            if (selectedDesk) {
+                selectedDesk.classList.remove('hidden');
+            }
+
+            if (selectedButton) {
+                selectedButton.classList.remove('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
+                selectedButton.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
             }
         }
 
+        // Show or hide the custom borrower type field
+        function toggleCustomType(selectElement) {
+            const customBox = document.getElementById('custom-type-box');
+
+            if (!customBox) return;
+
+            if (selectElement.value === 'Other') {
+                customBox.classList.remove('hidden');
+            } else {
+                customBox.classList.add('hidden');
+            }
+        }
+
+        // Open and close modals
         function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.remove('hidden');
         }
 
         function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.add('hidden');
         }
+
+        // ==========================================
+        // LIBRARY APPEARANCE SETTINGS
+        // ==========================================
+
+        const LIBRARY_SETTINGS_KEY = 'lwcs-library-settings-v1';
+
+        function applyLibrarySettings(saveSettings = true) {
+            const themeChoice = document.getElementById('theme-choice');
+            const fontChoice = document.getElementById('font-choice');
+            const fontSizeChoice = document.getElementById('font-size-choice');
+            const preview = document.getElementById('font-preview');
+            const message = document.getElementById('settings-saved-message');
+
+            if (!themeChoice || !fontChoice || !fontSizeChoice) return;
+
+            const theme = themeChoice.value;
+            const font = fontChoice.value;
+            const fontSize = fontSizeChoice.value;
+
+            document.body.classList.remove('theme-dark', 'theme-blue', 'theme-green');
+
+            if (theme !== 'light') {
+                document.body.classList.add('theme-' + theme);
+            }
+
+            document.body.style.fontFamily = font;
+            document.documentElement.style.fontSize = fontSize;
+
+            if (preview) {
+                preview.style.fontFamily = font;
+                preview.style.fontSize = fontSize;
+            }
+
+            if (saveSettings) {
+                const settings = {
+                    theme: theme,
+                    font: font,
+                    fontSize: fontSize
+                };
+
+                try {
+                    localStorage.setItem(LIBRARY_SETTINGS_KEY, JSON.stringify(settings));
+
+                    if (message) {
+                        message.textContent = 'Settings saved successfully.';
+                        message.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    if (message) {
+                        message.textContent = 'Settings applied, but could not be saved in this browser.';
+                        message.classList.remove('hidden');
+                    }
+                }
+            }
+        }
+
+        // Load saved appearance settings
+        function loadLibrarySettings() {
+            const themeChoice = document.getElementById('theme-choice');
+            const fontChoice = document.getElementById('font-choice');
+            const fontSizeChoice = document.getElementById('font-size-choice');
+            const message = document.getElementById('settings-saved-message');
+
+            if (!themeChoice || !fontChoice || !fontSizeChoice) return;
+
+            const defaults = {
+                theme: 'light',
+                font: "'Plus Jakarta Sans', sans-serif",
+                fontSize: '16px'
+            };
+
+            let settings = defaults;
+
+            try {
+                const savedSettings = JSON.parse(localStorage.getItem(LIBRARY_SETTINGS_KEY) || 'null');
+
+                if (savedSettings) {
+                    settings = { ...defaults, ...savedSettings };
+                }
+            } catch (error) {
+                settings = defaults;
+            }
+
+            themeChoice.value = settings.theme;
+            fontChoice.value = settings.font;
+            fontSizeChoice.value = settings.fontSize;
+
+            applyLibrarySettings(false);
+
+            if (message) {
+                message.textContent = '';
+                message.classList.add('hidden');
+            }
+        }
+
+        // Reset appearance settings
+        function resetLibrarySettings() {
+            document.getElementById('theme-choice').value = 'light';
+            document.getElementById('font-choice').value = "'Plus Jakarta Sans', sans-serif";
+            document.getElementById('font-size-choice').value = '16px';
+
+            applyLibrarySettings(true);
+        }
+
+        // ==========================================
+        // DELETE ALL BOOKS
+        // ==========================================
+
+        // IMPORTANT: Change this password before using the delete feature.
+        const DELETE_BOOKS_PASSWORD = 'CHANGE-ME';
+
+        function confirmDeleteAllBooks() {
+            const enteredPassword = prompt('Enter the administrator password to delete all books:');
+
+            if (enteredPassword === null) {
+                return;
+            }
+
+            if (enteredPassword !== DELETE_BOOKS_PASSWORD) {
+                alert('Incorrect password. No books were deleted.');
+                return;
+            }
+
+            const confirmation = confirm(
+                'FINAL WARNING: This will delete all displayed book records, accession entries, and circulation records. Do you want to continue?'
+            );
+
+            if (!confirmation) {
+                return;
+            }
+
+            // Clear catalog records
+            const catalogTable = document.querySelector('#desk-catalog table tbody');
+            if (catalogTable) {
+                catalogTable.innerHTML = '';
+            }
+
+            // Clear accession inventory records
+            const accessionTable = document.querySelector('#desk-accession table tbody');
+            if (accessionTable) {
+                accessionTable.innerHTML = '';
+            }
+
+            // Clear circulation records
+            const circulationTable = document.querySelector('#desk-circulation table tbody');
+            if (circulationTable) {
+                circulationTable.innerHTML = '';
+            }
+
+            // Reset the visible book count, if available
+            const bookCount = document.querySelector('main section.grid h2');
+
+            if (bookCount) {
+                bookCount.textContent = '0';
+            }
+
+            // Reset shelf and DDC displayed counts
+            document.querySelectorAll('#desk-shelf .bg-indigo-600').forEach(element => {
+                element.textContent = '0';
+            });
+
+            document.querySelectorAll('#desk-ddc .bg-slate-100').forEach(element => {
+                element.textContent = '0 Volumes';
+            });
+
+            alert('All displayed book records have been deleted.');
+        }
+
+        // Restore settings when the page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            loadLibrarySettings();
+        });
     </script>
 </body>
 </html>
