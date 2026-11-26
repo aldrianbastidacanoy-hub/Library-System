@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -108,7 +109,7 @@ body.theme-green{background:#f0fdf4!important}
 <th class="py-3.5 px-4">Book Details</th>
 <th class="py-3.5 px-4">Category</th>
 <th class="py-3.5 px-4">Shelf Location</th>
-<th class="py-3.5 px-4">Availability</th>
+<th class="py-3.5 px-4">Available/Total Copies</th>
 <th class="py-3.5 px-4 text-right">Actions</th>
 </tr>
 </thead>
@@ -117,7 +118,7 @@ body.theme-green{background:#f0fdf4!important}
 </div>
 </div>
 
-<p class="px-1 text-xs text-slate-500"><i class="fa-solid fa-circle-info mr-1"></i>Matching books are grouped in the catalog. Every copy and volume remains an individual record that you can edit or delete separately.</p>
+<p class="px-1 text-xs text-slate-500"><i class="fa-solid fa-circle-info mr-1"></i>Matching books are grouped in the catalog. You can edit an entire group or edit individual copy records separately.</p>
 </section>
 
 <!-- ACCESSION -->
@@ -443,7 +444,7 @@ function closeModal(id) {
  el.classList.remove('flex');
 }
 
-function normalizeBook(b,i=0) {
+function normalizeBook(b) {
  return {
   id:String(b.id || makeId()),
   accession:String(b.accession || ''),
@@ -485,11 +486,6 @@ function saveCatalog() {
  }
 }
 
-/* GROUPING
-   Title, author and shared bibliographic information determine a group.
-   Volume, accession number, copy number and shelf are excluded so that
-   multiple copies and different volumes can be viewed together.
-*/
 function getBookGroupKey(b) {
  return [
   b.title,b.author,b.ddc,b.category,b.edition,b.year
@@ -528,6 +524,8 @@ function renderCatalog() {
    const first = copies[0];
    const groupId = 'book-group-' + index;
    const availableCount = copies.reduce((sum,b) => sum + (Number(b.available) || 0),0);
+   const totalCount = copies.reduce((sum,b) => sum + (Number(b.total) || 0),0);
+   const ids = copies.map(b => b.id).join(',');
 
    const details = [
     first.author,
@@ -550,7 +548,7 @@ function renderCatalog() {
       <td class="py-3 px-4 text-xs">${escapeHTML(b.copyNumber || '—')}</td>
       <td class="py-3 px-4 text-xs">${escapeHTML(b.volume || '—')}</td>
       <td class="py-3 px-4 text-xs">${escapeHTML(b.shelf || '—')}</td>
-      <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold border ${status}">${a} / ${t} Available</span></td>
+      <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold border ${status}">${a}/${t}</span></td>
       <td class="py-3 px-4 text-right whitespace-nowrap">
        <button type="button" data-action="edit" data-id="${escapeHTML(b.id)}" class="px-3 py-2 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-semibold"><i class="fa-solid fa-pen-to-square mr-1"></i>Edit</button>
        <button type="button" data-action="delete" data-id="${escapeHTML(b.id)}" class="px-3 py-2 rounded-lg bg-rose-50 text-rose-700 text-xs font-semibold"><i class="fa-solid fa-trash mr-1"></i>Delete</button>
@@ -573,11 +571,13 @@ function renderCatalog() {
      </td>
      <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700">${escapeHTML(first.category)}</span></td>
      <td class="py-3.5 px-4 text-xs text-slate-700">${isGrouped ? 'Multiple / see records' : escapeHTML(first.shelf)}</td>
-     <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold border bg-emerald-50 text-emerald-700 border-emerald-200">${availableCount} available of ${copies.length} records</span></td>
-     <td class="py-3.5 px-4 text-right">
+     <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold border bg-emerald-50 text-emerald-700 border-emerald-200">${availableCount}/${totalCount}</span></td>
+     <td class="py-3.5 px-4 text-right whitespace-nowrap">
       ${isGrouped
-       ? `<button type="button" data-action="toggle-group" data-group="${groupId}" class="px-3 py-2 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold"><i class="fa-solid fa-list-ul mr-1"></i>Show Individual Copies</button>`
-       : `<span class="text-xs text-slate-400">Single record</span>`}
+       ? `<button type="button" data-action="edit-group" data-ids="${escapeHTML(ids)}" class="px-3 py-2 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-semibold mb-1"><i class="fa-solid fa-pen-to-square mr-1"></i>Edit Group</button>
+          <button type="button" data-action="toggle-group" data-group="${groupId}" class="px-3 py-2 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold"><i class="fa-solid fa-list-ul mr-1"></i>Show Individual Copies</button>`
+       : `<button type="button" data-action="edit" data-id="${escapeHTML(first.id)}" class="px-3 py-2 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-semibold"><i class="fa-solid fa-pen-to-square mr-1"></i>Edit</button>
+          <button type="button" data-action="delete" data-id="${escapeHTML(first.id)}" class="px-3 py-2 rounded-lg bg-rose-50 text-rose-700 text-xs font-semibold"><i class="fa-solid fa-trash mr-1"></i>Delete</button>`}
      </td>
     </tr>
     ${isGrouped ? `
@@ -588,7 +588,7 @@ function renderCatalog() {
        <div class="overflow-x-auto">
         <table class="w-full text-left text-xs">
          <thead><tr class="text-[10px] uppercase text-slate-500">
-          <th class="py-2 px-4">Accession Number</th><th class="py-2 px-4">Copy Number</th><th class="py-2 px-4">Volume</th><th class="py-2 px-4">Shelf</th><th class="py-2 px-4">Availability</th><th class="py-2 px-4 text-right">Actions</th>
+          <th class="py-2 px-4">Accession Number</th><th class="py-2 px-4">Copy Number</th><th class="py-2 px-4">Volume</th><th class="py-2 px-4">Shelf</th><th class="py-2 px-4">Available/Total Copies</th><th class="py-2 px-4 text-right">Actions</th>
          </tr></thead>
          <tbody>${individualRows}</tbody>
         </table>
@@ -689,19 +689,22 @@ function chooseAddMode(mode) {
  openModal('add-book-modal');
 }
 
-function addCopyRow(single=false) {
+/* COPY ROW CREATION */
+
+function addCopyRow(single=false, existing=null) {
  const container = document.getElementById('copy-records-container');
  const rowId = 'copy-row-' + (++copyRowCounter);
  const mode = document.getElementById('book-entry-mode').value;
 
  const row = document.createElement('div');
  row.id = rowId;
+ row.dataset.recordId = existing ? existing.id : '';
  row.className = 'border border-slate-200 rounded-xl p-3 space-y-3 bg-slate-50/60';
 
  row.innerHTML = `
   <div class="flex justify-between items-center">
    <p class="text-xs font-bold text-slate-700">Individual Record ${copyRowCounter}</p>
-   ${mode === 'multiple' ? `<button type="button" onclick="removeCopyRow('${rowId}')" class="text-xs text-rose-600 font-semibold"><i class="fa-solid fa-xmark mr-1"></i>Remove</button>` : ''}
+   ${mode !== 'single' ? `<button type="button" onclick="removeCopyRow('${rowId}')" class="text-xs text-rose-600 font-semibold"><i class="fa-solid fa-xmark mr-1"></i>Remove</button>` : ''}
   </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
    <label class="block text-xs font-semibold text-slate-600">Accession Number *
@@ -725,6 +728,15 @@ function addCopyRow(single=false) {
   </div>`;
 
  container.appendChild(row);
+
+ if (existing) {
+  row.querySelector('[data-copy-field="accession"]').value = existing.accession;
+  row.querySelector('[data-copy-field="copyNumber"]').value = existing.copyNumber;
+  row.querySelector('[data-copy-field="volume"]').value = existing.volume;
+  row.querySelector('[data-copy-field="shelf"]').value = existing.shelf;
+  row.querySelector('[data-copy-field="available"]').value = existing.available;
+  row.querySelector('[data-copy-field="total"]').value = existing.total;
+ }
 }
 
 function removeCopyRow(id) {
@@ -736,11 +748,16 @@ function removeCopyRow(id) {
  document.getElementById(id)?.remove();
 }
 
+/* SAVE BOOK OR GROUP */
+
 function saveBook(event) {
  event.preventDefault();
 
- const editId = document.getElementById('book-edit-id').value;
- const mode = document.getElementById('book-entry-mode').value;
+ const editIds = document.getElementById('book-edit-id').value
+  .split(',')
+  .filter(Boolean);
+
+ const isEditing = editIds.length > 0;
 
  const shared = {
   title:document.getElementById('book-title').value.trim(),
@@ -762,7 +779,7 @@ function saveBook(event) {
   const get = field => row.querySelector(`[data-copy-field="${field}"]`).value.trim();
 
   const record = {
-   id:editId || makeId(),
+   id:row.dataset.recordId || makeId(),
    ...shared,
    accession:get('accession'),
    copyNumber:get('copyNumber'),
@@ -773,26 +790,52 @@ function saveBook(event) {
   };
 
   if (!record.accession) return alert('Every individual record must have an accession number.');
-  if (record.available > record.total) return alert('Available copies cannot be greater than total copies.');
+
+  if (record.available > record.total) {
+   return alert('Available copies cannot be greater than total copies for accession number ' + record.accession + '.');
+  }
+
+  if (record.available < 0 || record.total < 0) {
+   return alert('Copy quantities cannot be negative.');
+  }
 
   newRecords.push(record);
  }
 
- const existingIds = new Set(libraryBooks.map(b => b.id));
+ /* Check accession numbers against records outside the edited group. */
+
+ const editIdSet = new Set(editIds);
+
  const seenAccession = new Set(
-  libraryBooks.filter(b => b.id !== editId).map(b => b.accession.trim().toLowerCase())
+  libraryBooks
+   .filter(b => !editIdSet.has(b.id))
+   .map(b => b.accession.trim().toLowerCase())
+  .filter(Boolean)
  );
 
  for (const record of newRecords) {
-  const key = record.accession.toLowerCase();
-  if (seenAccession.has(key)) return alert('Accession number "' + record.accession + '" is already used. Each record must have a unique accession number.');
+  const key = record.accession.trim().toLowerCase();
+
+  if (seenAccession.has(key)) {
+   return alert('Accession number "' + record.accession + '" is already used. Every record must have a unique accession number.');
+  }
+
   seenAccession.add(key);
  }
 
- if (editId) {
-  const index = libraryBooks.findIndex(b => b.id === editId);
-  if (index < 0) return alert('This book no longer exists.');
-  libraryBooks[index] = newRecords[0];
+ if (isEditing) {
+  const existingRecords = libraryBooks.filter(b => editIdSet.has(b.id));
+
+  if (existingRecords.length !== editIds.length) {
+   return alert('Some records in this group could not be found. Please reopen the editor and try again.');
+  }
+
+  /* Replace the entire edited group with the updated records. */
+  libraryBooks = [
+   ...libraryBooks.filter(b => !editIdSet.has(b.id)),
+   ...newRecords
+  ];
+
  } else {
   libraryBooks.push(...newRecords);
  }
@@ -801,56 +844,93 @@ function saveBook(event) {
 
  renderCatalog();
  closeModal('add-book-modal');
- alert(editId ? 'Book record updated.' : `${newRecords.length} individual record(s) added to the catalog.`);
+
+ alert(
+  isEditing
+   ? `Successfully updated ${newRecords.length} book record(s).`
+   : `${newRecords.length} individual record(s) added to the catalog.`
+ );
 }
 
-/* EDIT EXISTING INDIVIDUAL RECORD */
+/* EDIT INDIVIDUAL BOOK */
 
 function editBookById(id) {
- const b = libraryBooks.find(x => x.id === id);
- if (!b) return alert('This book could not be found.');
+ editBooksByIds([id]);
+}
+
+/* EDIT ENTIRE GROUP */
+
+function editBooksByIds(ids) {
+ const records = ids
+  .map(id => libraryBooks.find(b => b.id === id))
+  .filter(Boolean);
+
+ if (!records.length) {
+  alert('The selected book records could not be found.');
+  return;
+ }
+
+ const first = records[0];
 
  document.getElementById('book-form').reset();
- document.getElementById('book-edit-id').value = b.id;
- document.getElementById('book-entry-mode').value = 'single';
 
- document.getElementById('book-title').value = b.title;
- document.getElementById('book-author').value = b.author;
- document.getElementById('book-ddc').value = b.ddc;
- document.getElementById('book-category').value = b.category;
- document.getElementById('book-edition').value = b.edition;
- document.getElementById('book-year').value = b.year;
+ document.getElementById('book-edit-id').value =
+  records.map(b => b.id).join(',');
+
+ document.getElementById('book-entry-mode').value =
+  records.length > 1 ? 'multiple' : 'single';
+
+ document.getElementById('book-title').value = first.title;
+ document.getElementById('book-author').value = first.author;
+ document.getElementById('book-ddc').value = first.ddc;
+ document.getElementById('book-category').value = first.category;
+ document.getElementById('book-edition').value = first.edition;
+ document.getElementById('book-year').value = first.year;
  document.getElementById('book-default-shelf').value = '';
 
- document.getElementById('book-modal-title').textContent = 'Edit Individual Book Record';
- document.getElementById('book-modal-subtitle').textContent = 'Changes apply only to this individual record.';
- document.getElementById('add-copy-row-button').classList.add('hidden');
- document.getElementById('book-save-button').textContent = 'Save Changes';
+ document.getElementById('book-modal-title').textContent =
+  records.length > 1 ? 'Edit Entire Book Group' : 'Edit Individual Book Record';
+
+ document.getElementById('book-modal-subtitle').textContent =
+  records.length > 1
+   ? 'Changes to shared information will apply to every record in this group. You can also edit, add, or remove individual copies below.'
+   : 'Edit all the information belonging to this individual book record.';
+
+ document.getElementById('add-copy-row-button').classList.toggle(
+  'hidden',
+  records.length === 1
+ );
+
+ document.getElementById('book-save-button').textContent =
+  records.length > 1 ? 'Save Entire Group' : 'Save Changes';
 
  const container = document.getElementById('copy-records-container');
  container.innerHTML = '';
  copyRowCounter = 0;
- addCopyRow(true);
 
- const row = container.querySelector('div');
- row.querySelector('[data-copy-field="accession"]').value = b.accession;
- row.querySelector('[data-copy-field="copyNumber"]').value = b.copyNumber;
- row.querySelector('[data-copy-field="volume"]').value = b.volume;
- row.querySelector('[data-copy-field="shelf"]').value = b.shelf;
- row.querySelector('[data-copy-field="available"]').value = b.available;
- row.querySelector('[data-copy-field="total"]').value = b.total;
+ records.forEach(record => {
+  addCopyRow(records.length === 1,record);
+ });
 
  openModal('add-book-modal');
 }
 
+/* DELETE INDIVIDUAL BOOK */
+
 function deleteBookById(id) {
  const b = libraryBooks.find(x => x.id === id);
- if (!b) return;
+ if (!b) return alert('This book could not be found.');
 
  if (!confirm(`Delete this individual record?\n\nTitle: ${b.title}\nVolume: ${b.volume || 'Not specified'}\nCopy Number: ${b.copyNumber || 'Not specified'}\nAccession Number: ${b.accession}\n\nOther copies and volumes will remain in the catalog.`)) return;
 
+ const previousBooks = libraryBooks;
  libraryBooks = libraryBooks.filter(x => x.id !== id);
- if (saveCatalog()) renderCatalog();
+
+ if (saveCatalog()) {
+  renderCatalog();
+ } else {
+  libraryBooks = previousBooks;
+ }
 }
 
 /* CSV IMPORT */
@@ -958,7 +1038,7 @@ function importCSVBooks() {
  let imported = 0;
  let skipped = 0;
 
- pendingCSVRows.forEach((row,index) => {
+ pendingCSVRows.forEach(row => {
   const get = key => map[key] >= 0 ? String(row[map[key]] ?? '').trim() : '';
   const title = get('title');
   const accession = get('accession');
@@ -1201,7 +1281,14 @@ document.addEventListener('DOMContentLoaded',() => {
    return;
   }
 
+  if (button.dataset.action === 'edit-group') {
+   const ids = button.dataset.ids.split(',').filter(Boolean);
+   editBooksByIds(ids);
+   return;
+  }
+
   const id = button.dataset.id;
+
   if (button.dataset.action === 'edit') editBookById(id);
   if (button.dataset.action === 'delete') deleteBookById(id);
  });
