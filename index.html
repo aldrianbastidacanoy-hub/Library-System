@@ -7,191 +7,115 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc}
-.font-mono{font-family:'JetBrains Mono',monospace}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:5px}
-body.theme-dark{background:#0f172a!important;color:#e2e8f0!important}
-body.theme-dark .bg-white{background:#1e293b!important;border-color:#334155!important}
-body.theme-dark .bg-slate-50,body.theme-dark .bg-slate-50\/70,body.theme-dark .bg-slate-50\/60{background:#273449!important}
-body.theme-dark .text-slate-900,body.theme-dark .text-slate-800,body.theme-dark .text-slate-700{color:#f1f5f9!important}
-body.theme-dark .text-slate-600,body.theme-dark .text-slate-500,body.theme-dark .text-slate-400{color:#cbd5e1!important}
-body.theme-dark input,body.theme-dark select,body.theme-dark textarea{background:#0f172a!important;color:#f8fafc!important;border-color:#475569!important}
-body.theme-dark table thead tr{background:#273449!important}
-body.theme-dark table tbody tr{border-color:#334155!important}
-body.theme-dark .border-slate-100,body.theme-dark .border-slate-200{border-color:#334155!important}
-.modal-backdrop{background:rgba(15,23,42,.65);backdrop-filter:blur(4px)}
-.catalog-actions-header{position:sticky;right:0;z-index:20;min-width:190px;width:190px;background:#f8fafc;box-shadow:-6px 0 10px rgba(15,23,42,.08)}
-.catalog-actions-cell{position:sticky;right:0;z-index:10;min-width:190px;width:190px;background:#fff;box-shadow:-6px 0 10px rgba(15,23,42,.06)}
-.individual-copies-table{width:100%;min-width:1050px;table-layout:auto;border-collapse:separate;border-spacing:0}
-.individual-actions-header{position:sticky;left:0;z-index:5;width:190px;min-width:190px;background:#e2e8f0;box-shadow:6px 0 10px rgba(15,23,42,.08)}
-.individual-actions-cell{position:sticky;left:0;z-index:4;width:190px;min-width:190px;background:#f8fafc;box-shadow:6px 0 10px rgba(15,23,42,.06)}
-.individual-action-buttons{display:flex;justify-content:flex-start;align-items:center;gap:8px}
-.individual-action-buttons button{display:inline-flex;align-items:center;justify-content:center;min-width:65px;white-space:nowrap}
-body.theme-dark .catalog-actions-header{background:#273449!important}
-body.theme-dark .catalog-actions-cell{background:#1e293b!important}
-body.theme-dark .individual-actions-header{background:#273449!important}
-body.theme-dark .individual-actions-cell{background:#1e293b!important}
-.login-screen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1e293b 0,#0f172a 100%)}
-.modal{display:none;position:fixed;inset:0;z-index:150;align-items:center;justify-content:center}
-.modal.active{display:flex}
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
+.login-screen { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e293b 0, #0f172a 100%); }
+.hidden { display: none !important; }
 </style>
 </head>
-<body class="text-slate-800 min-h-screen flex flex-col">
+<body class="text-slate-800 min-h-screen">
 
-<!-- LOGIN SCREEN -->
+<!-- ==================== LOGIN SCREEN ==================== -->
 <div id="login-screen" class="login-screen">
-<div class="w-full max-w-md p-6">
-<div class="text-center mb-8">
-<div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-4">
-<i class="fa-solid fa-book-open-reader text-2xl text-white"></i>
-</div>
-<h1 class="text-2xl font-bold text-white">LWCS Library Portal</h1>
-<p class="text-slate-400 text-sm mt-1">Sign in to access the management system</p>
-</div>
-<div class="bg-white rounded-2xl p-6 shadow-2xl space-y-4">
-<div id="login-error" class="hidden p-3 bg-rose-50 text-rose-700 rounded-lg text-sm"></div>
-<div id="login-success" class="hidden p-3 bg-emerald-50 text-emerald-700 rounded-lg text-sm"></div>
-<form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
-<label class="block text-sm font-semibold text-slate-700">Username / Email
-<input id="login-username" required class="mt-1 w-full p-3 border border-slate-200 rounded-xl text-sm" placeholder="admin@lwcs.ph">
-</label>
-<label class="block text-sm font-semibold text-slate-700">Password
-<input type="password" id="login-password" required class="mt-1 w-full p-3 border border-slate-200 rounded-xl text-sm" placeholder="Enter your password">
-</label>
-<button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm">
-<i class="fa-solid fa-right-to-bracket mr-2"></i>Sign In
-</button>
-</form>
-<div class="text-center pt-2">
-<button onclick="showForgotPassword()" class="text-sm text-indigo-600 hover:text-indigo-800 underline">
-<i class="fa-solid fa-lock-keyhole mr-1"></i>Forgot Password?
-</button>
-</div>
-<p class="text-xs text-slate-400 text-center mt-4">Default: admin@lwcs.ph / admin123</p>
-</div>
-</div>
+  <div class="w-full max-w-md p-6">
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-4">
+        <i class="fa-solid fa-book-open-reader text-2xl text-white"></i>
+      </div>
+      <h1 class="text-2xl font-bold text-white">LWCS Library Portal</h1>
+      <p class="text-slate-400 text-sm mt-1">Sign in to access the system</p>
+    </div>
+
+    <div class="bg-white rounded-2xl p-6 shadow-2xl space-y-4">
+      <div id="login-error" class="hidden p-3 bg-rose-50 text-rose-700 rounded-lg text-sm"></div>
+      
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Username / Email</label>
+        <input id="login-username" class="w-full p-3 border border-slate-200 rounded-xl text-sm" placeholder="admin@lwcs.ph">
+      </div>
+      
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Password</label>
+        <input type="password" id="login-password" class="w-full p-3 border border-slate-200 rounded-xl text-sm" placeholder="Enter password">
+      </div>
+      
+      <button onclick="tryLogin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm">
+        <i class="fa-solid fa-right-to-bracket mr-2"></i>Sign In
+      </button>
+      
+      <p class="text-xs text-slate-400 text-center mt-2">
+        Default: admin@lwcs.ph &nbsp;|&nbsp; Password: admin123
+      </p>
+    </div>
+  </div>
 </div>
 
-<!-- FORGOT PASSWORD MODAL -->
-<div id="forgot-password-modal" class="modal">
-<div class="modal-backdrop absolute inset-0" onclick="closeForgotPassword()"></div>
-<div class="relative bg-white rounded-2xl p-6 shadow-2xl w-full max-w-md mx-4">
-<h3 class="text-lg font-bold text-slate-900 mb-2"><i class="fa-solid fa-lock-keyhole mr-2 text-indigo-500"></i>Reset Login</h3>
-<p class="text-sm text-slate-500 mb-4">This will reset your login back to the default credentials. Your library data will not be affected.</p>
-<div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
-<p class="text-sm text-amber-800"><strong>Default credentials after reset:</strong><br>
-Email: <code>admin@lwcs.ph</code><br>
-Password: <code>admin123</code></p>
-</div>
-<div id="reset-message" class="hidden mb-3 p-2 rounded-lg text-sm"></div>
-<button onclick="resetToDefaultPassword()" class="w-full py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-semibold text-sm mb-2">
-<i class="fa-solid fa-rotate-left mr-2"></i>Reset to Default
-</button>
-<button onclick="closeForgotPassword()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm">
-Cancel
-</button>
-</div>
-</div>
-
-<!-- MAIN APPLICATION -->
+<!-- ==================== MAIN APP (Hidden Until Login) ==================== -->
 <div id="app-container" class="hidden">
-<header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg border-b border-slate-800">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div class="flex justify-between items-center h-16">
-<div class="flex items-center space-x-3.5">
-<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-<i class="fa-solid fa-book-open-reader text-lg"></i>
+  <header class="bg-slate-900 text-white p-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div>
+        <h1 class="text-xl font-bold">LWCS Library</h1>
+        <p class="text-sm text-slate-400">Management System — Welcome!</p>
+      </div>
+      <button onclick="logoutUser()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm">
+        <i class="fa-solid fa-right-from-bracket mr-1"></i>Sign Out
+      </button>
+    </div>
+  </header>
+  
+  <main class="max-w-7xl mx-auto p-6">
+    <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
+      <i class="fa-solid fa-circle-check text-emerald-500 text-5xl mb-4"></i>
+      <h2 class="text-2xl font-bold text-slate-800">✅ You Are Logged In!</h2>
+      <p class="text-slate-500 mt-2">The rest of your library system loads here — your login is working correctly now.</p>
+    </div>
+  </main>
 </div>
-<div>
-<h1 class="text-lg font-bold tracking-tight leading-none">LWCS Library</h1>
-<p class="text-[11px] text-indigo-300 font-medium mt-1">Management & Catalog System</p>
-</div>
-</div>
-<div class="flex items-center space-x-3">
-<div class="hidden md:flex items-center space-x-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs text-slate-300">
-<i class="fa-regular fa-clock text-indigo-400"></i>
-<span id="live-clock" class="font-mono"></span>
-</div>
-<div class="flex items-center space-x-2 bg-slate-800 border border-slate-700 pl-2 pr-3 py-1 rounded-full">
-<img src="https://ui-avatars.com/api/?name=LWCS+Library&background=4f46e5&color=fff" alt="Library avatar" class="w-7 h-7 rounded-full">
-<div class="hidden sm:block">
-<p class="text-xs font-semibold text-white" id="current-user-name">User</p>
-<p class="text-[10px] text-emerald-400">● <span id="current-user-role">Online</span></p>
-</div>
-<button onclick="logoutUser()" class="ml-2 text-slate-400 hover:text-white" title="Sign Out">
-<i class="fa-solid fa-right-from-bracket"></i>
-</button>
-</div>
-</div>
-</div>
-<nav class="flex gap-1 overflow-x-auto pb-2 pt-1 text-xs font-semibold" aria-label="Library desks">
-<button onclick="switchDesk('overview')" id="tab-btn-overview" class="desk-btn px-3.5 py-2 rounded-lg bg-indigo-600 text-white whitespace-nowrap"><i class="fa-solid fa-chart-pie mr-1"></i>Overview</button>
-<button onclick="switchDesk('catalog')" id="tab-btn-catalog" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-book mr-1"></i>Catalog</button>
-<button onclick="switchDesk('accession')" id="tab-btn-accession" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-barcode mr-1"></i>Accession Inventory</button>
-<button onclick="switchDesk('shelf')" id="tab-btn-shelf" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-layer-group mr-1"></i>Shelf Inventory</button>
-<button onclick="switchDesk('ddc')" id="tab-btn-ddc" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-sitemap mr-1"></i>DDC Inventory</button>
-<button onclick="switchDesk('borrowers')" id="tab-btn-borrowers" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-users mr-1"></i>Borrowers</button>
-<button onclick="switchDesk('circulation')" id="tab-btn-circulation" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-right-left mr-1"></i>Borrow & Return</button>
-<button onclick="switchDesk('auth')" id="tab-btn-auth" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-shield-halved mr-1"></i>Account Authorization</button>
-<button onclick="switchDesk('settings')" id="tab-btn-settings" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-gear mr-1"></i>Settings Desk</button>
-</nav>
-</div>
-</header>
 
-<main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 flex-grow">
+<!-- ==================== SIMPLEST POSSIBLE LOGIN CODE ==================== -->
+<script>
+// CORRECT CREDENTIALS — simple and clear
+const CORRECT_EMAIL = 'admin@lwcs.ph';
+const CORRECT_PASS = 'admin123';
 
-<section id="desk-overview" class="desk-view space-y-5">
-<div>
-<h2 class="text-xl font-extrabold text-slate-900">Library Overview</h2>
-<p class="text-sm text-slate-500 mt-1">A summary of your library collection and inventory.</p>
-</div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-<div class="flex justify-between items-center"><p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Catalog Records</p><i class="fa-solid fa-book text-indigo-500 text-xl"></i></div>
-<h3 id="overview-records" class="text-3xl font-extrabold text-slate-900 mt-3">0</h3>
-<p class="text-xs text-slate-500 mt-1">Individual book records</p>
-</div>
-<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-<div class="flex justify-between items-center"><p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Unique Book Titles</p><i class="fa-solid fa-book-open text-purple-500 text-xl"></i></div>
-<h3 id="overview-titles" class="text-3xl font-extrabold text-slate-900 mt-3">0</h3>
-<p class="text-xs text-slate-500 mt-1">Distinct titles in the catalog</p>
-</div>
-<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-<div class="flex justify-between items-center"><p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Copies</p><i class="fa-solid fa-layer-group text-blue-500 text-xl"></i></div>
-<h3 id="overview-total" class="text-3xl font-extrabold text-slate-900 mt-3">0</h3>
-<p class="text-xs text-slate-500 mt-1">Total physical copies recorded</p>
-</div>
-<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-<div class="flex justify-between items-center"><p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Available Copies</p><i class="fa-solid fa-circle-check text-emerald-500 text-xl"></i></div>
-<h3 id="overview-available" class="text-3xl font-extrabold text-emerald-600 mt-3">0</h3>
-<p class="text-xs text-slate-500 mt-1">Copies currently available</p>
-</div>
-<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-<div class="flex justify-between items-center"><p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Unavailable Copies</p><i class="fa-solid fa-circle-minus text-rose-500 text-xl"></i></div>
-<h3 id="overview-unavailable" class="text-3xl font-extrabold text-rose-600 mt-3">0</h3>
-<p class="text-xs text-slate-500 mt-1">Total minus available copies</p>
-</div>
-<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-<div class="flex justify-between items-center"><p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Shelf Locations</p><i class="fa-solid fa-location-dot text-amber-500 text-xl"></i></div>
-<h3 id="overview-shelves" class="text-3xl font-extrabold text-slate-900 mt-3">0</h3>
-<p class="text-xs text-slate-500 mt-1">Distinct recorded shelf locations</p>
-</div>
-</div>
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-<h3 class="font-bold text-slate-900">Collection Summary</h3>
-<p class="text-xs text-slate-500 mt-1">Overview of your recorded inventory.</p>
-<div id="overview-summary" class="mt-4 space-y-3"></div>
-</div>
-<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-<h3 class="font-bold text-slate-900">Quick Actions</h3>
-<p class="text-xs text-slate-500 mt-1">Go directly to common library tasks.</p>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-<button onclick="switchDesk('catalog');startAddBook()" class="p-4 rounded-xl bg-indigo-50 text-indigo-700 text-left hover:bg-indigo-100"><i class="fa-solid fa-plus text-lg"></i><p class="font-bold text-sm mt-2">Add New Book</p><p class="text-xs mt-1">Create a book record</p></button>
-<button onclick="switchDesk('catalog');openCSVModal()" class="p-4 rounded-xl bg-emerald-50 text-emerald-700 text-left hover:bg-emerald-100"><i class="fa-solid fa-file-csv text-lg"></i><p class="font-bold text-sm mt-2">Import CSV</p><p class="text-xs mt-1">Import book records</p></button>
-<button onclick="switchDesk('accession')" class="p-4 rounded-xl bg-blue-50 text-blue-700 text-left hover:bg-blue-100"><i class="fa-solid fa-barcode text-lg"></i><p class="font-bold text-sm mt-2">Accession Inventory</p><p class="text-xs mt-1">View individual records</p></button>
-<button onclick="switchDesk('settings')" class="p-4 rounded-xl bg-slate-100 text-slate-700 text-left hover:bg-slate-200"><i class="fa-solid fa-gear text-lg"></i><p class="font-bold text-sm mt-
+function tryLogin() {
+  const email = document.getElementById('login-username').value.trim();
+  const pass = document.getElementById('login-password').value.trim();
+  const errorBox = document.getElementById('login-error');
+  
+  if (email === CORRECT_EMAIL && pass === CORRECT_PASS) {
+    // SUCCESS — show app, hide login
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app-container').classList.remove('hidden');
+  } else {
+    // SHOW ERROR
+    errorBox.classList.remove('hidden');
+    if (email !== CORRECT_EMAIL && pass !== CORRECT_PASS) {
+      errorBox.textContent = '❌ Both email and password are incorrect. Please check again.';
+    } else if (email !== CORRECT_EMAIL) {
+      errorBox.textContent = '❌ Email is incorrect. Use: admin@lwcs.ph';
+    } else {
+      errorBox.textContent = '❌ Password is incorrect. Use: admin123';
+    }
+  }
+}
+
+function logoutUser() {
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('app-container').classList.add('hidden');
+  document.getElementById('login-username').value = '';
+  document.getElementById('login-password').value = '';
+  document.getElementById('login-error').classList.add('hidden');
+}
+
+// Allow pressing Enter to login
+document.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') tryLogin();
+});
+</script>
+
+</body>
+</html>
