@@ -23,8 +23,6 @@ body.theme-dark input,body.theme-dark select,body.theme-dark textarea{background
 body.theme-dark table thead tr{background:#273449!important}
 body.theme-dark table tbody tr{border-color:#334155!important}
 body.theme-dark .border-slate-100,body.theme-dark .border-slate-200{border-color:#334155!important}
-body.theme-blue{background:#eff6ff!important}
-body.theme-green{background:#f0fdf4!important}
 .modal-backdrop{background:rgba(15,23,42,.65);backdrop-filter:blur(4px)}
 .catalog-actions-header{position:sticky;right:0;z-index:20;min-width:190px;width:190px;background:#f8fafc;box-shadow:-6px 0 10px rgba(15,23,42,.08)}
 .catalog-actions-cell{position:sticky;right:0;z-index:10;min-width:190px;width:190px;background:#fff;box-shadow:-6px 0 10px rgba(15,23,42,.06)}
@@ -38,6 +36,8 @@ body.theme-dark .catalog-actions-cell{background:#1e293b!important}
 body.theme-dark .individual-actions-header{background:#273449!important}
 body.theme-dark .individual-actions-cell{background:#1e293b!important}
 .login-screen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1e293b 0,#0f172a 100%)}
+.modal{display:none;position:fixed;inset:0;z-index:150;align-items:center;justify-content:center}
+.modal.active{display:flex}
 </style>
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col">
@@ -54,6 +54,7 @@ body.theme-dark .individual-actions-cell{background:#1e293b!important}
 </div>
 <div class="bg-white rounded-2xl p-6 shadow-2xl space-y-4">
 <div id="login-error" class="hidden p-3 bg-rose-50 text-rose-700 rounded-lg text-sm"></div>
+<div id="login-success" class="hidden p-3 bg-emerald-50 text-emerald-700 rounded-lg text-sm"></div>
 <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
 <label class="block text-sm font-semibold text-slate-700">Username / Email
 <input id="login-username" required class="mt-1 w-full p-3 border border-slate-200 rounded-xl text-sm" placeholder="admin@lwcs.ph">
@@ -65,8 +66,34 @@ body.theme-dark .individual-actions-cell{background:#1e293b!important}
 <i class="fa-solid fa-right-to-bracket mr-2"></i>Sign In
 </button>
 </form>
+<div class="text-center pt-2">
+<button onclick="showForgotPassword()" class="text-sm text-indigo-600 hover:text-indigo-800 underline">
+<i class="fa-solid fa-lock-keyhole mr-1"></i>Forgot Password?
+</button>
+</div>
 <p class="text-xs text-slate-400 text-center mt-4">Default: admin@lwcs.ph / admin123</p>
 </div>
+</div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div id="forgot-password-modal" class="modal">
+<div class="modal-backdrop absolute inset-0" onclick="closeForgotPassword()"></div>
+<div class="relative bg-white rounded-2xl p-6 shadow-2xl w-full max-w-md mx-4">
+<h3 class="text-lg font-bold text-slate-900 mb-2"><i class="fa-solid fa-lock-keyhole mr-2 text-indigo-500"></i>Reset Login</h3>
+<p class="text-sm text-slate-500 mb-4">This will reset your login back to the default credentials. Your library data will not be affected.</p>
+<div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
+<p class="text-sm text-amber-800"><strong>Default credentials after reset:</strong><br>
+Email: <code>admin@lwcs.ph</code><br>
+Password: <code>admin123</code></p>
+</div>
+<div id="reset-message" class="hidden mb-3 p-2 rounded-lg text-sm"></div>
+<button onclick="resetToDefaultPassword()" class="w-full py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-semibold text-sm mb-2">
+<i class="fa-solid fa-rotate-left mr-2"></i>Reset to Default
+</button>
+<button onclick="closeForgotPassword()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm">
+Cancel
+</button>
 </div>
 </div>
 
@@ -167,29 +194,4 @@ body.theme-dark .individual-actions-cell{background:#1e293b!important}
 <button onclick="switchDesk('catalog');startAddBook()" class="p-4 rounded-xl bg-indigo-50 text-indigo-700 text-left hover:bg-indigo-100"><i class="fa-solid fa-plus text-lg"></i><p class="font-bold text-sm mt-2">Add New Book</p><p class="text-xs mt-1">Create a book record</p></button>
 <button onclick="switchDesk('catalog');openCSVModal()" class="p-4 rounded-xl bg-emerald-50 text-emerald-700 text-left hover:bg-emerald-100"><i class="fa-solid fa-file-csv text-lg"></i><p class="font-bold text-sm mt-2">Import CSV</p><p class="text-xs mt-1">Import book records</p></button>
 <button onclick="switchDesk('accession')" class="p-4 rounded-xl bg-blue-50 text-blue-700 text-left hover:bg-blue-100"><i class="fa-solid fa-barcode text-lg"></i><p class="font-bold text-sm mt-2">Accession Inventory</p><p class="text-xs mt-1">View individual records</p></button>
-<button onclick="switchDesk('settings')" class="p-4 rounded-xl bg-slate-100 text-slate-700 text-left hover:bg-slate-200"><i class="fa-solid fa-gear text-lg"></i><p class="font-bold text-sm mt-2">Settings</p><p class="text-xs mt-1">Customize your catalog</p></button>
-</div>
-</div>
-</div>
-</section>
-
-<section id="desk-catalog" class="desk-view hidden space-y-5">
-<div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
-<div class="relative w-full md:w-96">
-<i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-<input id="catalog-search" type="search" oninput="renderCatalog()" placeholder="Search title, author, accession, copy number..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-</div>
-<div class="flex flex-wrap gap-2 w-full md:w-auto justify-end">
-<button onclick="openCSVModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold"><i class="fa-solid fa-file-csv mr-2"></i>Import CSV</button>
-<button onclick="startAddBook()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold"><i class="fa-solid fa-plus mr-2"></i>Add New Book</button>
-</div>
-</div>
-<div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-<div class="overflow-x-auto">
-<table class="w-full text-left border-collapse">
-<thead><tr id="catalog-table-head" class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase text-slate-500"></tr></thead>
-<tbody id="catalog-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
-</table>
-</div>
-</div>
-<p class="px-1 text-xs text-slate-500"><i class="fa-solid fa-circle-info mr-1"></i>Matching books are grouped in the catalog. You can edit an entire group or edit individual copy
+<button onclick="switchDesk('settings')" class="p-4 rounded-xl bg-slate-100 text-slate-700 text-left hover:bg-slate-200"><i class="fa-solid fa-gear text-lg"></i><p class="font-bold text-sm mt-
