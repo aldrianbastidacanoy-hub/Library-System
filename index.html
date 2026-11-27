@@ -4,117 +4,168 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LWCS Library Portal</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
-.login-screen { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e293b 0, #0f172a 100%); }
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+h1 {
+    text-align: center;
+    color: #1e293b;
+    margin-top: 0;
+}
+
+p.subtitle {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 25px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #334155;
+    display: block;
+    margin-bottom: 6px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #4338ca;
+}
+
+.error {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    display: none;
+    font-size: 14px;
+}
+
+.success-page {
+    display: none;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 500px;
+}
+
+.success-page h2 {
+    color: #16a34a;
+    font-size: 24px;
+}
+
+.info-note {
+    font-size: 12px;
+    color: #64748b;
+    text-align: center;
+    margin-top: 20px;
+}
+
 .hidden { display: none !important; }
 </style>
 </head>
-<body class="text-slate-800 min-h-screen">
+<body>
 
-<!-- ==================== LOGIN SCREEN ==================== -->
-<div id="login-screen" class="login-screen">
-  <div class="w-full max-w-md p-6">
-    <div class="text-center mb-8">
-      <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-4">
-        <i class="fa-solid fa-book-open-reader text-2xl text-white"></i>
-      </div>
-      <h1 class="text-2xl font-bold text-white">LWCS Library Portal</h1>
-      <p class="text-slate-400 text-sm mt-1">Sign in to access the system</p>
-    </div>
-
-    <div class="bg-white rounded-2xl p-6 shadow-2xl space-y-4">
-      <div id="login-error" class="hidden p-3 bg-rose-50 text-rose-700 rounded-lg text-sm"></div>
-      
-      <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1">Username / Email</label>
-        <input id="login-username" class="w-full p-3 border border-slate-200 rounded-xl text-sm" placeholder="admin@lwcs.ph">
-      </div>
-      
-      <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1">Password</label>
-        <input type="password" id="login-password" class="w-full p-3 border border-slate-200 rounded-xl text-sm" placeholder="Enter password">
-      </div>
-      
-      <button onclick="tryLogin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm">
-        <i class="fa-solid fa-right-to-bracket mr-2"></i>Sign In
-      </button>
-      
-      <p class="text-xs text-slate-400 text-center mt-2">
-        Default: admin@lwcs.ph &nbsp;|&nbsp; Password: admin123
-      </p>
-    </div>
-  </div>
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="login-box">
+    <h1>📚 LWCS Library Portal</h1>
+    <p class="subtitle">Sign in to access the system</p>
+    
+    <div id="errorBox" class="error"></div>
+    
+    <label>Email / Username</label>
+    <input type="text" id="emailInput" placeholder="admin@lwcs.ph">
+    
+    <label>Password</label>
+    <input type="password" id="passwordInput" placeholder="admin123">
+    
+    <button onclick="tryLogin()">Sign In</button>
+    
+    <p class="info-note">Default login:<br>
+    Email: <strong>admin@lwcs.ph</strong><br>
+    Password: <strong>admin123</strong></p>
 </div>
 
-<!-- ==================== MAIN APP (Hidden Until Login) ==================== -->
-<div id="app-container" class="hidden">
-  <header class="bg-slate-900 text-white p-4">
-    <div class="max-w-7xl mx-auto flex justify-between items-center">
-      <div>
-        <h1 class="text-xl font-bold">LWCS Library</h1>
-        <p class="text-sm text-slate-400">Management System — Welcome!</p>
-      </div>
-      <button onclick="logoutUser()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm">
-        <i class="fa-solid fa-right-from-bracket mr-1"></i>Sign Out
-      </button>
-    </div>
-  </header>
-  
-  <main class="max-w-7xl mx-auto p-6">
-    <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
-      <i class="fa-solid fa-circle-check text-emerald-500 text-5xl mb-4"></i>
-      <h2 class="text-2xl font-bold text-slate-800">✅ You Are Logged In!</h2>
-      <p class="text-slate-500 mt-2">The rest of your library system loads here — your login is working correctly now.</p>
-    </div>
-  </main>
+<!-- MAIN APPLICATION -->
+<div id="mainApp" class="success-page hidden">
+    <h2>✅ Welcome to LWCS Library!</h2>
+    <p>You are successfully logged in.</p>
+    <p style="color:#64748b; font-size:14px;">Your full library catalog and features will load here.</p>
+    <button onclick="logout()" style="background:#6b7280; margin-top:20px; max-width:200px;">Sign Out</button>
 </div>
 
-<!-- ==================== SIMPLEST POSSIBLE LOGIN CODE ==================== -->
 <script>
-// CORRECT CREDENTIALS — simple and clear
-const CORRECT_EMAIL = 'admin@lwcs.ph';
-const CORRECT_PASS = 'admin123';
-
+// Simple login verification
 function tryLogin() {
-  const email = document.getElementById('login-username').value.trim();
-  const pass = document.getElementById('login-password').value.trim();
-  const errorBox = document.getElementById('login-error');
-  
-  if (email === CORRECT_EMAIL && pass === CORRECT_PASS) {
-    // SUCCESS — show app, hide login
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('app-container').classList.remove('hidden');
-  } else {
-    // SHOW ERROR
-    errorBox.classList.remove('hidden');
-    if (email !== CORRECT_EMAIL && pass !== CORRECT_PASS) {
-      errorBox.textContent = '❌ Both email and password are incorrect. Please check again.';
-    } else if (email !== CORRECT_EMAIL) {
-      errorBox.textContent = '❌ Email is incorrect. Use: admin@lwcs.ph';
+    var email = document.getElementById('emailInput').value.trim();
+    var password = document.getElementById('passwordInput').value.trim();
+    var errorBox = document.getElementById('errorBox');
+    
+    if (email === 'admin@lwcs.ph' && password === 'admin123') {
+        // Login successful — show main app
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('mainApp').classList.remove('hidden');
     } else {
-      errorBox.textContent = '❌ Password is incorrect. Use: admin123';
+        // Show error message
+        errorBox.style.display = 'block';
+        if (email !== 'admin@lwcs.ph') {
+            errorBox.textContent = '❌ Email is incorrect. Use: admin@lwcs.ph';
+        } else if (password !== 'admin123') {
+            errorBox.textContent = '❌ Password is incorrect. Use: admin123';
+        } else {
+            errorBox.textContent = '❌ Email and password are both incorrect.';
+        }
     }
-  }
 }
 
-function logoutUser() {
-  document.getElementById('login-screen').classList.remove('hidden');
-  document.getElementById('app-container').classList.add('hidden');
-  document.getElementById('login-username').value = '';
-  document.getElementById('login-password').value = '';
-  document.getElementById('login-error').classList.add('hidden');
+function logout() {
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('mainApp').classList.add('hidden');
+    document.getElementById('emailInput').value = '';
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('errorBox').style.display = 'none';
 }
-
-// Allow pressing Enter to login
-document.addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') tryLogin();
-});
 </script>
 
 </body>
