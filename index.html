@@ -4,457 +4,240 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LWCS Library Portal</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #f8fafc;
-    margin: 0;
-    padding: 0;
-    color: #1e293b;
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc}
+.font-mono{font-family:'JetBrains Mono',monospace}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:5px}
+body.theme-dark{background:#0f172a!important;color:#e2e8f0!important}
+body.theme-dark .bg-white{background:#1e293b!important;border-color:#334155!important}
+body.theme-dark .bg-slate-50,body.theme-dark .bg-slate-50\/70,body.theme-dark .bg-slate-50\/60{background:#273449!important}
+body.theme-dark .text-slate-900,body.theme-dark .text-slate-800,body.theme-dark .text-slate-700{color:#f1f5f9!important}
+body.theme-dark .text-slate-600,body.theme-dark .text-slate-500,body.theme-dark .text-slate-400{color:#cbd5e1!important}
+body.theme-dark input,body.theme-dark select,body.theme-dark textarea{background:#0f172a!important;color:#f8fafc!important;border-color:#475569!important}
+body.theme-dark table thead tr{background:#273449!important}
+body.theme-dark table tbody tr{border-color:#334155!important}
+body.theme-dark .border-slate-100,body.theme-dark .border-slate-200{border-color:#334155!important}
+body.theme-blue{background:#eff6ff!important}
+body.theme-green{background:#f0fdf4!important}
+.modal-backdrop{background:rgba(15,23,42,.65);backdrop-filter:blur(4px)}
+
+.catalog-actions-header{
+position:sticky;
+right:0;
+z-index:20;
+min-width:190px;
+width:190px;
+background:#f8fafc;
+box-shadow:-6px 0 10px rgba(15,23,42,.08);
+}
+.catalog-actions-cell{
+position:sticky;
+right:0;
+z-index:10;
+min-width:190px;
+width:190px;
+background:#fff;
+box-shadow:-6px 0 10px rgba(15,23,42,.06);
 }
 
-/* --- Login Screen --- */
-.login-screen {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
+.individual-copies-table{
+width:100%;
+min-width:1050px;
+table-layout:auto;
+border-collapse:separate;
+border-spacing:0;
 }
-.login-box {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
-.login-box h1 { text-align: center; color: #1e293b; margin-top: 0; }
-.login-box p { text-align: center; color: #64748b; margin-bottom: 20px; }
-label { font-size: 14px; font-weight: bold; color: #334155; display: block; margin-bottom: 6px; }
-input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-size: 14px;
-    box-sizing: border-box;
-}
-button {
-    padding: 10px 16px;
-    background: #4f46e5;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-}
-button:hover { background: #4338ca; }
-button.secondary { background: #e2e8f0; color: #334155; }
-button.secondary:hover { background: #cbd5e1; }
-.error {
-    background: #fef2f2;
-    color: #dc2626;
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 15px;
-    display: none;
-    font-size: 14px;
-}
-.hidden { display: none !important; }
 
-/* --- Main App Layout --- */
-header {
-    background: #1e293b;
-    color: white;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
+.individual-actions-header{
+position:sticky;
+left:0;
+z-index:5;
+width:190px;
+min-width:190px;
+background:#e2e8f0;
+box-shadow:6px 0 10px rgba(15,23,42,.08);
 }
-header h1 { margin: 0; font-size: 20px; }
-nav {
-    background: #334155;
-    padding: 10px 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+.individual-actions-cell{
+position:sticky;
+left:0;
+z-index:4;
+width:190px;
+min-width:190px;
+background:#f8fafc;
+box-shadow:6px 0 10px rgba(15,23,42,.06);
 }
-nav button {
-    background: transparent;
-    color: #cbd5e1;
-    padding: 8px 14px;
-    font-size: 13px;
+.individual-action-buttons{
+display:flex;
+justify-content:flex-start;
+align-items:center;
+gap:8px;
 }
-nav button.active {
-    background: #4f46e5;
-    color: white;
+.individual-action-buttons button{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+min-width:65px;
+white-space:nowrap;
 }
-main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-.desk-view { display: none; }
-.desk-view.active { display: block; }
 
-/* --- Cards & Tables --- */
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin: 20px 0; }
-.card {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-}
-.card h3 { margin-top: 0; font-size: 14px; text-transform: uppercase; color: #64748b; }
-.card .big-num { font-size: 32px; font-weight: bold; color: #1e293b; margin: 8px 0; }
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-}
-th, td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0;
-    font-size: 14px;
-}
-th { background: #f1f5f9; font-weight: bold; color: #475569; }
-tr:hover { background: #f8fafc; }
-.actions-bar {
-    display: flex;
-    gap: 10px;
-    margin: 15px 0;
-    flex-wrap: wrap;
-}
-.empty-state {
-    text-align: center;
-    padding: 40px;
-    color: #64748b;
-}
-.modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(15,23,42,0.6);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 50;
-}
-.modal-backdrop.show { display: flex; }
-.modal {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    max-width: 500px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-.modal h3 { margin-top: 0; }
-.form-row { margin-bottom: 15px; }
-.form-row label { margin-bottom: 5px; }
-.form-row input, .form-row select { margin-bottom: 0; }
-.modal-buttons { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+body.theme-dark .catalog-actions-header{background:#273449!important}
+body.theme-dark .catalog-actions-cell{background:#1e293b!important}
+body.theme-dark .individual-actions-header{background:#273449!important}
+body.theme-dark .individual-actions-cell{background:#1e293b!important}
 </style>
 </head>
-<body>
+<body class="text-slate-800 min-h-screen flex flex-col">
 
-<!-- ==================== LOGIN SCREEN ==================== -->
-<div id="loginScreen" class="login-screen">
-    <div class="login-box">
-        <h1>📚 LWCS Library Portal</h1>
-        <p>Sign in to access your library system</p>
-        <div id="errorBox" class="error"></div>
-        
-        <label>Email / Username</label>
-        <input type="text" id="emailInput" placeholder="admin@lwcs.ph">
-        
-        <label>Password</label>
-        <input type="password" id="passwordInput" placeholder="admin123">
-        
-        <button onclick="tryLogin()">Sign In</button>
-        <p style="font-size:12px; color:#94a3b8; margin-top:15px; text-align:center;">
-            Default: admin@lwcs.ph / admin123
-        </p>
-    </div>
+<header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg border-b border-slate-800">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<div class="flex items-center space-x-3.5">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+<i class="fa-solid fa-book-open-reader text-lg"></i>
+</div>
+<div>
+<h1 class="text-lg font-bold tracking-tight leading-none">LWCS Library</h1>
+<p class="text-[11px] text-indigo-300 font-medium mt-1">Management & Catalog System</p>
+</div>
+</div>
+<div class="flex items-center space-x-3">
+<div class="hidden md:flex items-center space-x-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs text-slate-300">
+<i class="fa-regular fa-clock text-indigo-400"></i>
+<span id="live-clock" class="font-mono"></span>
+</div>
+<div class="flex items-center space-x-2 bg-slate-800 border border-slate-700 pl-2 pr-3 py-1 rounded-full">
+<img src="https://ui-avatars.com/api/?name=LWCS+Library&background=4f46e5&color=fff" alt="Library avatar" class="w-7 h-7 rounded-full">
+<div class="hidden sm:block">
+<p class="text-xs font-semibold text-white">Librarian Admin</p>
+<p class="text-[10px] text-emerald-400">● Online</p>
+</div>
+</div>
+</div>
 </div>
 
-<!-- ==================== MAIN LIBRARY SYSTEM ==================== -->
-<div id="mainApp" class="hidden">
-<header>
-    <div>
-        <h1>📚 LWCS Library</h1>
-        <span style="font-size:13px; color:#94a3b8;">Management & Catalog System</span>
-    </div>
-    <div style="display:flex; align-items:center; gap:15px;">
-        <span style="font-size:14px;" id="currentUserDisplay">Admin</span>
-        <button onclick="logout()" style="background:#475569; padding:6px 12px; font-size:13px;">Sign Out</button>
-    </div>
+<nav class="flex gap-1 overflow-x-auto pb-2 pt-1 text-xs font-semibold" aria-label="Library desks">
+<button onclick="switchDesk('overview')" id="tab-btn-overview" class="desk-btn px-3.5 py-2 rounded-lg bg-indigo-600 text-white whitespace-nowrap"><i class="fa-solid fa-chart-pie mr-1"></i>Overview</button>
+<button onclick="switchDesk('catalog')" id="tab-btn-catalog" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-book mr-1"></i>Catalog</button>
+<button onclick="switchDesk('accession')" id="tab-btn-accession" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-barcode mr-1"></i>Accession Inventory</button>
+<button onclick="switchDesk('shelf')" id="tab-btn-shelf" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-layer-group mr-1"></i>Shelf Inventory</button>
+<button onclick="switchDesk('ddc')" id="tab-btn-ddc" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-sitemap mr-1"></i>DDC Inventory</button>
+<button onclick="switchDesk('borrowers')" id="tab-btn-borrowers" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-users mr-1"></i>Borrowers</button>
+<button onclick="switchDesk('circulation')" id="tab-btn-circulation" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-right-left mr-1"></i>Borrow & Return</button>
+<button onclick="switchDesk('auth')" id="tab-btn-auth" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-shield-halved mr-1"></i>Account Authorization</button>
+<button onclick="switchDesk('settings')" id="tab-btn-settings" class="desk-btn px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-gear mr-1"></i>Settings Desk</button>
+</nav>
+</div>
 </header>
 
-<nav id="mainNav">
-    <button class="tab-btn active" data-desk="overview" onclick="switchDesk('overview')">📊 Overview</button>
-    <button class="tab-btn" data-desk="catalog" onclick="switchDesk('catalog')">📖 Catalog</button>
-    <button class="tab-btn" data-desk="accession" onclick="switchDesk('accession')">🔢 Accession</button>
-    <button class="tab-btn" data-desk="shelf" onclick="switchDesk('shelf')">📍 Shelves</button>
-    <button class="tab-btn" data-desk="settings" onclick="switchDesk('settings')">⚙️ Settings</button>
-</nav>
+<main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 flex-grow">
 
-<main>
-
-<!-- ========== OVERVIEW DESK ========== -->
-<div id="desk-overview" class="desk-view active">
-    <h2 style="margin-bottom:5px;">Library Overview</h2>
-    <p style="color:#64748b; margin-top:0;">Summary of your collection</p>
-    
-    <div class="grid">
-        <div class="card">
-            <h3>Total Records</h3>
-            <div class="big-num" id="stat-total">0</div>
-        </div>
-        <div class="card">
-            <h3>Unique Titles</h3>
-            <div class="big-num" id="stat-titles">0</div>
-        </div>
-        <div class="card">
-            <h3>Available Copies</h3>
-            <div class="big-num" id="stat-available">0</div>
-        </div>
-    </div>
-    
-    <div class="actions-bar" style="margin-top:30px;">
-        <button onclick="openAddBookModal()">➕ Add New Book</button>
-        <button onclick="exportData()" class="secondary">📥 Export Backup</button>
-    </div>
+<section id="desk-overview" class="desk-view space-y-5">
+<div>
+<h2 class="text-xl font-extrabold text-slate-900">Library Overview</h2>
+<p class="text-sm text-slate-500 mt-1">A summary of your library collection and inventory.</p>
 </div>
 
-<!-- ========== CATALOG DESK ========== -->
-<div id="desk-catalog" class="desk-view">
-    <h2>Book Catalog</h2>
-    <p style="color:#64748b;">Search and manage your book collection</p>
-    
-    <div class="actions-bar">
-        <button onclick="openAddBookModal()">➕ Add New Book</button>
-        <input type="text" id="searchInput" placeholder="Search books..." style="max-width:300px; margin:0;">
-    </div>
-    
-    <table id="catalogTable">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Accession #</th>
-                <th>Shelf</th>
-                <th>Copies</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="bookList">
-            <tr><td colspan="6" class="empty-state">No books yet. Click "Add New Book" to get started!</td></tr>
-        </tbody>
-    </table>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+<div class="flex justify-between items-center"><p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Catalog Records</p><i class="fa-solid fa-book text-indigo-500 text-xl"></i></div>
+<h3 id="overview-records" class="text-3xl font-extrabold text-slate-900 mt-3">0</h3>
+<p class="text-xs text-slate-500 mt-1">Individual book records</p>
+</div>
+<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+<div class="flex justify-between items-center"><p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Unique Book Titles</p><i class="fa-solid fa-book-open text-purple-500 text-xl"></i></div>
+<h3 id="overview-titles" class="text-3xl font-extrabold text-slate-900 mt-3">0</h3>
+<p class="text-xs text-slate-500 mt-1">Distinct titles in the catalog</p>
+</div>
+<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+<div class="flex justify-between items-center"><p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Copies</p><i class="fa-solid fa-layer-group text-blue-500 text-xl"></i></div>
+<h3 id="overview-total" class="text-3xl font-extrabold text-slate-900 mt-3">0</h3>
+<p class="text-xs text-slate-500 mt-1">Total physical copies recorded</p>
+</div>
+<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+<div class="flex justify-between items-center"><p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Available Copies</p><i class="fa-solid fa-circle-check text-emerald-500 text-xl"></i></div>
+<h3 id="overview-available" class="text-3xl font-extrabold text-emerald-600 mt-3">0</h3>
+<p class="text-xs text-slate-500 mt-1">Copies currently available</p>
+</div>
+<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+<div class="flex justify-between items-center"><p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Unavailable Copies</p><i class="fa-solid fa-circle-minus text-rose-500 text-xl"></i></div>
+<h3 id="overview-unavailable" class="text-3xl font-extrabold text-rose-600 mt-3">0</h3>
+<p class="text-xs text-slate-500 mt-1">Total minus available copies</p>
+</div>
+<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+<div class="flex justify-between items-center"><p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Shelf Locations</p><i class="fa-solid fa-location-dot text-amber-500 text-xl"></i></div>
+<h3 id="overview-shelves" class="text-3xl font-extrabold text-slate-900 mt-3">0</h3>
+<p class="text-xs text-slate-500 mt-1">Distinct recorded shelf locations</p>
+</div>
 </div>
 
-<!-- ========== ACCESSION DESK ========== -->
-<div id="desk-accession" class="desk-view">
-    <h2>Accession Inventory</h2>
-    <p style="color:#64748b;">Every physical copy listed individually</p>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Accession #</th>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Shelf</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody id="accessionList">
-            <tr><td colspan="5" class="empty-state">No accession records yet.</td></tr>
-        </tbody>
-    </table>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+<h3 class="font-bold text-slate-900">Collection Summary</h3>
+<p class="text-xs text-slate-500 mt-1">Overview of your recorded inventory.</p>
+<div id="overview-summary" class="mt-4 space-y-3"></div>
 </div>
-
-<!-- ========== SHELF DESK ========== -->
-<div id="desk-shelf" class="desk-view">
-    <h2>Shelf Inventory</h2>
-    <p style="color:#64748b;">Books grouped by location</p>
-    <div id="shelfList" class="grid">
-        <div class="empty-state" style="grid-column:1/-1;">No shelf records yet.</div>
-    </div>
+<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+<h3 class="font-bold text-slate-900">Quick Actions</h3>
+<p class="text-xs text-slate-500 mt-1">Go directly to common library tasks.</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+<button onclick="switchDesk('catalog');startAddBook()" class="p-4 rounded-xl bg-indigo-50 text-indigo-700 text-left hover:bg-indigo-100"><i class="fa-solid fa-plus text-lg"></i><p class="font-bold text-sm mt-2">Add New Book</p><p class="text-xs mt-1">Create a book record</p></button>
+<button onclick="switchDesk('catalog');openCSVModal()" class="p-4 rounded-xl bg-emerald-50 text-emerald-700 text-left hover:bg-emerald-100"><i class="fa-solid fa-file-csv text-lg"></i><p class="font-bold text-sm mt-2">Import CSV</p><p class="text-xs mt-1">Import book records</p></button>
+<button onclick="switchDesk('accession')" class="p-4 rounded-xl bg-blue-50 text-blue-700 text-left hover:bg-blue-100"><i class="fa-solid fa-barcode text-lg"></i><p class="font-bold text-sm mt-2">Accession Inventory</p><p class="text-xs mt-1">View individual records</p></button>
+<button onclick="switchDesk('settings')" class="p-4 rounded-xl bg-slate-100 text-slate-700 text-left hover:bg-slate-200"><i class="fa-solid fa-gear text-lg"></i><p class="font-bold text-sm mt-2">Settings</p><p class="text-xs mt-1">Customize your catalog</p></button>
 </div>
-
-<!-- ========== SETTINGS DESK ========== -->
-<div id="desk-settings" class="desk-view">
-    <h2>Settings & Data</h2>
-    
-    <div class="card">
-        <h3>Library Data</h3>
-        <div class="actions-bar">
-            <button onclick="exportData()">📥 Download Backup</button>
-            <button onclick="clearAllData()" style="background:#ef4444;">🗑️ Clear All Data</button>
-        </div>
-        <p style="font-size:13px; color:#64748b; margin-top:10px;">Data is saved in your browser. Download backups regularly!</p>
-    </div>
-    
-    <div class="card" style="margin-top:20px;">
-        <h3>About</h3>
-        <p style="font-size:14px;">LWCS Library Portal — Designed for Academic & Seminary Collections</p>
-    </div>
 </div>
-
-</main>
 </div>
+</section>
 
-<!-- ==================== ADD/EDIT BOOK MODAL ==================== -->
-<div id="bookModal" class="modal-backdrop">
-    <div class="modal">
-        <h3 id="modalTitle">Add New Book</h3>
-        <form id="bookForm">
-            <input type="hidden" id="bookId">
-            <div class="form-row">
-                <label>Book Title *</label>
-                <input type="text" id="bookTitle" required placeholder="Enter book title">
-            </div>
-            <div class="form-row">
-                <label>Author</label>
-                <input type="text" id="bookAuthor" placeholder="Author name">
-            </div>
-            <div class="form-row">
-                <label>Accession Number *</label>
-                <input type="text" id="bookAccession" required placeholder="e.g. ACC-001">
-            </div>
-            <div class="form-row">
-                <label>Shelf Location</label>
-                <input type="text" id="bookShelf" placeholder="e.g. Shelf A-1">
-            </div>
-            <div class="form-row">
-                <label>Total Copies</label>
-                <input type="number" id="bookCopies" value="1" min="1">
-            </div>
-            <div class="form-row">
-                <label>Notes / Remarks</label>
-                <input type="text" id="bookNotes" placeholder="Optional notes">
-            </div>
-            <div class="modal-buttons">
-                <button type="button" class="secondary" onclick="closeModal()">Cancel</button>
-                <button type="submit">Save Book</button>
-            </div>
-        </form>
-    </div>
+<section id="desk-catalog" class="desk-view hidden space-y-5">
+<div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="relative w-full md:w-96">
+<i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+<input id="catalog-search" type="search" oninput="renderCatalog()" placeholder="Search title, author, accession, copy number..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm">
 </div>
+<div class="flex flex-wrap gap-2 w-full md:w-auto justify-end">
+<button onclick="openCSVModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold"><i class="fa-solid fa-file-csv mr-2"></i>Import CSV</button>
+<button onclick="startAddBook()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold"><i class="fa-solid fa-plus mr-2"></i>Add New Book</button>
+</div>
+</div>
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead><tr id="catalog-table-head" class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase text-slate-500"></tr></thead>
+<tbody id="catalog-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+</table>
+</div>
+</div>
+<p class="px-1 text-xs text-slate-500"><i class="fa-solid fa-circle-info mr-1"></i>Matching books are grouped in the catalog. You can edit an entire group or edit individual copy records separately. You can customize the displayed columns in Settings Desk.</p>
+</section>
 
-<script>
-// ========== DATA STORAGE ==========
-const STORAGE_KEY = 'lwcs-library-books';
-let books = [];
+<section id="desk-accession" class="desk-view hidden">
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+<h2 class="text-lg font-bold text-slate-900">Accession Number Inventory Desk</h2>
+<p class="text-xs text-slate-500">Every physical copy and volume appears as a separate record.</p>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead><tr class="bg-slate-50 border-b text-[11px] uppercase text-slate-500"><th class="py-3 px-4">Accession #</th><th class="py-3 px-4">Copy Number</th><th class="py-3 px-4">Title</th><th class="py-3 px-4">Author</th><th class="py-3 px-4">Volume</th><th class="py-3 px-4">Edition</th><th class="py-3 px-4">Shelf</th></tr></thead>
+<tbody id="accession-table-body" class="divide-y divide-slate-100"></tbody>
+</table>
+</div>
+</div>
+</section>
 
-// ========== LOGIN ==========
-function tryLogin() {
-    const email = document.getElementById('emailInput').value.trim();
-    const pass = document.getElementById('passwordInput').value.trim();
-    const errorBox = document.getElementById('errorBox');
-    
-    if (email === 'admin@lwcs.ph' && pass === 'admin123') {
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('mainApp').classList.remove('hidden');
-        loadData();
-        updateStats();
-    } else {
-        errorBox.style.display = 'block';
-        errorBox.textContent = '❌ Incorrect email or password';
-    }
-}
+<section id="desk-shelf" class="desk-view hidden">
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+<h2 class="text-lg font-bold text-slate-900">Physical Shelf Breakdown</h2>
+<p class="text-xs text-slate-500">Counts are based on individual book-copy records.</p>
+<div id="shelf-inventory-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+</div>
+</section>
 
-function logout() {
-    document.getElementById('loginScreen').classList.remove('hidden');
-    document.getElementById('mainApp').classList.add('hidden');
-    document.getElementById('emailInput').value = '';
-    document.getElementById('passwordInput').value = '';
-    document.getElementById('errorBox').style.display = 'none';
-}
-
-// ========== DATA MANAGEMENT ==========
-function saveData() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(books));
-}
-
-function loadData() {
-    try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        books = saved ? JSON.parse(saved) : [];
-    } catch {
-        books = [];
-    }
-    renderCatalog();
-    renderAccession();
-    renderShelves();
-    updateStats();
-}
-
-function updateStats() {
-    document.getElementById('stat-total').textContent = books.length;
-    const uniqueTitles = new Set(books.map(b => b.title.toLowerCase()));
-    document.getElementById('stat-titles').textContent = uniqueTitles.size;
-    const totalCopies = books.reduce((sum, b) => sum + (parseInt(b.copies) || 1), 0);
-    document.getElementById('stat-available').textContent = totalCopies;
-}
-
-// ========== NAVIGATION ==========
-function switchDesk(name) {
-    document.querySelectorAll('.desk-view').forEach(d => d.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('desk-' + name).classList.add('active');
-    document.querySelector(`[data-desk="${name}"]`).classList.add('active');
-}
-
-// ========== CATALOG TABLE ==========
-function renderCatalog() {
-    const list = document.getElementById('bookList');
-    const search = document.getElementById('searchInput')?.value.toLowerCase() || '';
-    const filtered = books.filter(b => 
-        !search || 
-        b.title.toLowerCase().includes(search) ||
-        b.author.toLowerCase().includes(search) ||
-        b.accession.toLowerCase().includes(search)
-    );
-    
-    if (!filtered.length) {
-        list.innerHTML = `<tr><td colspan="6" class="empty-state">${books.length ? 'No books match your search.' : 'No books yet. Click "Add New Book" to get started!'}</td></tr>`;
-        return;
-    }
-    
-    list.innerHTML = filtered.map(b => `
-        <tr>
-            <td><strong>${escapeHtml(b.title)}</strong></td>
-            <td>${escapeHtml(b.author)}</td>
-            <td style="font-family:monospace; color:#4f46e5;">${escapeHtml(b.accession)}</td>
-            <td>${escapeHtml(b.shelf) || '—'}</td>
-            <td>${b.copies || 1}</td>
-            <td>
-                <button style="padding:4px 8px; font-size:12px; background:#e0e7ff; color:#3730a3;" onclick="editBook('${b.id}')">Edit</button>
-                <button style="padding:4px 8px; font-size:12px; background:#fee2e2; color:#b91c1c;" onclick="deleteBook('${b.id}')">Delete</button>
-            </td>
-        </tr>
-    `).join('');
-}
-
-function renderAccession() {
-    const list = document.getElementById('accessionList');
-    if (!books.length) {
-        list.innerHTML = '<tr><td colspan="5" class="empty-state">No accession records yet.</td></tr>';
-        return;
-    }
-    list.innerHTML = books.map(b => `
-        <tr>
-            <td style="font
+<section id="desk-ddc" class="desk-view hidden">
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+<h2 class="text-lg font-bold text-slate-900">Dewey Decimal Classification (DDC
